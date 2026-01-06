@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/tools/layout,_N_T_/tools/utilityTools/layout,_N_T_/tools/utilityTools/online-notepad/layout,_N_T_/tools/utilityTools/online-notepad/page,_N_T_/tools/utilityTools/online-notepad/"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/tools/utilityTools/online-notepad/__PAGE__",
+    "/tools/utilityTools/online-notepad",
+    "/tools/utilityTools",
+    "/tools",
+    "/_index"
+  ]
+}

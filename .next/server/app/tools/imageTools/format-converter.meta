@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/tools/layout,_N_T_/tools/imageTools/layout,_N_T_/tools/imageTools/format-converter/layout,_N_T_/tools/imageTools/format-converter/page,_N_T_/tools/imageTools/format-converter/"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/tools/imageTools/format-converter/__PAGE__",
+    "/tools/imageTools/format-converter",
+    "/tools/imageTools",
+    "/tools",
+    "/_index"
+  ]
+}

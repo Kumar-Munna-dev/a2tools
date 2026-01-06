@@ -1,0 +1,406 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:file((?!\\.well-known(?:/.*)?)(?:[^/]+/)*[^/]+\\.\\w+)/",
+      "destination": "/:file",
+      "internal": true,
+      "priority": true,
+      "missing": [
+        {
+          "type": "header",
+          "key": "x-nextjs-data"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?:/((?!\\.well-known(?:/.*)?)(?:[^/]+/)*[^/]+\\.\\w+))/$"
+    },
+    {
+      "source": "/:notfile((?!\\.well-known(?:/.*)?)(?:[^/]+/)*[^/\\.]+)",
+      "destination": "/:notfile/",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?!\\.well-known(?:/.*)?)(?:[^/]+/)*[^/\\.]+))$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/about",
+      "regex": "^/about(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/about(?:/)?$"
+    },
+    {
+      "page": "/contact",
+      "regex": "^/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/contact(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/privacy-policy",
+      "regex": "^/privacy\\-policy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy\\-policy(?:/)?$"
+    },
+    {
+      "page": "/terms",
+      "regex": "^/terms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/terms(?:/)?$"
+    },
+    {
+      "page": "/tools",
+      "regex": "^/tools(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools(?:/)?$"
+    },
+    {
+      "page": "/tools/calculatorTools",
+      "regex": "^/tools/calculatorTools(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/calculatorTools(?:/)?$"
+    },
+    {
+      "page": "/tools/calculatorTools/age-calculator",
+      "regex": "^/tools/calculatorTools/age\\-calculator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/calculatorTools/age\\-calculator(?:/)?$"
+    },
+    {
+      "page": "/tools/calculatorTools/basic-calculator",
+      "regex": "^/tools/calculatorTools/basic\\-calculator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/calculatorTools/basic\\-calculator(?:/)?$"
+    },
+    {
+      "page": "/tools/calculatorTools/bmi-calculator",
+      "regex": "^/tools/calculatorTools/bmi\\-calculator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/calculatorTools/bmi\\-calculator(?:/)?$"
+    },
+    {
+      "page": "/tools/calculatorTools/discount-calculator",
+      "regex": "^/tools/calculatorTools/discount\\-calculator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/calculatorTools/discount\\-calculator(?:/)?$"
+    },
+    {
+      "page": "/tools/calculatorTools/emi-calculator",
+      "regex": "^/tools/calculatorTools/emi\\-calculator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/calculatorTools/emi\\-calculator(?:/)?$"
+    },
+    {
+      "page": "/tools/calculatorTools/gst-vat-calculator",
+      "regex": "^/tools/calculatorTools/gst\\-vat\\-calculator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/calculatorTools/gst\\-vat\\-calculator(?:/)?$"
+    },
+    {
+      "page": "/tools/calculatorTools/percentage-calculator",
+      "regex": "^/tools/calculatorTools/percentage\\-calculator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/calculatorTools/percentage\\-calculator(?:/)?$"
+    },
+    {
+      "page": "/tools/calculatorTools/scientific-calculator",
+      "regex": "^/tools/calculatorTools/scientific\\-calculator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/calculatorTools/scientific\\-calculator(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools",
+      "regex": "^/tools/imageTools(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools/color-picker",
+      "regex": "^/tools/imageTools/color\\-picker(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools/color\\-picker(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools/filters-effects",
+      "regex": "^/tools/imageTools/filters\\-effects(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools/filters\\-effects(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools/format-converter",
+      "regex": "^/tools/imageTools/format\\-converter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools/format\\-converter(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools/html-to-image",
+      "regex": "^/tools/imageTools/html\\-to\\-image(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools/html\\-to\\-image(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools/image-compressor",
+      "regex": "^/tools/imageTools/image\\-compressor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools/image\\-compressor(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools/metadata-viewer",
+      "regex": "^/tools/imageTools/metadata\\-viewer(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools/metadata\\-viewer(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools/resizer-cropper",
+      "regex": "^/tools/imageTools/resizer\\-cropper(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools/resizer\\-cropper(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools/rotator-flipper",
+      "regex": "^/tools/imageTools/rotator\\-flipper(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools/rotator\\-flipper(?:/)?$"
+    },
+    {
+      "page": "/tools/imageTools/watermark-tool",
+      "regex": "^/tools/imageTools/watermark\\-tool(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/imageTools/watermark\\-tool(?:/)?$"
+    },
+    {
+      "page": "/tools/pdfTools",
+      "regex": "^/tools/pdfTools(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/pdfTools(?:/)?$"
+    },
+    {
+      "page": "/tools/textTools",
+      "regex": "^/tools/textTools(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/textTools(?:/)?$"
+    },
+    {
+      "page": "/tools/textTools/grammar-checker",
+      "regex": "^/tools/textTools/grammar\\-checker(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/textTools/grammar\\-checker(?:/)?$"
+    },
+    {
+      "page": "/tools/textTools/plagiarism-checker",
+      "regex": "^/tools/textTools/plagiarism\\-checker(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/textTools/plagiarism\\-checker(?:/)?$"
+    },
+    {
+      "page": "/tools/textTools/speech-to-text",
+      "regex": "^/tools/textTools/speech\\-to\\-text(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/textTools/speech\\-to\\-text(?:/)?$"
+    },
+    {
+      "page": "/tools/textTools/text-case-converter",
+      "regex": "^/tools/textTools/text\\-case\\-converter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/textTools/text\\-case\\-converter(?:/)?$"
+    },
+    {
+      "page": "/tools/textTools/text-cleaner",
+      "regex": "^/tools/textTools/text\\-cleaner(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/textTools/text\\-cleaner(?:/)?$"
+    },
+    {
+      "page": "/tools/textTools/text-to-speech",
+      "regex": "^/tools/textTools/text\\-to\\-speech(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/textTools/text\\-to\\-speech(?:/)?$"
+    },
+    {
+      "page": "/tools/textTools/Url-to-Text-Converter",
+      "regex": "^/tools/textTools/Url\\-to\\-Text\\-Converter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/textTools/Url\\-to\\-Text\\-Converter(?:/)?$"
+    },
+    {
+      "page": "/tools/textTools/word-counter",
+      "regex": "^/tools/textTools/word\\-counter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/textTools/word\\-counter(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools",
+      "regex": "^/tools/utilityTools(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/base64-encoder-decoder",
+      "regex": "^/tools/utilityTools/base64\\-encoder\\-decoder(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/base64\\-encoder\\-decoder(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/code-minifier",
+      "regex": "^/tools/utilityTools/code\\-minifier(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/code\\-minifier(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/color-converter-picker",
+      "regex": "^/tools/utilityTools/color\\-converter\\-picker(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/color\\-converter\\-picker(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/currency-converter",
+      "regex": "^/tools/utilityTools/currency\\-converter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/currency\\-converter(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/date-time-tools",
+      "regex": "^/tools/utilityTools/date\\-time\\-tools(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/date\\-time\\-tools(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/emi-calculator",
+      "regex": "^/tools/utilityTools/emi\\-calculator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/emi\\-calculator(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/epoch-converter",
+      "regex": "^/tools/utilityTools/epoch\\-converter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/epoch\\-converter(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/file-compressor",
+      "regex": "^/tools/utilityTools/file\\-compressor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/file\\-compressor(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/file-converter",
+      "regex": "^/tools/utilityTools/file\\-converter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/file\\-converter(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/json-formatter",
+      "regex": "^/tools/utilityTools/json\\-formatter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/json\\-formatter(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/json-to-csv",
+      "regex": "^/tools/utilityTools/json\\-to\\-csv(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/json\\-to\\-csv(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/online-notepad",
+      "regex": "^/tools/utilityTools/online\\-notepad(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/online\\-notepad(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/password-generator",
+      "regex": "^/tools/utilityTools/password\\-generator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/password\\-generator(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/password-strength-checker",
+      "regex": "^/tools/utilityTools/password\\-strength\\-checker(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/password\\-strength\\-checker(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/qr-code-generator",
+      "regex": "^/tools/utilityTools/qr\\-code\\-generator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/qr\\-code\\-generator(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/stopwatch-timer",
+      "regex": "^/tools/utilityTools/stopwatch\\-timer(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/stopwatch\\-timer(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/text-encrypt-decrypt",
+      "regex": "^/tools/utilityTools/text\\-encrypt\\-decrypt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/text\\-encrypt\\-decrypt(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/unit-converter",
+      "regex": "^/tools/utilityTools/unit\\-converter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/unit\\-converter(?:/)?$"
+    },
+    {
+      "page": "/tools/utilityTools/url-shortener",
+      "regex": "^/tools/utilityTools/url\\-shortener(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools/utilityTools/url\\-shortener(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

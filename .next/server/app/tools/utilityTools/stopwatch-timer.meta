@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/tools/layout,_N_T_/tools/utilityTools/layout,_N_T_/tools/utilityTools/stopwatch-timer/layout,_N_T_/tools/utilityTools/stopwatch-timer/page,_N_T_/tools/utilityTools/stopwatch-timer/"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/tools/utilityTools/stopwatch-timer/__PAGE__",
+    "/tools/utilityTools/stopwatch-timer",
+    "/tools/utilityTools",
+    "/tools",
+    "/_index"
+  ]
+}
