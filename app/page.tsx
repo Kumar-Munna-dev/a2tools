@@ -63,18 +63,12 @@ export default function Home() {
       </Head>
 
       {/* FIXED BACKGROUND */}
-      <main className="relative text-black min-h-screen bg-gradient-to-br from-[#f7f7f7] via-[#ffffff] to-[#ffffff]">
-
-        {/* BACKGROUND BLOBS */}
-        <div className="absolute inset-0 overflow-hidden -z-10">
-          <div className="absolute w-72 h-72 bg-blue-600/20 rounded-full blur-3xl top-10 left-10 animate-pulse"></div>
-          <div className="absolute w-96 h-96 bg-purple-600/20 rounded-full blur-3xl bottom-10 right-10 animate-pulse"></div>
-        </div>
+      <main className="text-black min-h-screen border-b rounded-2xl border-b-white ">
 
         <div className="relative z-10">
 
           {/* HERO SECTION FIXED */}
-          <header className="text-center py-24 px-6 bg-gradient-to-b from-white to-gray-100 border-b border-gray-200">
+          <header className="text-center py-24 px-6 border-b rounded-2xl bg-[#f7f7f7] border-gray-200">
             <div className="max-w-3xl mx-auto">
 
               <h1 className="text-4xl sm:text-6xl font-extrabold text-gray-900 tracking-tight">
@@ -95,7 +89,7 @@ export default function Home() {
             </div>
 
             {/* CATEGORY BUTTONS */}
-            <div className="mt-16 flex flex-wrap justify-center gap-3">
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
               {["All", "Text", "Image", "PDF", "Calculator", "Utility"].map(
                 (label) => (
                   <button
@@ -114,7 +108,7 @@ export default function Home() {
           </header>
 
           {/* TOOLS SECTION */}
-          <section className="max-w-7xl mx-auto px-6 py-16">
+          <section className="max-w-7xl mx-auto px-6 py-6">
 
             <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
               {selectedCategory === "All"

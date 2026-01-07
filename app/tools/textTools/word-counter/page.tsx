@@ -103,8 +103,8 @@ const WordCounter: React.FC = () => {
           className="flex w-full items-center justify-center gap-2"
           aria-label="Copy text"
         >
-          <Clipboard className="w-5 h-5" />
-          <span className="text-center">Copy Text</span>
+          
+          <span className="text-center"> <Clipboard className="w-5 h-5" />Copy Text</span>
         </Button>
 
         <Button

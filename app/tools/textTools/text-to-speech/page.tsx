@@ -1,5 +1,6 @@
 "use client";
 
+import RelatedTools from "@/app/components/RelatedTools";
 import { useEffect, useState } from "react";
 
 export default function TextToSpeechTTS() {
@@ -63,8 +64,8 @@ export default function TextToSpeechTTS() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <div className="w-full max-w-3xl bg-white shadow-md rounded-2xl p-6">
+    <div className="min-h-screen flex flex-col justify-center p-6 mt-20 sm:flex-row ">
+      <div className="order-1 w-full max-w-3xl bg-white shadow-md rounded-2xl p-6 sm:order-2">
         <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-4">Text to Speech (TTS)</h1>
         <p className="text-sm text-gray-600 text-center mb-4">Convert your text into natural-sounding speech with multiple voice models.</p>
 
@@ -147,6 +148,10 @@ export default function TextToSpeechTTS() {
         </div>
 
         <div className="mt-6 text-xs text-gray-500">Tip: Change voice model, pitch, and speed while speaking for real-time effects.</div>
+      </div>
+      {/* Here Moblie card */}
+      <div className="w-max order-2 flex p-5 items-center justify-center sm:order-1" >
+        <RelatedTools currentTool="/tools/textTools/word-counter" />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import RelatedTools from "@/app/components/RelatedTools";
 import { useState } from "react";
 
 export default function TextFormatterCleaner() {
@@ -45,8 +46,8 @@ export default function TextFormatterCleaner() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <div className="w-full max-w-3xl bg-white shadow-md rounded-2xl p-6">
+    <div className="min-h-screen flex flex-col mt-20 p-6 sm:flex-row">
+      <div className="order-2 w-full max-w-3xl bg-white shadow-md rounded-2xl p-6 sm:order-2">
         <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-4">Text Formatter / Cleaner</h1>
         <p className="text-sm text-gray-600 text-center mb-4">Remove extra spaces, normalize line breaks, or strip HTML tags quickly.</p>
 
@@ -54,7 +55,7 @@ export default function TextFormatterCleaner() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Paste or type your text here..."
-          className="w-full min-h-40 sm:min-h-[220px] p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-vertical"
+          className="w-full min-h-40 shadow-2xl shadow-white sm:min-h-[220px] p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-vertical"
         />
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
@@ -74,8 +75,12 @@ export default function TextFormatterCleaner() {
           <div className="ml-auto text-sm text-gray-500 self-center">{message}</div>
         </div>
 
-        <div className="mt-6 text-xs text-gray-500">Tips: Use <code className="bg-gray-100 px-1 rounded">Strip HTML Tags</code> when pasting content from web pages. <br/>Use <code className="bg-gray-100 px-1 rounded">Convert To Single Line</code> for CSV or single-line formats.</div>
+        <div className="mt-6 text-xs text-gray-500">Tips: Use <code className="bg-gray-100 px-1 rounded">Strip HTML Tags</code> when pasting content from web pages. <br />Use <code className="bg-gray-100 px-1 rounded">Convert To Single Line</code> for CSV or single-line formats.</div>
       </div>
-    </div>
+      {/* Here Moblie card */}
+      <div className="w-max order-2 flex p-5 items-center justify-center sm:order-1" >
+        <RelatedTools currentTool="/tools/textTools/word-counter" />
+      </div></div>
+
   );
 }

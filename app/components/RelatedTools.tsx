@@ -66,13 +66,13 @@ export default function RelatedTools({ currentTool }: { currentTool: string }) {
       initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="mt-10"
+      className=""
     >
-      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-5 text-center">
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 pb-5 text-center">
         🔗 Related Tools
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
         {related.map((tool, i) => (
           <motion.div
             key={i}

@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://a2tool.com/og-image.png", // 🧠 Replace with your OG image URL
+        url: "https://a2tool.com/app/public/og-image.png", // 🧠 Replace with your OG image URL
         width: 1200,
         height: 630,
         alt: "A2Tools – Free Online Tools for Everyone",

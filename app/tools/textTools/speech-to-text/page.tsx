@@ -1,5 +1,6 @@
 "use client";
 
+import RelatedTools from "@/app/components/RelatedTools";
 import { useEffect, useRef, useState } from "react";
 
 export default function SpeechToTextRealtime() {
@@ -72,7 +73,7 @@ export default function SpeechToTextRealtime() {
           recognitionRef.current.onerror = null;
           try {
             recognitionRef.current.stop();
-          } catch {}
+          } catch { }
         }
       } catch (e) {
         // ignore
@@ -175,8 +176,8 @@ export default function SpeechToTextRealtime() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-      <div className="w-full max-w-3xl bg-white rounded-2xl shadow p-4 sm:p-6">
+    <div className="min-h-screen flex flex-col justify-center p-4 sm:flex-row mt-20">
+      <div className="order-1 w-full max-w-3xl bg-white rounded-2xl shadow p-4 sm:p-6 sm:order-2">
         <h1 className="text-2xl font-semibold text-center mb-2">Speech to Text — Real-time Transcription</h1>
         <p className="text-sm text-gray-600 text-center mb-4">Transcribe your voice into editable text as you speak.</p>
 
@@ -214,7 +215,7 @@ export default function SpeechToTextRealtime() {
           </div>
         </div>
 
-        <div className="bg-gray-100 rounded-md p-3 min-h-[140px]">
+        <div className="bg-gray-100 rounded-md p-3 min-h-[140px] border">
           <textarea
             value={finalText + (interim ? "\n" + interim : "")}
             onChange={(e) => setFinalText(e.target.value)}
@@ -234,6 +235,11 @@ export default function SpeechToTextRealtime() {
         {errorMsg && <div className="mt-4 text-sm text-red-600">Error: {errorMsg}</div>}
 
         <div className="mt-4 text-xs text-gray-500">Tip: Allow microphone access when prompted. Use a good microphone for accurate transcription.</div>
+      </div>
+
+      {/* Here Moblie card */}
+      <div className="w-max order-2 flex p-5 items-center justify-center sm:order-1" >
+        <RelatedTools currentTool="/tools/textTools/word-counter" />
       </div>
     </div>
   );
