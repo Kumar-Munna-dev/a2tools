@@ -1,3 +1,0 @@
-module.exports=[35242,a=>{"use strict";var b=a.i(87924),c=a.i(38246);function d({title:a,description:d,icon:e,href:f="#"}){return(0,b.jsxs)(c.default,{href:f,className:"   block p-6 rounded-2xl bg-white border border-gray-200   shadow-sm hover:shadow-lg transition-all duration-300   hover:border-blue-500 hover:-translate-y-1   ",children:[(0,b.jsx)("div",{className:"   w-12 h-12 flex items-center justify-center   rounded-xl bg-blue-50 text-blue-600 text-2xl mb-4   ",children:e}),(0,b.jsx)("h3",{className:"text-lg font-semibold text-gray-900 mb-1",children:a}),(0,b.jsx)("p",{className:"text-sm text-gray-600 leading-relaxed",children:d})]})}a.s(["default",()=>d])}];
-
-//# sourceMappingURL=app_components_ToolCard_tsx_6d04d3f3._.js.map
