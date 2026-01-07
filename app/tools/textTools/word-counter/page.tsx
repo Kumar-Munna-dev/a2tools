@@ -72,16 +72,16 @@ const WordCounter: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6 max-w-3xl mx-auto p-4 sm:p-6"
+      transition={{ duration: 1.5 }}
+      className="mt-20 space-y-6 max-w-3xl mx-auto p-4 sm:p-6"
     >
-      <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-800">Word Counter</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-800 ">Word Counter</h1>
       <p className="text-center text-gray-500 text-sm sm:text-base">
         Paste or type your text below to analyze word count, characters, sentences, paragraphs, and reading time.
       </p>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 sm:gap-6 ">
+      <div className="grid grid-cols-2 border border-gray-300 rounded-2xl p-5 sm:grid-cols-3 md:grid-cols-5 gap-4 sm:gap-6 ">
         <StatCard label="Words" value={stats.words} />
         <StatCard label="Characters" value={stats.characters} />
         <StatCard label="Sentences" value={stats.sentences} />
@@ -96,20 +96,30 @@ const WordCounter: React.FC = () => {
         className="w-full h-[150px] sm:h-[200px] md:h-[300px] p-4 sm:p-5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none shadow-sm transition-all resize-y"
         placeholder="Start typing or paste your text here..."
       />
-
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-        <Button onClick={handleCopy} className="w-full sm:w-auto flex items-center justify-center">
-          <Clipboard className="mr-2 h-5 w-5" /> Copy Text
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <Button
+          onClick={handleCopy}
+          className="flex w-full items-center justify-center gap-2"
+          aria-label="Copy text"
+        >
+          <Clipboard className="w-5 h-5" />
+          <span className="text-center">Copy Text</span>
         </Button>
+
         <Button
           onClick={handleClear}
-          variant="destructive"
-          className="w-full sm:w-auto flex items-center justify-center"
+          className="flex w-full items-center justify-center gap-2 bg-red-600 hover:bg-red-700"
+          aria-label="Clear text"
         >
-          <Trash2 className="mr-2 h-5 w-5" /> Clear Text
+          <Trash2 className="w-5 h-5" />
+          <span className="text-center">Clear Text</span>
         </Button>
       </div>
+
+
+
+      {/* Here Moblie card */}
       <div className=" md:hidden">
         <RelatedTools currentTool="/tools/textTools/word-counter" />
       </div>
