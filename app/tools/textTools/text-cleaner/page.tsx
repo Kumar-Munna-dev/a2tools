@@ -46,8 +46,8 @@ export default function TextFormatterCleaner() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col mt-20 p-6 sm:flex-row">
-      <div className="order-2 w-full max-w-3xl bg-white shadow-md rounded-2xl p-6 sm:order-2">
+    <div className="mt-20 flex flex-col mb-5 sm:flex-row">
+      <div className="order-2 w-screen bg-white shadow-md rounded-2xl p-6 sm:order-2">
         <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-4">Text Formatter / Cleaner</h1>
         <p className="text-sm text-gray-600 text-center mb-4">Remove extra spaces, normalize line breaks, or strip HTML tags quickly.</p>
 

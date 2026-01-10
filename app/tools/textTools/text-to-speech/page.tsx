@@ -64,8 +64,8 @@ export default function TextToSpeechTTS() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center p-6 mt-20 sm:flex-row ">
-      <div className="order-1 w-full max-w-3xl bg-white shadow-md rounded-2xl p-6 sm:order-2">
+    <div className="flex flex-col items-center mb-5 mt-20 sm:flex-row sm:items-start ">
+      <div className="w-screen order-1 bg-white shadow-md rounded-2xl p-6 sm:order-2">
         <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-4">Text to Speech (TTS)</h1>
         <p className="text-sm text-gray-600 text-center mb-4">Convert your text into natural-sounding speech with multiple voice models.</p>
 

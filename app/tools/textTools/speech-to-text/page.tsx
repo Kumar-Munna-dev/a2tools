@@ -176,8 +176,8 @@ export default function SpeechToTextRealtime() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center p-4 sm:flex-row mt-20">
-      <div className="order-1 w-full max-w-3xl bg-white rounded-2xl shadow p-4 sm:p-6 sm:order-2">
+    <div className="mt-20 flex flex-col items-center mb-5 sm:flex-row sm:items-start ">
+      <div className=" w-screen order-1 bg-white rounded-2xl shadow p-4 sm:p-6 sm:order-2">
         <h1 className="text-2xl font-semibold text-center mb-2">Speech to Text — Real-time Transcription</h1>
         <p className="text-sm text-gray-600 text-center mb-4">Transcribe your voice into editable text as you speak.</p>
 

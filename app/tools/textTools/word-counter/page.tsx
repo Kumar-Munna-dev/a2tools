@@ -72,9 +72,10 @@ const WordCounter: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1.5 }}
-      className="mt-20 space-y-6 max-w-3xl mx-auto p-4 sm:p-6"
+      transition={{ duration: 0.5 }}
+      className="mt-20 flex flex-col w-screen items-center space-y-6 gap-10 p-4 sm:p-6 sm:flex-row sm:items-start"
     >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
       <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-800 ">Word Counter</h1>
       <p className="text-center text-gray-500 text-sm sm:text-base">
         Paste or type your text below to analyze word count, characters, sentences, paragraphs, and reading time.
@@ -97,30 +98,29 @@ const WordCounter: React.FC = () => {
         placeholder="Start typing or paste your text here..."
       />
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+      <div className="flex flex-row gap-3 sm:gap-4">
         <Button
           onClick={handleCopy}
-          className="flex w-full items-center justify-center gap-2"
+          className="flex flex-row w-full h-min items-center justify-center gap-2"
           aria-label="Copy text"
         >
-          
-          <span className="text-center"> <Clipboard className="w-5 h-5" />Copy Text</span>
+          <Clipboard />
+          <span>Copy Text</span>
         </Button>
 
         <Button
           onClick={handleClear}
-          className="flex w-full items-center justify-center gap-2 bg-red-600 hover:bg-red-700"
+          className="flex flex-row w-full h-min bg-red-600 hover:bg-red-700 items-center justify-center gap-2"
           aria-label="Clear text"
         >
-          <Trash2 className="w-5 h-5" />
-          <span className="text-center">Clear Text</span>
+          <Trash2 />
+          <span>Clear Text</span>
         </Button>
       </div>
 
-
-
+      </div>
       {/* Here Moblie card */}
-      <div className=" md:hidden">
+      <div className="order-2  sm:order-1">
         <RelatedTools currentTool="/tools/textTools/word-counter" />
       </div>
     </motion.div>

@@ -72,7 +72,7 @@ export default function RelatedTools({ currentTool }: { currentTool: string }) {
         🔗 Related Tools
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
+      <div className="w-80 grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
         {related.map((tool, i) => (
           <motion.div
             key={i}

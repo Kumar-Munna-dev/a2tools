@@ -101,8 +101,8 @@ export default function ImageResizerCropper() {
     img.onload = () => {
       imgRef.current = img;
 
-      const parentWidth = canvas.parentElement?.clientWidth || 800;
-      const parentHeight = canvas.parentElement?.clientHeight || 600;
+      const parentWidth =  550;
+      const parentHeight = 250;
       const scale = Math.min(parentWidth / img.width, parentHeight / img.height, 1);
 
       canvas.width = img.width * scale * window.devicePixelRatio;
@@ -212,7 +212,7 @@ export default function ImageResizerCropper() {
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 bg-gray-50 border rounded-lg p-4 flex items-center justify-center">
             { !imageSrc ? <div className="text-gray-400">No image loaded</div> : 
-              <canvas ref={canvasRef} className="rounded w-full h-auto" 
+              <canvas ref={canvasRef} className="rounded w-200 h-200" 
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}

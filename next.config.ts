@@ -1,5 +1,5 @@
 const nextConfig = {
-  output: "export",
+
   trailingSlash: true,
   reactStrictMode: true,
   images: {
