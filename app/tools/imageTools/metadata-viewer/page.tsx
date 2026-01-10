@@ -69,7 +69,7 @@ const ImageMetadataViewer = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-xl border">
       <h1 className="text-3xl font-bold text-center mb-6">
-        Image Metadata Viewer
+        Metadata Viewer – View Image & File Metadata Online
       </h1>
 
       {/* Upload */}

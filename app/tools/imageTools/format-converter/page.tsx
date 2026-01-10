@@ -223,7 +223,7 @@ export default function NextImageConverter() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4">Next.js Image Converter (client-side)</h1>
+      <h1 className="text-2xl font-semibold mb-4">Image Format Converter – Convert JPG, PNG & WEBP</h1>
       <p className="text-sm text-gray-600 mb-4">{EXT_HINTS}</p>
 
       <div

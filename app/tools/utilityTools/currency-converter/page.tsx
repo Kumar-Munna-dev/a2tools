@@ -194,7 +194,7 @@ const currencyNames: Record<string, string> = {
         className="max-w-3xl w-full backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-3xl shadow-xl p-8 border border-white/30 dark:border-gray-700"
       >
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
-          💱 Currency Converter
+          Currency Converter – Convert Exchange Rates Online
         </h1>
 
         {/* Conversion Inputs */}

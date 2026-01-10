@@ -1,5 +1,5 @@
-"use client";
 
+import type { Metadata } from 'next';
 import RelatedTools from "@/app/components/RelatedTools";
 import { useEffect, useState } from "react";
 
@@ -62,6 +62,7 @@ export default function TextToSpeechTTS() {
     setIsSpeaking(false);
     setCurrentUtterance(null);
   };
+
 
   return (
     <div className="flex flex-col items-center mb-5 mt-20 sm:flex-row sm:items-start ">

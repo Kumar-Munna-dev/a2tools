@@ -135,7 +135,7 @@ export default function JSONFormatterValidator() {
                 className="w-full max-w-4xl backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-3xl shadow-xl p-5 sm:p-8 border border-white/30 dark:border-gray-700"
             >
                 <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">
-                    🧾 JSON Formatter & Validator
+                    JSON Formatter – Format, Validate & Beautify JSON Online
                 </h1>
 
                 {/* Controls */}

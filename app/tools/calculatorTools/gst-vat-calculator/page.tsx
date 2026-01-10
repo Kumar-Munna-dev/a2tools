@@ -53,7 +53,7 @@ export default function GSTVatCalculator() {
         className="w-full max-w-2xl bg-white shadow-2xl rounded-3xl p-8 border border-gray-100"
       >
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 tracking-tight">GST / VAT Calculator</h1>
+          <h1 className="text-3xl font-bold text-gray-800 tracking-tight">GST & VAT Calculator – Calculate Tax and Final Price</h1>
           <p className="text-gray-500 mt-2 text-sm">Calculate Goods & Services Tax quickly and accurately</p>
         </div>
 

@@ -65,7 +65,7 @@ export default function PasswordStrengthChecker() {
         <main className="full w min-h-screen bg-transparent mt-20 dark:text-gray-100 py-10 px-4">
             <div className="full w p-6 bg-transparent dark:bg-gray-800 rounded-2xl ">
                 <h1 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
-                    <ShieldCheck className="h-6 w-6 text-blue-600" /> Password Strength Checker
+                    <ShieldCheck className="h-6 w-6 text-blue-600" /> Password Strength Checker – Test Password Security Online
                 </h1>
 
                 {/* Input Field */}

@@ -144,7 +144,7 @@ export default function ColorConverterPicker() {
         className="w-full max-w-4xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg rounded-3xl shadow-xl p-5 sm:p-8 border border-white/40 dark:border-gray-700"
       >
         <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">
-          🎨 Color Converter & Picker
+          Color Converter & Picker – Convert and Pick Colors Instantly
         </h1>
 
         {/* Picker + Preview */}

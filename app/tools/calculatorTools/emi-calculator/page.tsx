@@ -98,7 +98,7 @@ export default function EMICalculator() {
         className="bg-white shadow-xl border border-gray-200 rounded-3xl p-10 w-full max-w-4xl"
       >
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-blue-600">EMI Calculator</h1>
+          <h1 className="text-4xl font-bold text-blue-600">Calculator – Calculate Loan EMI and Interest Easily</h1>
           <p className="text-sm text-gray-600 mt-2">
             Select interest type and calculate EMI instantly
           </p>

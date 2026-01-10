@@ -118,7 +118,7 @@ const ImageWatermarkTool = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-xl rounded-xl">
-      <h1 className="text-3xl font-bold text-center mb-6">Image Watermark Tool</h1>
+      <h1 className="text-3xl font-bold text-center mb-6">Watermark Tool – Add Text or Image Watermark Online</h1>
 
       {/* Upload Image */}
       {!imageURL && (

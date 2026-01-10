@@ -83,7 +83,7 @@ export default function FileConverter() {
           <div className="flex justify-center items-center gap-2 mb-2">
             <File className="h-7 w-7 text-blue-600 dark:text-blue-400" />
             <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100">
-              File Converter
+              File Converter – Convert Files Online Easily
             </h1>
           </div>
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">

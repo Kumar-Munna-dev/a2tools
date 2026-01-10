@@ -82,7 +82,7 @@ export default function StopwatchTimer() {
                 className="w-full max-w-2xl backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-8 border border-white/30 dark:border-gray-700"
             >
                 <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">
-                    ⏱️ Stopwatch & Timer
+                    Stopwatch & Timer – Online Time Tracking Tool
                 </h1>
 
                 {/* Mode Switch */}

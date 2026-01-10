@@ -39,7 +39,7 @@ export default function TextCaseConverter() {
                 <div className=" order-1 min-h-screen flex flex-col items-center justify-start p-6 sm:order-2">
 
                     <div className="  w-full max-w-2xl bg-white shadow-lg rounded-2xl p-6">
-                        <h1 className="text-3xl font-bold text-center mb-6">Text Case Converter</h1>
+                        <h1 className="text-3xl font-bold text-center mb-6">Text Case Converter – Change Text Case Instantly</h1>
 
                         <textarea
                             value={text}

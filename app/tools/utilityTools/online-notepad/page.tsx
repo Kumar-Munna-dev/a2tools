@@ -179,7 +179,7 @@ export default function OnlineNotepadPage() {
       >
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            📝 Professional Offline Notepad
+            Online Notepad – Write, Edit & Save Notes Online
           </h1>
 
           <div className="flex items-center gap-2">

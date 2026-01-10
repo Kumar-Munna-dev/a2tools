@@ -40,7 +40,7 @@ export default function DiscountCalculator() {
       >
         {/* Heading */}
         <div className="text-center mb-7">
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Discount Calculator</h1>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Discount Calculator – Calculate Final Price After Discountr</h1>
           <p className="text-sm text-gray-500 mt-2">Find final price after applying any discount</p>
         </div>
 

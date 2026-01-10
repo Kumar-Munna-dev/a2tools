@@ -93,7 +93,7 @@ const HtmlToImage: React.FC = () => {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="bg-white shadow-xl rounded-lg p-6 sm:p-8 max-w-4xl w-full">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
-          HTML to Image Converter
+          HTML to Image – Convert HTML Code into Image Instantly
         </h1>
 
         {/* Form Section */}

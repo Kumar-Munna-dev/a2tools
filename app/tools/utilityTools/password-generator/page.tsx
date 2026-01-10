@@ -92,7 +92,7 @@ export default function PasswordGenerator() {
     >
       {/* Header */}
       <h1 className="text-3xl font-extrabold text-center mb-6 bg-linear-to-r from-indigo-600 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
-        🔐 Password Generator
+        Password Generator – Create Strong & Secure Passwords
       </h1>
 
       {/* Password Display */}

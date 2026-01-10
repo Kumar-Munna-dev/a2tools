@@ -158,7 +158,7 @@ Ravi,35,Mumbai`;
         className="w-full max-w-5xl backdrop-blur-lg bg-white/60 dark:bg-gray-800/60 rounded-3xl shadow-lg p-4 sm:p-8 border border-white/30 dark:border-gray-700"
       >
         <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">
-          🔁 JSON ↔ CSV Converter
+          JSON to CSV Converter – Convert JSON Data into CSV
         </h1>
 
         {/* Controls */}

@@ -76,7 +76,7 @@ export default function FileCompressor() {
           <div className="flex items-center justify-center mb-3">
             <Archive className="h-8 w-8 text-blue-600 dark:text-blue-400 mr-2" />
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-              File Compressor (ZIP)
+              File Compressor – Compress Files Online Without Quality Loss
             </h1>
           </div>
           <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">

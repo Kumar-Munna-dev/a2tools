@@ -103,7 +103,7 @@ const ImageCompressor = () => {
 
       <div className="flex flex-col m-5 order-1 w-screen bg-white rounded-lg shadow-md p-10 sm:order-2">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Professional Image Compressor
+          Image Compressor – Compress Images Without Losing Quality
         </h1>
 
         {/* File Input */}

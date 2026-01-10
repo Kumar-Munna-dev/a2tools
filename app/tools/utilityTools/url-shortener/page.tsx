@@ -68,7 +68,7 @@ export default function URLShortener() {
         className="max-w-lg mx-auto p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700"
       >
         <h1 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100 flex justify-center items-center gap-2">
-          🔗 URL Shortener Tool
+          URL Shortener – Shorten Long Links Instantly
         </h1>
 
         {/* Input Box */}

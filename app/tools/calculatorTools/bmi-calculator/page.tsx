@@ -66,7 +66,7 @@ export default function BMICalculator() {
       >
         {/* Title */}
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
-          BMI Calculator
+          BMI Calculator – Check Body Mass Index Online
         </h1>
         <p className="text-center text-gray-500 mb-6 text-sm">
           Calculate your Body Mass Index and get health tips

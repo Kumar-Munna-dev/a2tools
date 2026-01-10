@@ -46,7 +46,7 @@ export default function EMICalculator() {
       className="max-w-4xl mx-auto px-4 py-12 space-y-8"
     >
       <h1 className="text-2xl font-bold text-center text-gray-800">
-        EMI Calculator
+        EMI Calculator – Calculate Monthly Loan EMI Instantly
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">

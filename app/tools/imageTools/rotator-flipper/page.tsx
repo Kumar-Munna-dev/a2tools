@@ -176,7 +176,7 @@ export default function ImageResizerCropper() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-100 to-gray-200 p-6">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-6">
-        <h2 className="text-2xl font-semibold mb-4">Image Resizer & Cropper with Shapes & Drag/Resize</h2>
+        <h1 className="text-2xl font-semibold mb-4">Image Rotator & Flipper – Rotate and Flip Images Online</h1>
         <div onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave} className={`border-2 rounded-lg p-6 mb-6 flex items-center justify-center flex-col gap-3 ${isDragging ? 'border-blue-400 bg-blue-50' : 'border-dashed border-gray-300'}`}> 
           <p className="text-sm text-gray-600">Click to upload or drag & drop an image</p>
           <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFile(e.target.files?.[0] || null)} />

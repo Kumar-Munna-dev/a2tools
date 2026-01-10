@@ -6,8 +6,7 @@ import { Clipboard, Trash2 } from "lucide-react";
 import { useToast } from "../../../components/ui/useToast ";
 import Button from "../../../components/ui/Button";
 import RelatedTools from "@/app/components/RelatedTools";
-
-
+import { title } from "process";
 
 
 interface StatCardProps {

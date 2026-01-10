@@ -230,7 +230,7 @@ export default function TextEncryptDecrypt() {
         className="w-full max-w-3xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-md p-5 sm:p-8 rounded-3xl shadow-lg border border-white/30 dark:border-gray-700"
       >
         <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 dark:text-gray-100 mb-6">
-          🔐 Text Encryption / Decryption
+          Text Encrypt Decrypt – Securely Encrypt & Decrypt Text Online
         </h1>
 
         {/* Mode switch */}

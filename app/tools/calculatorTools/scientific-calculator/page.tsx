@@ -103,7 +103,7 @@ export default function ScientificCalculator() {
               {/* Header */}
               <div className="flex justify-between items-start">
                 <div>
-                  <h1 className="text-2xl font-semibold">Scientific Calculator</h1>
+                  <h1 className="text-2xl font-semibold">Scientific Calculator – Advanced Online Math Calculator</h1>
                   <p className="text-sm text-gray-500">
                     Next.js + Tailwind — Keyboard Friendly
                   </p>

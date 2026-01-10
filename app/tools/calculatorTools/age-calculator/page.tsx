@@ -105,7 +105,7 @@ Next birthday: ${result.nextBirthday} (in ${result.daysToNext} days)
         className="w-full max-w-xl bg-white rounded-3xl shadow-xl p-6 sm:p-8 border border-gray-100"
       >
         <div className="text-center mb-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Age Calculator</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Age Calculator – Calculate Your Exact Age</h1>
           <p className="text-sm text-gray-500 mt-1">
             Find your exact age in years, months, and days
           </p>

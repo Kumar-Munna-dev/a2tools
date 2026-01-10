@@ -52,7 +52,7 @@ const handleCopy = async () => {
       >
         {/* Page Title */}
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mb-6">
-          🔳 QR Code Generator
+          QR Code Generator – Create QR Codes Instantly
         </h1>
 
         {/* Input Field */}

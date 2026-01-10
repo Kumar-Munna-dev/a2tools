@@ -60,7 +60,7 @@ export default function EpochTimestampConverter() {
         className="max-w-3xl w-full backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-3xl shadow-xl p-6 sm:p-8 border border-white/30 dark:border-gray-700"
       >
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
-          🕓 Epoch / Timestamp Converter
+          Epoch Converter – Convert Unix Timestamp to Date & Time
         </h1>
 
         {/* Live Timestamp */}
