@@ -1,28 +1,48 @@
- 
+import type { Metadata } from 'next';
+import React from 'react';
 
-import { textTools } from "@/app/data/toolsData";
-import ToolCard from "@/app/components/ToolCard";
+import TextTools from './TextTools';
 
-export default function TextTools() {
-  return (
-    <div className="min-h-screen bg-linear-to-brrom-indigo-100 via-blue-50 to-cyan-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500">
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* 🏷️ Header */}
-        <h1 className="text-4xl font-extrabold text-center mb-6 bg-linear-to-r from-indigo-600 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
-          ✍️ Text Tools
-        </h1>
 
-        <p className="text-lg text-gray-700 dark:text-gray-300 text-center max-w-2xl mx-auto leading-relaxed mb-12">
-          Enhance your text productivity with our <span className="font-semibold text-blue-600">free online tools</span> — from word counting and case conversion to grammar checking and speech utilities.
-        </p>
+export const metadata: Metadata = {
+  title: {
+    default: 'Text Tools – Free Online Text Utilities',
+    template: '%s | Text Tools | A2Tool',
+  },
+  description:
+    'Free online text tools including Word Counter, Text to Speech, Speech to Text, Text Cleaner, Text Formatter, and Case Converter.',
+  keywords: [
+    'text tools',
+    'online text tools',
+    'word counter',
+    'text to speech',
+    'speech to text',
+    'text cleaner',
+    'text formatter',
+    'case converter',
+  ],
+  alternates: {
+    canonical: 'https://a2tool.com/tools/textTools/',
+  },
+  openGraph: {
+    title: 'Text Tools – Free Online Text Utilities',
+    description:
+      'All-in-one text tools to count words, convert text, clean text, and generate speech online.',
+    url: 'https://a2tool.com/tools/textTools/',
+    siteName: 'A2Tool',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Text Tools Collection',
+      },
+    ],
+    type: 'website',
+  },
+};
 
-        {/* 🧩 Tools Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {textTools.map((tool) => (
-            <ToolCard key={tool.title} {...tool} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+
+export default function  Page() {
+  return  <TextTools />;
 }
