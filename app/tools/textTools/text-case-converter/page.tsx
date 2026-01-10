@@ -1,4 +1,4 @@
-"use client";
+ 
 import InfoDropdown from "@/app/components/InfoDropdown";
 import RelatedTools from "@/app/components/RelatedTools";
 import { useState } from "react";

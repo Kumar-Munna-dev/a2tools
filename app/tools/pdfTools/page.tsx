@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import Head from "next/head";
 import { pdfTools } from "@/app/data/toolsData";

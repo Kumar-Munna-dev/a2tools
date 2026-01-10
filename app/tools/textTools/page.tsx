@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import { textTools } from "@/app/data/toolsData";
 import ToolCard from "@/app/components/ToolCard";

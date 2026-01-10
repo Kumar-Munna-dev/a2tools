@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import Head from "next/head";
 import { calculatorTools } from "@/app/data/toolsData";

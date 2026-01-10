@@ -1,5 +1,3 @@
-"use client";
-
 import RelatedTools from "@/app/components/RelatedTools";
 import { useEffect, useRef, useState } from "react";
 

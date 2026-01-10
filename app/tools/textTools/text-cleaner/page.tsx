@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import RelatedTools from "@/app/components/RelatedTools";
 import { useState } from "react";
