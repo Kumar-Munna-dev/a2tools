@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function PercentageCalculator() {
   const [value, setValue] = useState("");
@@ -37,27 +38,27 @@ export default function PercentageCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center p-4 sm:p-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-2xl bg-white shadow-2xl rounded-3xl p-8 border border-gray-100"
-      >
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
+    >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 tracking-tight">Percentage Calculator – Calculate Percentage Online</h1>
-          <p className="text-gray-500 mt-2 text-sm">Modern, fast & professional tool to calculate percentages easily</p>
+          <h1 className="text-3xl font-bold dark:text-slate-50 tracking-tight">Percentage Calculator – Calculate Percentage Online</h1>
+          <p className="dark:text-slate-400 mt-2 text-sm">Modern, fast & professional tool to calculate percentages easily</p>
         </div>
 
         {/* Inputs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="text-sm text-gray-600 font-medium">Value</label>
+            <label className="text-smfont-medium">Value</label>
             <input
               type="number"
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              className="w-full p-3 mt-1 rounded-xl border border-gray-300 bg-gray-50
-                focus:ring-2 focus:ring-indigo-400 focus:bg-white transition"
+              className="w-full p-3 mt-1 rounded-xl border border-gray-300 
+                focus:ring-2 focus:ring-indigo-400  transition"
               placeholder="Enter number"
             />
           </div>
@@ -68,8 +69,8 @@ export default function PercentageCalculator() {
               type="number"
               value={percent}
               onChange={(e) => setPercent(e.target.value)}
-              className="w-full p-3 mt-1 rounded-xl border border-gray-300 bg-gray-50
-                focus:ring-2 focus:ring-indigo-400 focus:bg-white transition"
+              className="w-full p-3 mt-1 rounded-xl border border-gray-300 
+                focus:ring-2 focus:ring-indigo-400  transition"
               placeholder="Enter percentage"
             />
           </div>
@@ -118,15 +119,21 @@ export default function PercentageCalculator() {
         )}
 
         {/* Tips */}
-        <div className="mt-8 text-sm text-gray-600">
-          <p className="font-semibold text-gray-700">Examples</p>
+        <div className="mt-8 text-sm ">
+          <p className="font-semibold ">Examples</p>
           <ul className="list-disc ml-5 mt-2 space-y-1">
             <li>20% of 150 → Enter <b>150</b> & <b>20</b></li>
             <li>Increase ₹500 by 10% → Enter <b>500</b> & <b>10</b></li>
             <li>Decrease 800 by 25% → Enter <b>800</b> & <b>25</b></li>
           </ul>
         </div>
-      </motion.div>
-    </div>
+
+      </div>
+      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Calculator" />
+      </div>
+    </motion.div>
+
   );
 }

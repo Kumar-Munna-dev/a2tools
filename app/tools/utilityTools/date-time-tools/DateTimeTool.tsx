@@ -1,9 +1,10 @@
- "use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Clock, CalendarDays, Globe2, RefreshCcw } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function DateTimeTool() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -50,27 +51,28 @@ export default function DateTimeTool() {
   };
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-blue-100 via-purple-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 sm:p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-3xl w-full backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-3xl shadow-xl p-6 sm:p-8 border border-white/30 dark:border-gray-700"
-      >
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+    >
+
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        <h1 className="text-3xl font-bold text-center mb-8">
           Date & Time Tools – Online Date and Time Calculators
         </h1>
 
         {/* Current Time Display */}
-        <div className="bg-white/60 dark:bg-gray-700 p-4 sm:p-5 rounded-xl mb-6 border border-gray-200 dark:border-gray-600 text-center">
+        <div className=" p-4 sm:p-5 rounded-xl mb-6 border border-slate-200  text-center">
           <div className="flex justify-center items-center gap-2 mb-2">
             <Clock className="text-blue-600 dark:text-blue-400 h-6 w-6" />
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100">
+            <h2 className="text-lg sm:text-xl font-semibold">
               Current Time
             </h2>
           </div>
 
-          <div className="text-3xl sm:text-4xl font-mono text-gray-800 dark:text-gray-100 mb-3">
+          <div className="text-3xl sm:text-4xl font-mono mb-3">
             {currentTime.toLocaleTimeString("en-US", {
               timeZone: timezone,
               hour12: true,
@@ -91,10 +93,10 @@ export default function DateTimeTool() {
         </div>
 
         {/* Date Difference Calculator */}
-        <div className="bg-white/60 dark:bg-gray-700 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-600 mb-6 text-center">
+        <div className=" p-4 sm:p-6 rounded-xl border border-slate-200  mb-6 text-center">
           <div className="flex justify-center items-center gap-2 mb-4">
-            <CalendarDays className="text-purple-600 dark:text-purple-400 h-6 w-6" />
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100">
+            <CalendarDays className="text-indigo-600  h-6 w-6" />
+            <h2 className="text-lg sm:text-xl font-semibold">
               Date Difference Calculator
             </h2>
           </div>
@@ -102,14 +104,14 @@ export default function DateTimeTool() {
           {/* Centered Date Inputs */}
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
             <div className="flex flex-col items-center">
-              <label className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+              <label className="text-sm mb-1">
                 Start Date
               </label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="p-2 sm:p-3 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-purple-400 outline-none"
+                className="p-2 sm:p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-400 outline-none"
               />
             </div>
 
@@ -118,14 +120,14 @@ export default function DateTimeTool() {
             </span>
 
             <div className="flex flex-col items-center">
-              <label className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+              <label className="text-sm mb-1">
                 End Date
               </label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="p-2 sm:p-3 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-purple-400 outline-none"
+                className="p-2 sm:p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-400 outline-none"
               />
             </div>
           </div>
@@ -134,7 +136,7 @@ export default function DateTimeTool() {
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             <button
               onClick={calculateDateDiff}
-              className="flex items-center gap-2 px-5 py-2 sm:px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition-all"
+              className="flex items-center gap-2 px-5 py-2 sm:px-6 bg-indigo-600 hover:bg-indigo-400 text-white rounded-full font-semibold transition-all"
             >
               <CalendarDays className="h-4 w-4" /> Calculate
             </button>
@@ -149,9 +151,9 @@ export default function DateTimeTool() {
 
           {/* Result */}
           {dateDiff && (
-            <div className="mt-5 text-center text-gray-800 dark:text-gray-100 font-medium text-base sm:text-lg">
-              🧮 Difference:{" "}
-              <span className="font-semibold text-purple-600 dark:text-purple-300">
+            <div className="mt-5 text-center font-medium text-base sm:text-lg">
+              Difference:{" "}
+              <span className="dark:text-slate-400 font-bold">
                 {dateDiff}
               </span>
             </div>
@@ -160,10 +162,10 @@ export default function DateTimeTool() {
 
 
         {/* Time Zone Info */}
-        <div className="bg-white/60 dark:bg-gray-700 p-4 sm:p-5 rounded-xl border border-gray-200 dark:border-gray-600 text-center mb-6">
+        <div className="p-4 sm:p-5 rounded-xl border border-slate-200 text-center mb-6">
           <div className="flex justify-center items-center gap-2 mb-2">
             <Globe2 className="text-green-600 dark:text-green-400 h-6 w-6" />
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100">
+            <h2 className="text-lg sm:text-xl font-semibold">
               World Clock Example
             </h2>
           </div>
@@ -171,10 +173,10 @@ export default function DateTimeTool() {
             {timezones.map((tz) => (
               <div
                 key={tz}
-                className="p-2 sm:p-3 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-sm"
+                className="p-2 sm:p-3 border rounded-lg shadow-sm"
               >
-                <strong className="block text-gray-900 dark:text-gray-100">{tz}</strong>
-                <span className="text-gray-700 dark:text-gray-300">
+                <strong className="block  dark:text-slate-400">{tz}</strong>
+                <span className=" text-red-600">
                   {new Date().toLocaleTimeString("en-US", {
                     timeZone: tz,
                     hour12: true,
@@ -216,7 +218,13 @@ export default function DateTimeTool() {
             content="Use it to check global meeting times, travel planning, project scheduling, or learning time zone differences. It’s fast, accurate, and designed for daily use."
           />
         </div>
-      </motion.div>
-    </main>
+
+      </div>
+      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Utility" />
+      </div>
+    </motion.div>
+
   );
 }

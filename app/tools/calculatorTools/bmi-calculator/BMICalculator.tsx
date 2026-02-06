@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import RelatedTools from "@/app/components/RelatedTools";
 
 /* -----------------------------
   FIX TYPE FOR RESULT
@@ -58,61 +59,60 @@ export default function BMICalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200 flex items-center justify-center p-6">
-      <motion.div
+  <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-8 border border-gray-100"
+        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
       >
-        {/* Title */}
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
+       <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2"> {/* Title */}
+        <h1 className="text-3xl font-bold text-center mb-2">
           BMI Calculator – Check Body Mass Index Online
         </h1>
-        <p className="text-center text-gray-500 mb-6 text-sm">
+        <p className="text-centerdark:text-slate-100  mb-6 text-sm">
           Calculate your Body Mass Index and get health tips
         </p>
 
         {/* Inputs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
-            <label className="text-sm text-gray-700 font-medium">Weight (kg)</label>
+            <label className="text-sm  font-medium">Weight (kg)</label>
             <input
               type="number"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               placeholder="e.g. 70"
-              className="mt-1 w-full p-3 border rounded-xl bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
+              className="mt-1 w-full p-3 border rounded-xl dark:bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
           </div>
 
           <div>
-            <label className="text-sm text-gray-700 font-medium">Height (cm)</label>
+            <label className="text-sm font-medium">Height (cm)</label>
             <input
               type="number"
               value={height}
               onChange={(e) => setHeight(e.target.value)}
               placeholder="e.g. 170"
-              className="mt-1 w-full p-3 border rounded-xl bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
+              className="mt-1 w-full p-3 border rounded-xl dark:bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
           </div>
 
           <div>
-            <label className="text-sm text-gray-700 font-medium">Age</label>
+            <label className="text-sm font-medium">Age</label>
             <input
               type="number"
               value={age}
               onChange={(e) => setAge(e.target.value)}
               placeholder="e.g. 25"
-              className="mt-1 w-full p-3 border rounded-xl bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
+              className="mt-1 w-full p-3 border rounded-xl dark:bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
           </div>
 
           <div>
-            <label className="text-sm text-gray-700 font-medium">Gender</label>
+            <label className="text-sm font-medium">Gender</label>
             <select
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              className="mt-1 w-full p-3 rounded-xl border bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
+              className="mt-1 w-full p-3 rounded-xl border focus:ring-2 focus:ring-indigo-400 outline-none"
             >
               <option value="male">Male</option>
               <option value="female">Female</option>
@@ -143,7 +143,7 @@ export default function BMICalculator() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-8 p-6 rounded-2xl border bg-gray-50 shadow-inner"
+            className="mt-8 p-6 rounded-2xl border shadow-inner"
           >
             {"error" in result ? (
               <p className="text-red-500 font-medium text-center">{result.error}</p>
@@ -164,13 +164,13 @@ export default function BMICalculator() {
                 </p>
 
                 <p className="font-semibold mt-2 text-lg">{result.status}</p>
-                <p className="mt-3 text-gray-600 text-sm">{result.tip}</p>
+                <p className="mt-3 text-sm">{result.tip}</p>
               </div>
             )}
 
             {/* BMI categories */}
-            <div className="mt-6 text-sm text-gray-600">
-              <p className="font-semibold text-gray-700">BMI Categories:</p>
+            <div className="mt-6 text-sm ">
+              <p className="font-semibold ">BMI Categories:</p>
               <ul className="list-disc ml-5 mt-1 space-y-1">
                 <li>Underweight: &lt; 18.5</li>
                 <li>Normal: 18.5 – 24.9</li>
@@ -180,7 +180,14 @@ export default function BMICalculator() {
             </div>
           </motion.div>
         )}
+        </div>
+
+              {/* Here Moblie card */}
+              <div className="order-2  sm:order-1">
+          <RelatedTools currentTool="Calculator" />
+              </div>
+            
       </motion.div>
-    </div>
+
   );
 }

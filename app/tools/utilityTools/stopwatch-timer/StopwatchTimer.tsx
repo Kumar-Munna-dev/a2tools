@@ -1,256 +1,251 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Play, Pause, RotateCcw, Timer } from "lucide-react";
-import InfoDropdown from "@/app/components/InfoDropdown";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, Pause, RotateCcw, Timer, Flag, Bell, BellOff, Hourglass, Settings2 } from "lucide-react";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function StopwatchTimer() {
     const [mode, setMode] = useState<"stopwatch" | "timer">("stopwatch");
+    const [isMuted, setIsMuted] = useState(false);
 
-    // Stopwatch
-    const [time, setTime] = useState(0);
-    const [running, setRunning] = useState(false);
+    // --- Stopwatch State ---
+    const [swTime, setSwTime] = useState(0);
+    const [swRunning, setSwRunning] = useState(false);
     const [laps, setLaps] = useState<number[]>([]);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const swIntervalRef = useRef<number | null>(null);
+    const swStartTimeRef = useRef<number>(0);
 
-    // Timer
-    const [timerDuration, setTimerDuration] = useState(60);
-    const [remaining, setRemaining] = useState(60);
-    const [timerRunning, setTimerRunning] = useState(false);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    // --- Timer State ---
+    const [tmTotal, setTmTotal] = useState(0);
+    const [tmRemaining, setTmRemaining] = useState(0);
+    const [tmRunning, setTmRunning] = useState(false);
 
-    // Stopwatch Logic
-    useEffect(() => {
-        if (running) {
-            intervalRef.current = setInterval(() => setTime((t) => t + 10), 10);
-        } else if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
+    // Timer Input States (String based for better typing UX)
+    const [hrs, setHrs] = useState("00");
+    const [mins, setMins] = useState("05");
+    const [secs, setSecs] = useState("00");
+
+    const tmIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    // --- Audio System ---
+    const playAlarm = useCallback(() => {
+        if (isMuted) return;
+        try {
+            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const osc = context.createOscillator();
+            const gain = context.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(880, context.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(440, context.currentTime + 1);
+            gain.gain.setValueAtTime(0.2, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 1);
+            osc.connect(gain);
+            gain.connect(context.destination);
+            osc.start();
+            osc.stop(context.currentTime + 1);
+        } catch (e) { console.error("Audio error", e); }
+    }, [isMuted]);
+
+    // --- Stopwatch Logic (High Precision) ---
+    const toggleStopwatch = () => {
+        if (!swRunning) {
+            swStartTimeRef.current = performance.now() - swTime;
+            const tick = () => {
+                setSwTime(performance.now() - swStartTimeRef.current);
+                swIntervalRef.current = requestAnimationFrame(tick);
+            };
+            swIntervalRef.current = requestAnimationFrame(tick);
+        } else {
+            if (swIntervalRef.current) cancelAnimationFrame(swIntervalRef.current);
         }
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-                intervalRef.current = null;
-            }
-        };
-    }, [running]);
-
-    // Timer Logic
-    useEffect(() => {
-        if (timerRunning && remaining > 0) {
-            timerRef.current = setInterval(() => setRemaining((r) => r - 1), 1000);
-        } else if (timerRef.current) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-        }
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-                timerRef.current = null;
-            }
-        };
-    }, [timerRunning, remaining]);
-
-    const formatTime = (ms: number) => {
-        const minutes = Math.floor(ms / 60000);
-        const seconds = Math.floor((ms % 60000) / 1000);
-        const milliseconds = Math.floor((ms % 1000) / 10);
-        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
-            2,
-            "0"
-        )}.${String(milliseconds).padStart(2, "0")}`;
+        setSwRunning(!swRunning);
     };
 
-    const handleLap = () => setLaps((prev) => [time, ...prev]);
-    const handleResetStopwatch = () => {
-        setTime(0);
+    const resetStopwatch = () => {
+        if (swIntervalRef.current) cancelAnimationFrame(swIntervalRef.current);
+        setSwTime(0);
         setLaps([]);
-        setRunning(false);
+        setSwRunning(false);
     };
-    const handleResetTimer = () => {
-        setRemaining(timerDuration);
-        setTimerRunning(false);
+
+    // --- Timer Logic ---
+    const handleInputChange = (val: string, setter: (v: string) => void, max: number) => {
+        const clean = val.replace(/\D/g, "").slice(-2);
+        const num = parseInt(clean) || 0;
+        if (num <= max) setter(clean.padStart(2, "0"));
+    };
+
+    const startTimer = () => {
+        if (!tmRunning) {
+            // If timer is at 0, initialize it from inputs
+            if (tmRemaining <= 0) {
+                const total = parseInt(hrs) * 3600 + parseInt(mins) * 60 + parseInt(secs);
+                if (total <= 0) return;
+                setTmTotal(total);
+                setTmRemaining(total);
+
+                // Set interval logic
+                tmIntervalRef.current = setInterval(() => {
+                    setTmRemaining((prev) => {
+                        if (prev <= 1) {
+                            clearInterval(tmIntervalRef.current!);
+                            setTmRunning(false);
+                            playAlarm();
+                            return 0;
+                        }
+                        return prev - 1;
+                    });
+                }, 1000);
+            } else {
+                // Resume from pause
+                tmIntervalRef.current = setInterval(() => {
+                    setTmRemaining((prev) => {
+                        if (prev <= 1) {
+                            clearInterval(tmIntervalRef.current!);
+                            setTmRunning(false);
+                            playAlarm();
+                            return 0;
+                        }
+                        return prev - 1;
+                    });
+                }, 1000);
+            }
+        } else {
+            if (tmIntervalRef.current) clearInterval(tmIntervalRef.current);
+        }
+        setTmRunning(!tmRunning);
+    };
+
+    const resetTimer = () => {
+        if (tmIntervalRef.current) clearInterval(tmIntervalRef.current);
+        setTmRunning(false);
+        setTmRemaining(0);
+    };
+
+    // --- Formatters ---
+    const formatSW = (ms: number) => {
+        const m = Math.floor(ms / 60000);
+        const s = Math.floor((ms % 60000) / 1000);
+        const msPart = Math.floor((ms % 1000) / 10);
+        return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}.${String(msPart).padStart(2, "0")}`;
+    };
+
+    const formatTM = (seconds: number) => {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
     };
 
     return (
-        <main className="min-h-screen bg-linear-to-br from-blue-100 via-purple-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-3 sm:p-6">
-            <motion.div
-                initial={{ opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="w-full max-w-2xl backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-8 border border-white/30 dark:border-gray-700"
-            >
-                <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">
-                    Stopwatch & Timer – Online Time Tracking Tool
-                </h1>
-
-                {/* Mode Switch */}
-                <div className="flex justify-center gap-3 mb-8 flex-wrap mt-10">
-                    <button
-                        onClick={() => setMode("stopwatch")}
-                        className={`px-4 py-2 sm:px-6 rounded-full font-semibold text-sm sm:text-base ${mode === "stopwatch"
-                                ? "bg-blue-600 text-white"
-                                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                            }`}
-                    >
-                        Stopwatch
-                    </button>
-                    <button
-                        onClick={() => setMode("timer")}
-                        className={`px-4 py-2 sm:px-6 rounded-full font-semibold text-sm sm:text-base ${mode === "timer"
-                                ? "bg-blue-600 text-white"
-                                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                            }`}
-                    >
-                        Timer
-                    </button>
+        <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+        >
+            <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+                {/* Mode Selector */}
+                <div className="flex justify-center mb-12">
+                    <div className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl flex gap-1">
+                        {[
+                            { id: "stopwatch", label: "Stopwatch", icon: Timer },
+                            { id: "timer", label: "Timer", icon: Hourglass }
+                        ].map((btn) => (
+                            <button
+                                key={btn.id}
+                                onClick={() => setMode(btn.id as any)}
+                                className={`flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-bold transition-all ${mode === btn.id ? "bg-white dark:bg-slate-700 shadow-md text-blue-600" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
+                            >
+                                <btn.icon size={18} /> {btn.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
-                {/* Stopwatch Section */}
-                {mode === "stopwatch" && (
-                    <motion.div
-                        key="stopwatch"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-center mt-10"
-                    >
-                        <div className="text-4xl sm:text-5xl font-mono text-gray-900 dark:text-gray-100 mb-6">
-                            {formatTime(time)}
-                        </div>
-
-                        <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-                            <button
-                                onClick={() => setRunning((r) => !r)}
-                                className={`flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-2 rounded-full text-white font-semibold text-sm sm:text-base transition-all ${running
-                                        ? "bg-yellow-500 hover:bg-yellow-600"
-                                        : "bg-green-600 hover:bg-green-700"
-                                    }`}
-                            >
-                                {running ? <Pause /> : <Play />} {running ? "Pause" : "Start"}
-                            </button>
-
-                            <button
-                                onClick={handleResetStopwatch}
-                                className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-2 bg-red-500 hover:bg-red-600 text-white rounded-full font-semibold text-sm sm:text-base"
-                            >
-                                <RotateCcw /> Reset
-                            </button>
-
-                            <button
-                                onClick={handleLap}
-                                disabled={!running}
-                                className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-semibold text-sm sm:text-base disabled:opacity-50"
-                            >
-                                <Timer /> Lap
-                            </button>
-                        </div>
-
-                        {laps.length > 0 && (
-                            <div className="mt-6 bg-white/50 dark:bg-gray-700 p-3 sm:p-4 rounded-lg overflow-y-auto max-h-48 sm:max-h-64 text-left">
-                                <h3 className="font-semibold mb-2 text-gray-700 dark:text-gray-300">
-                                    🏁 Laps
-                                </h3>
-                                <ul className="space-y-1 text-gray-800 dark:text-gray-200 text-sm sm:text-base">
-                                    {laps.map((lap, i) => (
-                                        <li key={i}>
-                                            Lap {laps.length - i}: {formatTime(lap)}
-                                        </li>
-                                    ))}
-                                </ul>
+                <AnimatePresence mode="wait">
+                    {mode === "stopwatch" ? (
+                        <motion.div key="sw" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center">
+                            <div className="text-[5rem] md:text-[8rem] font-mono font-bold tracking-tighter tabular-nums  leading-none mb-12">
+                                {formatSW(swTime)}
                             </div>
-                        )}
-                    </motion.div>
-                )}
 
-                {/* Timer Section */}
-                {mode === "timer" && (
-                    <motion.div
-                        key="timer"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-center"
-                    >
-                        <div className="text-4xl sm:text-5xl font-mono text-gray-900 dark:text-gray-100 mb-6">
-                            {new Date(remaining * 1000).toISOString().substr(14, 5)}
-                        </div>
+                            <div className="flex justify-center gap-6 mb-12">
+                                <button onClick={toggleStopwatch} className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${swRunning ? "bg-amber-100 text-amber-600 hover:bg-amber-200" : "bg-emerald-500 text-white  hover:bg-emerald-600"}`}>
+                                    {swRunning ? <Pause size={40} /> : <Play size={40} fill="currentColor" className="ml-1" />}
+                                </button>
+                                <button onClick={() => setLaps([swTime, ...laps])} disabled={!swRunning} className="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 text-rose-500 flex items-center justify-center hover:bg-rose-50">
+                                    <Flag size={32} />
+                                </button>
+                                <button onClick={resetStopwatch} className="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 text-rose-500 flex items-center justify-center hover:bg-rose-50">
+                                    <RotateCcw size={32} />
+                                </button>
+                            </div>
 
-                        <div className="flex justify-center items-center gap-2 sm:gap-4 mb-4 flex-wrap">
-                            <input
-                                type="number"
-                                value={timerDuration}
-                                onChange={(e) => {
-                                    const val = Math.max(1, Number(e.target.value));
-                                    setTimerDuration(val);
-                                    setRemaining(val);
-                                }}
-                                className="w-24 sm:w-28 p-2 sm:p-3 rounded-lg border border-gray-400 dark:border-gray-600 text-center bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-sm sm:text-base"
-                            />
-                            <span className="text-gray-700 dark:text-gray-300 text-sm sm:text-base">
-                                seconds
-                            </span>
-                        </div>
+                            {laps.length > 0 && (
+                                <div className="max-w-md mx-auto rounded-3xl p-6 border border-slate-100 dark:border-slate-800 max-h-60 overflow-y-auto">
+                                    {laps.map((l, i) => (
+                                        <div key={i} className="flex justify-between py-3 border-b border-slate-200 dark:border-slate-700 last:border-0 font-mono">
+                                            <span className=" font-bold">LAP {laps.length - i}</span>
+                                            <span className=" font-bold">{formatSW(l)}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </motion.div>
+                    ) : (
+                        <motion.div key="tm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center">
+                            {/* Circle Visualizer */}
+                            <div className="relative w-72 h-72 md:w-96 md:h-96 flex items-center justify-center mb-12">
+                                <svg className="absolute w-full h-full -rotate-90">
+                                    <circle cx="50%" cy="50%" r="46%" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-slate-100 dark:text-slate-800" />
+                                    {tmTotal > 0 && (
+                                        <motion.circle
+                                            cx="50%" cy="50%" r="46%" stroke="currentColor" strokeWidth="8" fill="transparent"
+                                            strokeDasharray="100 100"
+                                            animate={{ strokeDashoffset: 100 - (tmRemaining / tmTotal) * 100 }}
+                                            className="text-blue-500 transition-all duration-1000 ease-linear"
+                                            strokeLinecap="round"
+                                        />
+                                    )}
+                                </svg>
 
-                        <div className="flex justify-center gap-3 sm:gap-4 flex-wrap">
-                            <button
-                                onClick={() => setTimerRunning((r) => !r)}
-                                className={`flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-2 rounded-full text-white font-semibold text-sm sm:text-base transition-all ${timerRunning
-                                        ? "bg-yellow-500 hover:bg-yellow-600"
-                                        : "bg-green-600 hover:bg-green-700"
-                                    }`}
-                            >
-                                {timerRunning ? <Pause /> : <Play />}{" "}
-                                {timerRunning ? "Pause" : "Start"}
-                            </button>
+                                <div className="z-10 text-center">
+                                    {tmRunning || tmRemaining > 0 ? (
+                                        <div className="text-7xl md:text-8xl font-mono font-bold tabular-nums ">
+                                            {formatTM(tmRemaining)}
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-2  dark:bg-slate-800 px-8 py-6 rounded-[2rem] border-2 border-blue-100 dark:border-slate-700">
+                                            <input type="text" value={hrs} onChange={e => handleInputChange(e.target.value, setHrs, 99)} className="w-16 bg-transparent text-5xl font-mono text-center outline-none border-b-2 border-transparent focus:border-blue-500" />
+                                            <span className="text-3xl  font-bold">:</span>
+                                            <input type="text" value={mins} onChange={e => handleInputChange(e.target.value, setMins, 59)} className="w-16 bg-transparent text-5xl font-mono text-center outline-none border-b-2 border-transparent focus:border-blue-500" />
+                                            <span className="text-3xl  font-bold">:</span>
+                                            <input type="text" value={secs} onChange={e => handleInputChange(e.target.value, setSecs, 59)} className="w-16 bg-transparent text-5xl font-mono text-center outline-none border-b-2 border-transparent focus:border-blue-500" />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
 
-                            <button
-                                onClick={handleResetTimer}
-                                className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-2 bg-red-500 hover:bg-red-600 text-white rounded-full font-semibold text-sm sm:text-base"
-                            >
-                                <RotateCcw /> Reset
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
+                            <div className="flex gap-6">
+                                <button onClick={startTimer} className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${tmRunning ? "bg-amber-100 text-amber-600" : "bg-blue-600 text-white "}`}>
+                                    {tmRunning ? <Pause size={40} /> : <Play size={40} fill="currentColor" className="ml-1" />}
+                                </button>
+                                <button onClick={resetTimer} className="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center">
+                                    <RotateCcw size={32} />
+                                </button>
+                                <button onClick={() => setIsMuted(!isMuted)} className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${isMuted ? "text-rose-500 bg-rose-50" : "text-slate-400 bg-slate-100"}`}>
+                                    {isMuted ? <BellOff size={32} /> : <Bell size={32} />}
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+            {/* Here Moblie card */}
+            <div className="order-2  sm:order-1">
+                <RelatedTools currentTool="Utility" />
+            </div>
+        </motion.div>
 
-                <div className="mt-40 space-y-4 sm:space-y-6">
-                    <InfoDropdown
-                        title="⏱️ What Is an Online Stopwatch Tool?"
-                        content="An online stopwatch is a digital tool that helps you measure time intervals precisely. Whether you're timing a workout, tracking a presentation, or studying with focus sessions, this stopwatch works instantly in your browser with zero installation required."
-                    />
-
-                    <InfoDropdown
-                        title="⏳ How Does the Countdown Timer Work?"
-                        content="The countdown timer lets you set a custom duration — for example, 30 seconds or 15 minutes — and counts down to zero with perfect accuracy. It’s ideal for workouts, cooking, study intervals, or any task where you need precise timing."
-                    />
-
-                    <InfoDropdown
-                        title="🎯 Why Use an Online Stopwatch and Timer?"
-                        content="Using an online stopwatch or timer helps improve productivity, track progress, and manage time efficiently. Our tool provides a simple, ad-free, distraction-free interface that’s easy to use on mobile or desktop."
-                    />
-
-                    <InfoDropdown
-                        title="📱 Mobile-Friendly and Offline Stopwatch"
-                        content="This stopwatch and timer tool works smoothly on any mobile device or tablet. It automatically adjusts for smaller screens and can be used offline without any downloads or login — your data never leaves your device."
-                    />
-
-                    <InfoDropdown
-                        title="🏋️ Perfect for Workouts, Sports, and Study"
-                        content="Whether you’re an athlete, student, or professional, you can use this stopwatch to time exercises, record laps, or track study sessions. It’s lightweight, fast, and provides accurate timing for all activities."
-                    />
-
-                    <InfoDropdown
-                        title="🔔 Alerts and Lap Tracking"
-                        content="Our stopwatch allows lap tracking to measure individual intervals during running or training. The countdown timer can include sound alerts and notifications to signal when time is up — perfect for multitasking."
-                    />
-
-                    <InfoDropdown
-                        title="⚡ Privacy and Performance"
-                        content="This stopwatch timer runs entirely on your device using browser technology, meaning no data collection, no logins, and no internet needed after load. It’s fast, reliable, and secure — built for privacy-first performance."
-                    />
-                </div>
-
-            </motion.div>
-        </main>
     );
 }

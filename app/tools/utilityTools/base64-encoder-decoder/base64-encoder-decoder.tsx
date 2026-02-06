@@ -1,194 +1,245 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Copy, RefreshCcw, ArrowUpDown, Lock, Unlock } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Copy,
+  Check,
+  Trash2,
+  ArrowRightLeft,
+  Download,
+  Upload,
+  ShieldCheck,
+  FileCode,
+  AlertCircle
+} from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
-export default function Base64EncoderDecoder() {
-  const [text, setText] = useState("");
-  const [result, setResult] = useState("");
+export default function Base64Converter() {
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
   const [mode, setMode] = useState<"encode" | "decode">("encode");
+  const [isUrlSafe, setIsUrlSafe] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // 🧠 Encode or Decode
-  const handleConvert = () => {
+  // --- High-Performance Conversion Logic ---
+  const processBase64 = useCallback((text: string, currentMode: "encode" | "decode", urlSafe: boolean) => {
+    if (!text) {
+      setOutput("");
+      setError(null);
+      return;
+    }
+
     try {
-      if (mode === "encode") {
-        const encoded = btoa(unescape(encodeURIComponent(text)));
-        setResult(encoded);
+      if (currentMode === "encode") {
+        // Encode UTF-8 to Base64
+        const bytes = new TextEncoder().encode(text);
+        const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
+        let b64 = btoa(binString);
+
+        if (urlSafe) {
+          b64 = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+        }
+        setOutput(b64);
+        setError(null);
       } else {
-        const decoded = decodeURIComponent(escape(atob(text)));
-        setResult(decoded);
+        // Decode Base64 to UTF-8
+        let normalized = text.trim();
+        if (urlSafe) {
+          normalized = normalized.replace(/-/g, "+").replace(/_/g, "/");
+          while (normalized.length % 4) normalized += "=";
+        }
+
+        const binString = atob(normalized);
+        const bytes = Uint8Array.from(binString, (m) => m.charCodeAt(0));
+        setOutput(new TextDecoder().decode(bytes));
+        setError(null);
       }
-    } catch (error) {
-      alert("❌ Invalid Base64 input or encoding error!");
+    } catch (err) {
+      setError(currentMode === "decode" ? "Invalid Base64 string detected" : "Conversion failed");
+      setOutput("");
     }
-  };
-const handleCopy = async () => {
-  if (!result) return;
+  }, []);
 
-  try {
-    // ✅ Use modern Clipboard API if available and secure
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(result);
-      alert("✅ Copied to clipboard!");
-    } else {
-      // ✅ Fallback for mobile browsers (Safari / older Android)
-      const textArea = document.createElement("textarea");
-      textArea.value = result;
-      textArea.style.position = "fixed";
-      textArea.style.left = "-9999px";
-      textArea.style.top = "-9999px";
-      textArea.setAttribute("readonly", "");
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
+  // Effect for live conversion
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      processBase64(input, mode, isUrlSafe);
+    }, 100); // Debounce
+    return () => clearTimeout(timer);
+  }, [input, mode, isUrlSafe, processBase64]);
 
-      const successful = document.execCommand("copy");
-      document.body.removeChild(textArea);
-
-      if (successful) {
-        alert("✅ Copied to clipboard!");
-      } else {
-        alert("❌ Copy failed. Please copy manually.");
-      }
-    }
-  } catch (err) {
-    console.error("Copy failed:", err);
-    alert("❌ Copy not supported on this device.");
-  }
-};
-
-
-  // 🔁 Reset
-  const handleReset = () => {
-    setText("");
-    setResult("");
+  const handleCopy = () => {
+    navigator.clipboard.writeText(output);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
   };
 
-  // 🔄 Swap Encode/Decode Mode
   const handleSwap = () => {
-    setMode((prev) => (prev === "encode" ? "decode" : "encode"));
-    setResult("");
+    setMode(mode === "encode" ? "decode" : "encode");
+    setInput(output);
+    setOutput(input);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      // Remove the Data URI prefix (e.g., "data:image/png;base64,")
+      const base64 = result.split(",")[1];
+      setMode("decode");
+      setInput(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const downloadOutput = () => {
+    const element = document.createElement("a");
+    const file = new Blob([output], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = `base64-${mode === "encode" ? "encoded" : "decoded"}.txt`;
+    document.body.appendChild(element);
+    element.click();
   };
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-green-100 via-blue-100 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 sm:p-6 pt-15">
-      <motion.div
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-3xl w-full backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-3xl shadow-xl p-6 sm:p-8 border border-white/30 dark:border-gray-700"
-      >
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
-          Base64 Encoder Decoder – Encode & Decode Base64 Online
-        </h1>
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+    >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        {/* Main Workspace */}
+        <div className="lg:col-span-2 space-y-6">
 
-        {/* Mode Toggle */}
-        <div className="flex justify-center mb-6">
-          <button
-            onClick={handleSwap}
-            className="flex items-center gap-2 px-5 py-2 rounded-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-blue-500 text-white font-semibold shadow-md transition-all"
-          >
-            <ArrowUpDown className="h-4 w-4" /> Switch to{" "}
-            {mode === "encode" ? "Decode" : "Encode"}
-          </button>
-        </div>
+          {/* Mode Header */}
+          <div className="rounded-3xl p-4 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl">
+              <button
+                onClick={() => setMode("encode")}
+                className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${mode === "encode" ? "shadow-md text-blue-600" : "text-slate-500"}`}
+              >
+                Encode
+              </button>
+              <button
+                onClick={() => setMode("decode")}
+                className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${mode === "decode" ? " shadow-md text-blue-600" : "text-slate-500"}`}
+              >
+                Decode
+              </button>
+            </div>
 
-        {/* Input Area */}
-        <div className="bg-white/70 dark:bg-gray-700 p-4 sm:p-5 rounded-xl border border-gray-200 dark:border-gray-600 mb-6">
-          <div className="flex justify-center items-center gap-2 mb-3">
-            {mode === "encode" ? (
-              <Lock className="text-blue-600 dark:text-blue-400 h-5 w-5" />
-            ) : (
-              <Unlock className="text-purple-600 dark:text-purple-400 h-5 w-5" />
-            )}
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {mode === "encode" ? "Text to Encode" : "Base64 to Decode"}
-            </h2>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <div className={`w-10 h-5 rounded-full relative transition-colors ${isUrlSafe ? 'bg-blue-500' : 'bg-slate-300 dark:bg-slate-700'}`}>
+                  <input type="checkbox" className="hidden" checked={isUrlSafe} onChange={() => setIsUrlSafe(!isUrlSafe)} />
+                  <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${isUrlSafe ? 'left-6' : 'left-1'}`} />
+                </div>
+                <span className="text-xs font-bold text-slate-500 uppercase">URL Safe</span>
+              </label>
+
+              <button onClick={handleSwap} className="p-2 border hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-400" title="Swap Input/Output">
+                <ArrowRightLeft size={20} />
+              </button>
+            </div>
           </div>
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={4}
-            className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono focus:ring-2 focus:ring-blue-400 outline-none resize-none"
-            placeholder={
-              mode === "encode"
-                ? "Enter plain text here..."
-                : "Enter Base64 encoded text here..."
-            }
-          />
-        </div>
 
-        {/* Buttons */}
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6">
-          <button
-            onClick={handleConvert}
-            className="px-5 py-2 sm:px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold"
-          >
-            {mode === "encode" ? "Encode" : "Decode"}
-          </button>
-          <button
-            onClick={handleCopy}
-            className="flex items-center gap-2 px-5 py-2 sm:px-6 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold"
-          >
-            <Copy className="h-4 w-4" /> Copy
-          </button>
-          <button
-            onClick={handleReset}
-            className="flex items-center gap-2 px-5 py-2 sm:px-6 bg-red-500 hover:bg-red-600 text-white rounded-full font-semibold"
-          >
-            <RefreshCcw className="h-4 w-4" /> Reset
-          </button>
-        </div>
-
-        {/* Result Box */}
-        {result && (
-          <div className="bg-white/70 dark:bg-gray-700 p-4 sm:p-5 rounded-xl border border-gray-200 dark:border-gray-600 mb-6">
-            <h2 className="text-lg sm:text-xl font-semibold text-center mb-2 text-gray-900 dark:text-gray-100">
-              Result
-            </h2>
-            <textarea
-              readOnly
-              value={result}
-              rows={4}
-              className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono resize-none"
-            />
+          {/* Input Area */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-end px-2">
+              <label className="text-sm font-black uppercase tracking-widest">
+                {mode === "encode" ? "Plain Text / String" : "Base64 String"}
+              </label>
+              <span className="text-xs font-mono">{input.length} characters</span>
+            </div>
+            <div className="relative group">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                className="w-full h-48 md:h-64  border-2 border-slate-200 rounded-3xl p-6 text-lg font-mono outline-none focus:border-blue-500 transition-all resize-none shadow-sm"
+                placeholder={`Enter ${mode === "encode" ? "text" : "base64"} to convert...`}
+              />
+              <div className="absolute bottom-4 right-4 flex gap-2">
+                <label className="p-2 rounded-xl cursor-pointer transition-colors">
+                  <Upload size={18} />
+                  <input type="file" className="hidden" onChange={handleFileUpload} />
+                </label>
+                <button onClick={() => setInput("")} className="p-2 hover:bg-rose-100 hover:text-rose-600 rounded-xl transition-colors">
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            </div>
           </div>
-        )}
 
-        {/* Info Section for SEO */}
-        <div className="space-y-4 sm:space-y-6">
-          <InfoDropdown
-            title="🔐 What Is Base64 Encoding?"
-            content="Base64 encoding is a method that converts binary or text data into ASCII string format using 64 printable characters. It's commonly used to encode images, files, or data before transmission or storage."
-          />
-          <InfoDropdown
-            title="📤 How Does Base64 Encoding Work?"
-            content="Base64 divides binary data into 6-bit chunks and represents each chunk as a character from a specific 64-character set (A–Z, a–z, 0–9, +, /). It helps ensure safe data transfer across systems that only handle text."
-          />
-          <InfoDropdown
-            title="📥 What Is Base64 Decoding?"
-            content="Base64 decoding reverses the encoding process — converting a Base64 string back to its original binary or text format. This tool lets you decode instantly and read the original data."
-          />
-          <InfoDropdown
-            title="🧠 Common Uses of Base64"
-            content="Base64 is widely used in web development for embedding small images in HTML/CSS, encoding API credentials, and storing binary files or JSON data safely in databases."
-          />
-          <InfoDropdown
-            title="⚙️ Online Base64 Converter Features"
-            content="This Base64 encoder/decoder works offline, supports instant conversion, and provides copy, reset, and swap options — all with a clean and responsive interface."
-          />
-          <InfoDropdown
-            title="📱 Mobile-Friendly & Secure"
-            content="All conversions happen locally on your device. The tool works perfectly on phones, tablets, and desktops without sending any data to a server."
-          />
-          <InfoDropdown
-            title="🔒 Privacy & Safety"
-            content="Since Base64 encoding is not encryption, it doesn’t secure sensitive information — it just formats it safely. For sensitive data, always use proper encryption methods."
-          />
+          {/* Output Area */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-end px-2">
+              <label className="text-sm font-black uppercase tracking-widest">Result</label>
+              <div className="flex gap-4">
+                <button onClick={handleCopy} className="flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-400 transition-colors uppercase">
+                  {copySuccess ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy</>}
+                </button>
+                <button onClick={downloadOutput} className="flex items-center gap-1.5 text-xs font-bold transition-colors uppercase">
+                  <Download size={14} /> Download
+                </button>
+              </div>
+            </div>
+            <div className={`w-full min-h-[12rem] border-2 border-dashed rounded-3xl p-6 font-mono text-lg break-all transition-colors ${error ? 'border-rose-300 bg-rose-50 dark:bg-rose-900/10' : 'border-slate-200'}`}>
+              {error ? (
+                <div className="flex flex-col items-center justify-center h-full gap-2 py-8">
+                  <AlertCircle size={32} />
+                  <p className="font-bold">{error}</p>
+                </div>
+              ) : output ? (
+                output
+              ) : (
+                <span className="italic">Result will appear here...</span>
+              )}
+            </div>
+          </div>
+          {/* Sidebar */}
+        <aside className="space-y-6">
+          <div className="rounded-3xl p-6 border border-slate-200 shadow-sm">
+            <h3 className="font-black text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
+              <ShieldCheck size={18} /> Why use this tool?
+            </h3>
+            <ul className="space-y-4">
+              {[
+                { icon: FileCode, title: "UTF-8 Support", desc: "Encodes emojis and special characters correctly." },
+                { icon: ShieldCheck, title: "100% Client-Side", desc: "Data never leaves your browser. Safe for sensitive keys." },
+                { icon: Upload, title: "File Support", desc: "Quickly convert small files to Base64 data URIs." }
+              ].map((item, i) => (
+                <li key={i} className="flex gap-3">
+                  <div className="mt-1 text-blue-500"><item.icon size={18} /></div>
+                  <div>
+                    <p className="text-sm font-bold">{item.title}</p>
+                    <p className="text-xs dark:text-slate-500">{item.desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+          {/* SEO / Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-8">
+            <InfoDropdown title="What is Base64 Encoding?" content="Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format. It is commonly used when there is a need to encode binary data that needs be stored and transferred over media that are designed to deal with textual data." />
+            <InfoDropdown title="When to use URL-Safe Base64?" content="Standard Base64 contains '+' and '/' characters, which have special meanings in URLs. URL-Safe Base64 replaces these with '-' and '_' respectively, making the result safe for use in web addresses and file names." />
+          </div>
         </div>
-      </motion.div>
-    </main>
+
+        
+      </div>
+            {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Utility" />
+      </div>
+    </motion.div>
+
   );
 }

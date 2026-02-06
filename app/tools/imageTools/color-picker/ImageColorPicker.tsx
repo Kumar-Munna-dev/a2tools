@@ -1,212 +1,237 @@
 "use client";
-import React, { useState, useRef } from "react";
 
-const ImageColorPicker: React.FC = () => {
-  const [imageURL, setImageURL] = useState<string | null>(null);
-  const [pickedColor, setPickedColor] = useState<string>("#ffffff");
-  const [rgb, setRgb] = useState<string>("rgb(255, 255, 255)");
-  const [hsl, setHsl] = useState<string>("hsl(0, 0%, 100%)");
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Upload, Copy, Pipette, Check, RotateCcw, Palette, X, Crosshair, ImageIcon } from 'lucide-react';
+import ImageDropzone from '@/app/components/ImageDropzone';
 
-  const [error, setError] = useState<string | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+// Color conversion utilities
+const rgbToHex = (r: number, g: number, b: number) => 
+  "#" + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+
+const rgbToHsl = (r: number, g: number, b: number) => {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s, l = (max + min) / 2;
+  if (max === min) h = s = 0;
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+  return `${Math.round(h * 360)}°, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%`;
+};
+
+const rgbToCmyk = (r: number, g: number, b: number) => {
+  let c = 1 - (r / 255), m = 1 - (g / 255), y = 1 - (b / 255), k = Math.min(c, m, y);
+  if (k === 1) return '0%, 0%, 0%, 100%';
+  c = Math.round(((c - k) / (1 - k)) * 100);
+  m = Math.round(((m - k) / (1 - k)) * 100);
+  y = Math.round(((y - k) / (1 - k)) * 100);
+  k = Math.round(k * 100);
+  return `${c}%, ${m}%, ${y}%, ${k}%`;
+};
+
+export default function AdvancedColorPicker() {
+  const [image, setImage] = useState<string | null>(null);
+  const [color, setColor] = useState({ r: 79, g: 70, b: 229 }); // Default Indigo
+  const [pos, setPos] = useState({ x: 0, y: 0, displayX: 0, displayY: 0 });
+  const [isPicking, setIsPicking] = useState(false);
+  const [history, setHistory] = useState<string[]>([]);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
   const imgRef = useRef<HTMLImageElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const hex = rgbToHex(color.r, color.g, color.b);
 
-    if (!file.type.startsWith("image/")) {
-      setError("Please upload a valid image file.");
-      return;
+  const handleUpload = (file:File) => {
+    const files = file;
+    if (files) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setImage(ev.target?.result as string);
+      reader.readAsDataURL(files);
     }
-
-    const url = URL.createObjectURL(file);
-    setImageURL(url);
-    setError(null);
   };
 
-  const handleColorPick = (event: React.MouseEvent) => {
-    const canvas = canvasRef.current;
+  const updateColor = useCallback((clientX: number, clientY: number) => {
+    if (!imgRef.current || !canvasRef.current) return;
     const img = imgRef.current;
-    if (!canvas || !img) return;
+    const canvas = canvasRef.current;
+    const rect = img.getBoundingClientRect();
 
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    // Calculate internal coordinates
+    const x = Math.max(0, Math.min(((clientX - rect.left) / rect.width) * img.naturalWidth, img.naturalWidth - 1));
+    const y = Math.max(0, Math.min(((clientY - rect.top) / rect.height) * img.naturalHeight, img.naturalHeight - 1));
 
-    canvas.width = img.width;
-    canvas.height = img.height;
-
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
+    
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    ctx.drawImage(img, 0, 0);
 
-    ctx.drawImage(img, 0, 0, img.width, img.height);
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    setColor({ r: pixel[0], g: pixel[1], b: pixel[2] });
+    setPos({ x, y, displayX: clientX - rect.left, displayY: clientY - rect.top });
+  }, []);
 
-    const pixel = ctx.getImageData(
-      (x / rect.width) * img.width,
-      (y / rect.height) * img.height,
-      1,
-      1
-    ).data;
-
-    const [r, g, b] = pixel;
-
-    const hex = rgbToHex(r, g, b);
-    const hslValue = rgbToHsl(r, g, b);
-
-    setPickedColor(hex);
-    setRgb(`rgb(${r}, ${g}, ${b})`);
-    setHsl(`hsl(${hslValue})`);
+  const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isPicking) return;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    updateColor(clientX, clientY);
   };
 
-  const rgbToHex = (r: number, g: number, b: number) =>
-    "#" +
-    [r, g, b]
-      .map((x) => x.toString(16).padStart(2, "0"))
-      .join("")
-      .toUpperCase();
-
-  const rgbToHsl = (r: number, g: number, b: number) => {
-    (r /= 255), (g /= 255), (b /= 255);
-    const max = Math.max(r, g, b),
-      min = Math.min(r, g, b);
-    let h = 0,
-      s = 0,
-      l = (max + min) / 2;
-
-    if (max !== min) {
-      let d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
-      else if (max === g) h = (b - r) / d + 2;
-      else if (max === b) h = (r - g) / d + 4;
-      h /= 6;
-    }
-
-    return `${Math.round(h * 360)}, ${Math.round(
-      s * 100
-    )}%, ${Math.round(l * 100)}%`;
+  const saveToHistory = () => {
+    if (!history.includes(hex)) setHistory(prev => [hex, ...prev].slice(0, 12));
   };
 
-  const copyToClipboard = (value: string) => {
-    navigator.clipboard.writeText(value);
-  };
-
-  const triggerNewImage = () => {
-    setImageURL(null);
-    setPickedColor("#ffffff");
-    if (fileInputRef.current) fileInputRef.current.value = "";
+  const copy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg border">
-      <h1 className="text-3xl font-bold text-center mb-6 text-gray-900">
-        Color Picker – Pick and Convert Colors Instantly
-      </h1>
+    <div className="mt-20 min-h-screen dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-indigo-500/30">
 
-      {/* Upload Box — Hide After Image Chosen */}
-      {!imageURL && (
-        <div className="mb-5">
-          <label className="block text-sm font-medium mb-2 text-gray-700">
-            Choose an Image
-          </label>
+      <main className="max-w-7xl mx-auto px-4 py-8 md:py-12">
+        {!image ? (
+  <ImageDropzone onFileSelect={handleUpload} />
+) : (
+        
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-10 items-start">
+          
+          {/* Workspace Area */}
+          <div className="xl:col-span-8 space-y-6">
+            {!image ? (
+              <div className="h-[60vh] flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-[3rem] dark:bg-slate-900/30">
+                <ImageIcon size={64} className="text-slate-700 mb-6" />
+                <h2 className="text-2xl font-bold text-slate-400">No Image Loaded</h2>
+              </div>
+            ) : (
+              <div 
+                className="relative dark:bg-slate-900 rounded-2xl border dark:border-slate-400 overflow-hidden shadow-2xl touch-none"
+                onMouseDown={(e) => { setIsPicking(true); updateColor(e.clientX, e.clientY); }}
+                onMouseMove={handleMove}
+                onMouseUp={() => { setIsPicking(false); saveToHistory(); }}
+                onTouchStart={(e) => { setIsPicking(true); updateColor(e.touches[0].clientX, e.touches[0].clientY); }}
+                onTouchMove={handleMove}
+                onTouchEnd={() => { setIsPicking(false); saveToHistory(); }}
+              >
+                <img 
+                  ref={imgRef} 
+                  src={image} 
+                  alt="Editor" 
+                  className="w-full h-100 select-none pointer-events-none object-contain" 
+                />
+                <canvas ref={canvasRef} className="hidden" />
 
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleImageUpload}
-            className="w-full p-2 text-sm border rounded-md file:bg-blue-100 file:px-4 file:py-2 file:rounded-md"
-          />
-        </div>
-      )}
-
-      {/* New Image Button (only when image is selected) */}
-      {imageURL && (
-        <button
-          onClick={triggerNewImage}
-          className="mb-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm"
-        >
-          Choose New Image
-        </button>
-      )}
-
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-
-      {/* Image Preview */}
-      {imageURL && (
-        <div className="mt-2 flex flex-col items-center">
-          <p className="text-gray-600 mb-2 text-sm">
-            Click anywhere on the image to pick a color
-          </p>
-
-          <div className="relative w-full max-w-lg border rounded-lg p-2 bg-gray-50">
-            <img
-              ref={imgRef}
-              src={imageURL}
-              onClick={handleColorPick}
-              alt="Image"
-              className="w-full rounded-lg object-contain cursor-crosshair"
-            />
+                {/* Loupe (Magnifier) - Offsets above finger on mobile */}
+                {isPicking && (
+                  <div 
+                    className="absolute pointer-events-none transition-transform duration-75"
+                    style={{ 
+                      left: pos.displayX, 
+                      top: pos.displayY, 
+                      transform: 'translate(-50%, -140%)' // Keeps loupe above your finger
+                    }}
+                  >
+                    <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-slate-800">
+                      {/* Zoomed Content */}
+                      <div 
+                        className="absolute inset-0"
+                        style={{
+                          backgroundImage: `url(${image})`,
+                          backgroundRepeat: 'no-repeat',
+                          backgroundSize: `${imgRef.current?.width! * 6}px`, // 6x Zoom
+                          backgroundPosition: `${-pos.displayX * 6 + (window.innerWidth < 768 ? 48 : 64)}px ${-pos.displayY * 6 + (window.innerWidth < 768 ? 48 : 64)}px`,
+                          imageRendering: 'pixelated'
+                        }}
+                      />
+                      {/* Crosshair */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-full h-px bg-white/30" />
+                        <div className="h-full w-px bg-white/30" />
+                        <div className="w-2 h-2 border-2 border-white rounded-full shadow-black shadow-sm" />
+                      </div>
+                    </div>
+                    {/* Color Preview Badge */}
+                    <div className="mt-2 bg-white text-black px-2 py-1 rounded text-[10px] font-black text-center shadow-lg">
+                      {hex}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          <canvas ref={canvasRef} className="hidden"></canvas>
-        </div>
-      )}
+          {/* Color Details Panel */}
+          <div className="xl:col-span-4 space-y-6">
+            <div className="dark:bg-slate-900 border dark:border-slate-800 p-8 rounded-[2.5rem] shadow-2xl">
+              <div 
+                className="w-full h-32 rounded-3xl mb-8 shadow-inner border dark:border-slate-400 flex items-end justify-end p-4 transition-colors"
+                style={{ backgroundColor: hex }}
+              >
+                <div className="dark:bg-slate-100 backdrop-blur-md p-2 rounded-lg"><Crosshair size={20}/></div>
+              </div>
 
-      {/* Color Output */}
-      <div className="mt-8 bg-gray-50 p-4 rounded-lg border">
-        <h2 className="text-xl font-semibold mb-3 text-gray-800">
-          Picked Color
-        </h2>
+              <div className="grid gap-4">
+                {[
+                  { label: 'HEX', value: hex },
+                  { label: 'RGB', value: `${color.r}, ${color.g}, ${color.b}` },
+                  { label: 'HSL', value: rgbToHsl(color.r, color.g, color.b) },
+                  { label: 'CMYK', value: rgbToCmyk(color.r, color.g, color.b) }
+                ].map((field) => (
+                  <div key={field.label} className="group relative dark:bg-slate-800/50 border border-slate-400 rounded-2xl p-4 hover:border-indigo-500/50 transition-all">
+                    <span className="block text-[10px] font-black dark:text-slate-400 uppercase tracking-widest mb-1">{field.label}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-mono font-bold tracking-tight">{field.value}</span>
+                      <button 
+                        onClick={() => copy(field.value, field.label)}
+                        className={`p-2 rounded-lg transition-all ${copiedField === field.label ? 'text-emerald-400' : 'text-slate-500 hover:bg-slate-700'}`}
+                      >
+                        {copiedField === field.label ? <Check size={18}/> : <Copy size={18}/>}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-        <div
-          className="w-full h-20 rounded-lg border mb-4"
-          style={{ backgroundColor: pickedColor }}
-        ></div>
-
-        {/* Output With Copy Buttons */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <p className="text-gray-700">
-              <strong>HEX:</strong> {pickedColor}
-            </p>
-            <button
-              onClick={() => copyToClipboard(pickedColor)}
-              className="px-3 py-1 bg-blue-500 text-white text-xs rounded-md hover:bg-blue-600"
-            >
-              Copy
-            </button>
+            {/* Palette History */}
+            <div className="dark:bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem]">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-bold flex items-center gap-2 uppercase tracking-tighter text-slate-400">
+                  <Palette size={18}/> Palette History
+                </h3>
+                <button onClick={() => setHistory([])} className="text-slate-600 hover:text-red-400"><RotateCcw size={16}/></button>
+              </div>
+              <div className="grid grid-cols-6 gap-3">
+                {history.map((h, i) => (
+                  <button 
+                    key={i} 
+                    onClick={() => {
+                      const r = parseInt(h.slice(1,3), 16);
+                      const g = parseInt(h.slice(3,5), 16);
+                      const b = parseInt(h.slice(5,7), 16);
+                      setColor({r,g,b});
+                    }}
+                    className="aspect-square rounded-lg border border-white/5 hover:scale-110 transition-transform shadow-lg"
+                    style={{ backgroundColor: h }}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="flex justify-between items-center">
-            <p className="text-gray-700">
-              <strong>RGB:</strong> {rgb}
-            </p>
-            <button
-              onClick={() => copyToClipboard(rgb)}
-              className="px-3 py-1 bg-blue-500 text-white text-xs rounded-md hover:bg-blue-600"
-            >
-              Copy
-            </button>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <p className="text-gray-700">
-              <strong>HSL:</strong> {hsl}
-            </p>
-            <button
-              onClick={() => copyToClipboard(hsl)}
-              className="px-3 py-1 bg-blue-500 text-white text-xs rounded-md hover:bg-blue-600"
-            >
-              Copy
-            </button>
-          </div>
-        </div>
-      </div>
+        </div>)}
+      </main>
     </div>
   );
-};
-
-export default ImageColorPicker;
+}

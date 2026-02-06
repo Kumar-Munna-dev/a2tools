@@ -15,9 +15,9 @@ interface StatCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ label, value }) => (
-  <div className="bg-white shadow-md hover:shadow-xl transition-shadow p-5 sm:p-6 rounded-xl text-center flex flex-col justify-center items-center">
-    <p className="text-sm sm:text-base text-gray-500 font-medium">{label}</p>
-    <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-2">{value}</p>
+  <div className="dark:bg-slate-950 shadow-md hover:shadow-xl transition-shadow p-5 sm:p-6 rounded-xl text-center flex flex-col justify-center items-center">
+    <p className="text-sm sm:text-base dark:text-slate-100 font-medium">{label}</p>
+    <p className="text-2xl sm:text-3xl font-extrabold dark:text-slate-100 mt-2">{value}</p>
   </div>
 );
 
@@ -72,11 +72,11 @@ const WordCounter: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mt-20 flex flex-col w-screen items-center space-y-6 gap-10 p-4 sm:p-6 sm:flex-row sm:items-start"
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
     >
       <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
-      <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-800 ">Word Counter</h1>
-      <p className="text-center text-gray-500 text-sm sm:text-base">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center  dark:text-slate-100 ">Word Counter</h1>
+      <p className="text-center text-sm sm:text-base dark:text-slate-400  ">
         Paste or type your text below to analyze word count, characters, sentences, paragraphs, and reading time.
       </p>
 
@@ -100,7 +100,7 @@ const WordCounter: React.FC = () => {
       <div className="flex flex-row gap-3 sm:gap-4">
         <Button
           onClick={handleCopy}
-          className="flex flex-row w-full h-min items-center justify-center gap-2"
+          className="flex flex-row w-full h-min rounded-2xl dark:bg-indigo-500 text-white hover:bg-indigo-400 items-center justify-center gap-2"
           aria-label="Copy text"
         >
           <Clipboard />
@@ -109,7 +109,7 @@ const WordCounter: React.FC = () => {
 
         <Button
           onClick={handleClear}
-          className="flex flex-row w-full h-min bg-red-600 hover:bg-red-700 items-center justify-center gap-2"
+          className="flex flex-row w-full h-min rounded-2xl dark:bg-amber-600 text-white hover:bg-indigo-400 items-center justify-center gap-2"
           aria-label="Clear text"
         >
           <Trash2 />
@@ -120,7 +120,7 @@ const WordCounter: React.FC = () => {
       </div>
       {/* Here Moblie card */}
       <div className="order-2  sm:order-1">
-        <RelatedTools currentTool="/tools/textTools/word-counter" />
+  <RelatedTools currentTool="Text" />
       </div>
     </motion.div>
   );

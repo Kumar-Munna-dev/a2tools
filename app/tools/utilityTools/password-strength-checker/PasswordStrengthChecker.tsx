@@ -1,9 +1,10 @@
- 
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, ShieldCheck } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function PasswordStrengthChecker() {
     const [password, setPassword] = useState("");
@@ -62,8 +63,8 @@ export default function PasswordStrengthChecker() {
     };
 
     return (
-        <main className="full w min-h-screen bg-transparent mt-20 dark:text-gray-100 py-10 px-4">
-            <div className="full w p-6 bg-transparent dark:bg-gray-800 rounded-2xl ">
+        <main className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50">
+            <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
                 <h1 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
                     <ShieldCheck className="h-6 w-6 text-blue-600" /> Password Strength Checker – Test Password Security Online
                 </h1>
@@ -75,16 +76,16 @@ export default function PasswordStrengthChecker() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter your password..."
-                        className="w-full h-14 px-4 pr-12 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        className="w-full h-14 px-4 pr-12 rounded-lg border border-gray-300 dark:text-slate-100 text-lg focus:ring-2 focus:ring-blue-500 outline-none"
                     />
                     <button
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute inset-y-0 right-3 flex items-center"
                     >
                         {showPassword ? (
-                            <EyeOff className="h-5 w-5 text-gray-500" />
+                            <EyeOff className="h-5 w-5 " />
                         ) : (
-                            <Eye className="h-5 w-5 text-gray-500" />
+                            <Eye className="h-5 w-5 " />
                         )}
                     </button>
                 </div>
@@ -95,7 +96,7 @@ export default function PasswordStrengthChecker() {
                         <span>Password Strength</span>
                         <span className="font-semibold">{strength.label}</span>
                     </div>
-                    <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-indigo-300 rounded-full overflow-hidden">
                         <div
                             className={`h-full ${strength.color} transition-all duration-500`}
                             style={{ width: `${(strength.score / 6) * 100}%` }}
@@ -104,25 +105,25 @@ export default function PasswordStrengthChecker() {
                 </div>
 
                 {/* Tips Section */}
-                <div className="mt-20 border-t border-green-300">
+                <div className="mt-20 border-t dark:border-slate-400">
                     <h2 className="font-semibold text-lg mb-2">🔑 Strength Tips</h2>
                     {password.length === 0 ? (
-                        <p className="text-gray-500">Start typing to check your password strength.</p>
+                        <p className="">Start typing to check your password strength.</p>
                     ) : getTips().length > 0 ? (
-                        <ul className="list-disc list-inside text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                        <ul className="list-disc list-inside text-sm space-y-1">
                             {getTips().map((tip, i) => (
                                 <li key={i}>{tip}</li>
                             ))}
                         </ul>
                     ) : (
-                        <p className="text-green-600 dark:text-green-400 font-medium">
+                        <p className="dark:text-slate-400 font-medium">
                             Great! Your password is strong and secure.
                         </p>
                     )}
                 </div>
 
                 {/* SEO About Section */}
-                <div className="mt-30 border-t border-gray-300 dark:border-gray-700 pt-4 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                <div className="mt-30 border-t border-gray-300 dark:border-gray-700 pt-4 text-sm leading-relaxed ">
                     <h2 className="text-lg font-bold mb-2">🧠 About Password Strength Checker Tool</h2>
                     <p>
                         Our <strong>Password Strength Checker</strong> helps you evaluate
@@ -137,7 +138,7 @@ export default function PasswordStrengthChecker() {
                     </p>
                 </div>
 
-                <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                <div className="mt-4 text-sm ">
                     <h3 className="font-semibold mb-1">🔍 SEO Keywords:</h3>
                     <p>
                         password strength checker, online password analyzer, strong password tool,
@@ -174,6 +175,10 @@ export default function PasswordStrengthChecker() {
                     />
                 </div>
 
+            </div>
+            {/* Here Moblie card */}
+            <div className="order-2  sm:order-1">
+                <RelatedTools currentTool="Utility" />
             </div>
         </main>
     );

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { QRCodeCanvas } from "qrcode.react";
 import { Copy, Download } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function QRCodeGenerator() {
   const [text, setText] = useState("https://A2tool.com");
@@ -45,13 +46,13 @@ const handleCopy = async () => {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4">
+    <main className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50">
       <div
         
-        className=" full w mx-auto p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700"
+        className=" flex flex-col gap-5 p-5 w-screen order-2 sm:order-2"
       >
         {/* Page Title */}
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mb-6">
+        <h1 className="text-2xl font-bold text-center mb-6">
           QR Code Generator – Create QR Codes Instantly
         </h1>
 
@@ -60,7 +61,7 @@ const handleCopy = async () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={3}
-          className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
+          className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none"
           placeholder="Enter text or URL to generate QR code..."
         />
 
@@ -81,7 +82,7 @@ const handleCopy = async () => {
         <div className="mt-5 flex justify-center gap-3">
           <button
             onClick={handleCopy}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
           >
             <Copy className="h-4 w-4" /> Copy Text
           </button>
@@ -94,7 +95,7 @@ const handleCopy = async () => {
         </div>
 
         {/* SEO Intro Text */}
-        <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-4 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+        <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-4 text-sm  leading-relaxed">
           <h2 className="font-semibold mb-2">📖 About QR Code Generator Tool</h2>
           <p>
             This <strong>QR Code Generator</strong> lets you instantly create
@@ -140,6 +141,11 @@ const handleCopy = async () => {
           />
         </div>
       </div>
+
+            {/* Here Moblie card */}
+            <div className="order-2  sm:order-1">
+              <RelatedTools currentTool="Utility" />
+            </div>
     </main>
   );
 }

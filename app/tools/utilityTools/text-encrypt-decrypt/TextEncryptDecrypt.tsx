@@ -12,6 +12,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 /* ---------------------- Safe Clipboard ---------------------- */
 async function copyToClipboard(text: string) {
@@ -222,14 +223,14 @@ export default function TextEncryptDecrypt() {
   };
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-sky-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex justify-center p-3 sm:p-8">
-      <motion.div
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-3xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-md p-5 sm:p-8 rounded-3xl shadow-lg border border-white/30 dark:border-gray-700"
-      >
-        <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 dark:text-gray-100 mb-6">
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+    >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
           Text Encrypt Decrypt – Securely Encrypt & Decrypt Text Online
         </h1>
 
@@ -250,7 +251,7 @@ export default function TextEncryptDecrypt() {
 
         {/* Password Field */}
         <div className="mb-4 relative">
-          <label className="block text-sm font-semibold mb-2 text-gray-800 dark:text-gray-200">
+          <label className="block text-sm font-semibold mb-2">
             Password
           </label>
           <div className="relative">
@@ -259,12 +260,12 @@ export default function TextEncryptDecrypt() {
               placeholder="Enter your secure password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 sm:p-3 pr-10 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-400 outline-none"
+              className="w-full p-2 sm:p-3 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2"
               title={showPassword ? "Hide Password" : "Show Password"}
             >
               {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -274,7 +275,7 @@ export default function TextEncryptDecrypt() {
 
         {/* Input Textarea */}
         <div className="mb-5">
-          <label className="block text-sm font-semibold mb-2 text-gray-800 dark:text-gray-200">
+          <label className="block text-sm font-semibold mb-2">
             {mode === "encrypt" ? "Plaintext" : "Ciphertext (Base64)"}
           </label>
           <textarea
@@ -286,7 +287,7 @@ export default function TextEncryptDecrypt() {
                 ? "Enter your message to encrypt..."
                 : "Paste your encrypted Base64 text..."
             }
-            className="w-full p-3 sm:p-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm font-mono resize-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full p-3 sm:p-4 rounded-lg border border-gray-300 text-sm font-mono resize-none focus:ring-2 focus:ring-indigo-400"
           />
         </div>
 
@@ -339,12 +340,12 @@ export default function TextEncryptDecrypt() {
 
         {/* Output */}
         <div className="mb-5">
-          <label className="block text-sm font-semibold mb-2 text-gray-800 dark:text-gray-200">
+          <label className="block text-sm font-semibold mb-2">
             Result
           </label>
-          <div className="min-h-[100px] max-h-[300px] overflow-auto p-3 sm:p-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono text-sm">
+          <div className="min-h-[100px] max-h-[300px] overflow-auto p-3 sm:p-4 rounded-lg border border-gray-300 font-mono text-sm">
             {output || (
-              <span className="text-gray-500 dark:text-gray-400">
+              <span className="">
                 Result will appear here.
               </span>
             )}
@@ -353,7 +354,7 @@ export default function TextEncryptDecrypt() {
 
         {/* Status */}
         {message && (
-          <div className="text-center text-sm text-gray-800 dark:text-gray-200 mb-6 whitespace-pre-line">
+          <div className="text-center text-sm mb-6 whitespace-pre-line">
             {message}
           </div>
         )}
@@ -377,7 +378,12 @@ export default function TextEncryptDecrypt() {
             content="You can load text from local files and save encrypted results as .enc or decrypted text as .txt."
           />
         </div>
-      </motion.div>
-    </main>
+      </div>
+      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Utility" />
+      </div>
+    </motion.div>
+
   );
 }

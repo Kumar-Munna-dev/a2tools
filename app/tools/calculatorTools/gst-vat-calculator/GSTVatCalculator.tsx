@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function GSTVatCalculator() {
   const [amount, setAmount] = useState("");
@@ -46,37 +47,37 @@ export default function GSTVatCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center p-4 sm:p-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-2xl bg-white shadow-2xl rounded-3xl p-8 border border-gray-100"
-      >
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
+    >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 tracking-tight">GST & VAT Calculator – Calculate Tax and Final Price</h1>
-          <p className="text-gray-500 mt-2 text-sm">Calculate Goods & Services Tax quickly and accurately</p>
+          <h1 className="text-3xl font-bold dark:text-slate-50 tracking-tight">GST & VAT Calculator – Calculate Tax and Final Price</h1>
+          <p className="dark:text-slate-400 mt-2 text-sm">Calculate Goods & Services Tax quickly and accurately</p>
         </div>
 
         {/* Inputs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="text-sm text-gray-600 font-medium">Amount</label>
+            <label className="text-sm dark:text-slate-600 font-medium">Amount</label>
             <input
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full p-3 mt-1 rounded-xl border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-indigo-400 focus:bg-white transition"
+              className="w-full p-3 mt-1 rounded-xl border border-gray-300  focus:ring-2 focus:ring-indigo-400 transition"
               placeholder="Enter amount"
             />
           </div>
 
           <div>
-            <label className="text-sm text-gray-600 font-medium">GST / VAT Rate (%)</label>
+            <label className="text-sm font-medium">GST / VAT Rate (%)</label>
             <input
               type="number"
               value={rate}
               onChange={(e) => setRate(e.target.value)}
-              className="w-full p-3 mt-1 rounded-xl border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-indigo-400 focus:bg-white transition"
+              className="w-full p-3 mt-1 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-400  transition"
               placeholder="Enter rate"
             />
           </div>
@@ -130,15 +131,21 @@ export default function GSTVatCalculator() {
         )}
 
         {/* Tips */}
-        <div className="mt-8 text-sm text-gray-600">
-          <p className="font-semibold text-gray-700">Examples</p>
+        <div className="mt-8 text-sm ">
+          <p className="font-semibold ">Examples</p>
           <ul className="list-disc ml-5 mt-2 space-y-2">
             <li>Add 18% GST to ₹1000 → Enter <b>1000</b> & <b>18</b></li>
             <li>Price includes 18% GST (₹1180) → Enter <b>1180</b> & <b>18</b> then click <b>Remove GST</b></li>
             <li>Useful for VAT too — just enter your VAT rate</li>
           </ul>
         </div>
-      </motion.div>
-    </div>
+      </div>
+
+      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Calculator" />
+      </div>
+    </motion.div>
+
   );
 }

@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/tools/imageTools/image-compressor/ImageCompressor.jsx"  ],
+, "app/tools/imageTools/image-compressor/ImageCompressor.tsx"  ],
   "exclude": ["node_modules"]
 }

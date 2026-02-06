@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link2, Copy, RefreshCw, ExternalLink } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function URLShortener() {
   const [url, setUrl] = useState("");
@@ -60,14 +61,15 @@ export default function URLShortener() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4">
+
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-lg mx-auto p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700"
+        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
       >
-        <h1 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100 flex justify-center items-center gap-2">
+        <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        <h1 className="text-2xl font-bold text-center mb-6 flex justify-center items-center gap-2">
           URL Shortener – Shorten Long Links Instantly
         </h1>
 
@@ -78,7 +80,7 @@ export default function URLShortener() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="Enter your long URL here..."
-            className="w-full p-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full p-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
           />
           <Link2 className="absolute right-3 top-3 h-5 w-5 text-gray-500" />
         </div>
@@ -100,7 +102,7 @@ export default function URLShortener() {
 
           <button
             onClick={resetForm}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition"
           >
             Reset
           </button>
@@ -112,9 +114,9 @@ export default function URLShortener() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="mt-6 p-4 rounded-lg bg-gray-100 dark:bg-gray-700"
+            className="mt-6 p-4 rounded-lg border"
           >
-            <p className="text-gray-700 dark:text-gray-200 text-sm mb-2 font-semibold">
+            <p className=" text-sm mb-2 font-semibold">
               Shortened URL:
             </p>
             <div className="flex items-center gap-2">
@@ -129,7 +131,7 @@ export default function URLShortener() {
               </a>
               <button
                 onClick={handleCopy}
-                className="p-2 rounded-md bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 transition"
+                className="p-2 rounded-md  hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 transition"
               >
                 {copied ? "✅ Copied!" : <Copy className="h-4 w-4" />}
               </button>
@@ -138,7 +140,7 @@ export default function URLShortener() {
         )}
 
         {/* SEO Description */}
-        <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-4 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+        <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-4 text-sm leading-relaxed">
           <h2 className="font-semibold mb-2">📖 About URL Shortener Tool</h2>
           <p>
             The <strong>URL Shortener Tool</strong> allows you to instantly
@@ -183,7 +185,14 @@ export default function URLShortener() {
             content="While shortened URLs don’t directly boost SEO, they improve click-through rates by making links more appealing. Custom branded short links also enhance brand trust and readability."
           />
         </div>
+
+        </div>
+
+      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Utility" />
+      </div>
       </motion.div>
-    </main>
+
   );
 }

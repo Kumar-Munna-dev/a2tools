@@ -12,6 +12,7 @@ import {
     Mic
 } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function JSONFormatterValidator() {
     const [input, setInput] = useState<string>("");
@@ -127,14 +128,14 @@ export default function JSONFormatterValidator() {
     };
 
     return (
-        <main className="min-h-screen bg-linear-to-br from-green-100 via-blue-100 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-start justify-center p-4 sm:p-6">
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45 }}
-                className="w-full max-w-4xl backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-3xl shadow-xl p-5 sm:p-8 border border-white/30 dark:border-gray-700"
-            >
-                <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+        >
+            <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
                     JSON Formatter – Format, Validate & Beautify JSON Online
                 </h1>
 
@@ -143,7 +144,7 @@ export default function JSONFormatterValidator() {
                     <div className="flex gap-2 flex-1">
                         <button
                             onClick={() => handleFormat(2)}
-                            className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+                            className="flex-1 px-3 py-2 bg-indigo-600 hover:bg-indigo-400 text-white rounded-lg font-medium"
                             title="Prettify (2 spaces)"
                         >
                             <Mic className="inline mr-2 h-4 w-4" /> Prettify
@@ -151,7 +152,7 @@ export default function JSONFormatterValidator() {
 
                         <button
                             onClick={handleMinify}
-                            className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium"
+                            className="px-3 py-2 bg-indigo-600 hover:bg-indigo-400 text-white rounded-lg font-medium"
                             title="Minify"
                         >
                             Minify
@@ -213,7 +214,7 @@ export default function JSONFormatterValidator() {
                 <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
                     {/* Left - Input JSON */}
                     <div className="w-full">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-sm font-medium  mb-2">
                             Input JSON
                         </label>
 
@@ -225,7 +226,7 @@ export default function JSONFormatterValidator() {
                             }}
                             placeholder='Paste JSON here, e.g. {"name":"Munna","age":25}'
                             rows={15}
-                            className="w-full min-h-80 sm:min-h-[380px] p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-sm sm:text-sm font-mono text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-y"
+                            className="w-full min-h-80 sm:min-h-[380px] p-3 rounded-lg border border-slate-200 text-sm sm:text-sm font-mono  focus:outline-none focus:ring-2 focus:ring-blue-400 resize-y"
                         />
 
                         {/* Small Buttons */}
@@ -251,7 +252,7 @@ export default function JSONFormatterValidator() {
                                 </button>
                             </div>
 
-                            <span className="ml-auto text-xs text-gray-500 dark:text-gray-400">
+                            <span className="ml-auto text-xs">
                                 {input.length} chars
                             </span>
                         </div>
@@ -259,14 +260,14 @@ export default function JSONFormatterValidator() {
 
                     {/* Right - Output JSON */}
                     <div className="w-full">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-sm font-medium mb-2">
                             Output / Result
                         </label>
 
                         <div
                             className={`w-full min-h-80 sm:min-h-[380px] max-h-[500px] overflow-auto p-3 rounded-lg border ${error
                                 ? "border-red-400 bg-red-50 dark:bg-red-900/30"
-                                : "border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800"
+                                : "border-gray-300 dark:border-gray-600 dark:bg-gray-800"
                                 } text-sm sm:text-sm font-mono text-gray-900 dark:text-gray-100`}
                         >
                             {error ? (
@@ -346,7 +347,13 @@ export default function JSONFormatterValidator() {
                         content="Because everything runs client-side, your JSON stays private and never leaves your device. Use secure methods when handling sensitive data."
                     />
                 </div>
-            </motion.div>
-        </main>
+
+            </div>
+            {/* Here Moblie card */}
+            <div className="order-2  sm:order-1">
+                <RelatedTools currentTool="Utility" />
+            </div>
+        </motion.div>
+
     );
 }

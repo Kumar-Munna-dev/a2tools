@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { evaluate, format } from "mathjs";
 import { motion } from "framer-motion";
+import RelatedTools from "@/app/components/RelatedTools";
 
 interface HistoryItem {
   id: number;
@@ -80,7 +81,7 @@ export default function ScientificCalculator() {
     try {
       const t = await navigator.clipboard.readText();
       setExpr((s) => s + t);
-    } catch {}
+    } catch { }
   };
 
   const loadHistory = (item: HistoryItem) => {
@@ -89,47 +90,46 @@ export default function ScientificCalculator() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.28 }}
-        className="w-full max-w-3xl bg-white shadow-2xl rounded-2xl p-5 grid grid-cols-1 md:grid-cols-3 gap-6"
-      >
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
+    >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         {/* Left: Calculator */}
         <div className="md:col-span-2">
-          <div className="rounded-xl border p-4 bg-gradient-to-b from-white to-gray-50">
+          <div>
+            <h1 className="text-2xl font-semibold mb-5">Scientific Calculator – Advanced Online Math Calculator</h1>
+          </div>
+          <div className="rounded-xl border p-4 dark:bg-slate-800">
             <div className="flex flex-col gap-3">
               {/* Header */}
               <div className="flex justify-between items-start">
-                <div>
-                  <h1 className="text-2xl font-semibold">Scientific Calculator – Advanced Online Math Calculator</h1>
-                  <p className="text-sm text-gray-500">
-                    Next.js + Tailwind — Keyboard Friendly
-                  </p>
-                </div>
-                <div className="text-sm text-gray-600">
+
+                <div className="text-sm ">
                   Precision: 14 digits
                 </div>
               </div>
 
               {/* Display */}
               <div className="mt-3">
-                <div className="rounded-lg bg-gray-900 text-white p-3 min-h-[72px] flex flex-col justify-between">
+                <div className="rounded-lg dark:bg-slate-900 p-3 min-h-[72px] flex flex-col justify-between">
                   <textarea
                     ref={inputRef}
+                    inputMode="none"
                     value={expr}
                     onChange={(e) => setExpr(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Type expression e.g. 2*(3+sin(0.5))"
-                    className="w-full bg-transparent resize-none outline-none text-lg leading-tight"
+                    className="w-full border rounded-2xl p-2 h-30 resize-none outline-none text-lg leading-tight"
                     rows={2}
                   />
                   <div className="mt-2 flex justify-between items-center">
-                    <div className="text-sm text-gray-300">
+                    <div className="text-sm ">
                       Result: <span className="font-medium">{output}</span>
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs ">
                       sin cos tan ln log sqrt !
                     </div>
                   </div>
@@ -137,7 +137,7 @@ export default function ScientificCalculator() {
               </div>
 
               {/* Number Pad */}
-              <div className="mt-4 grid grid-cols-4 md:grid-cols-5 gap-2">
+              <div className="mt-4 grid grid-cols-4 md:grid-cols-5 gap-2 ">
                 {[
                   { label: "(", action: () => append("(") },
                   { label: ")", action: () => append(")") },
@@ -173,11 +173,10 @@ export default function ScientificCalculator() {
                     key={i}
                     onClick={b.action}
                     className={`py-3 rounded-lg text-sm font-medium shadow-sm transition 
-                    ${
-                      b.special
-                        ? "bg-gradient-to-r from-indigo-500 to-indigo-400 text-white"
-                        : "bg-white hover:shadow-md"
-                    }`}
+                    ${b.special
+                        ? "bg-indigo-500 text-white"
+                        : "bg-indigo-950 text-white hover:shadow-md"
+                      }`}
                   >
                     {b.label}
                   </button>
@@ -202,7 +201,7 @@ export default function ScientificCalculator() {
                   <button
                     key={i}
                     onClick={b.action}
-                    className="py-2 rounded-lg text-sm font-medium shadow-sm bg-white hover:shadow-md"
+                    className="py-2 rounded-lg text-sm font-medium shadow-sm bg-indigo-300 hover:shadow-md"
                   >
                     {b.label}
                   </button>
@@ -213,27 +212,27 @@ export default function ScientificCalculator() {
         </div>
 
         {/* Right: History */}
-        <aside className="p-4 bg-white rounded-2xl border shadow-inner">
+        <aside className="p-4 dark:bg-slate-800 rounded-2xl border shadow-inner">
           <h2 className="text-lg font-semibold mb-2">History</h2>
           <div className="flex flex-col gap-2 max-h-80 overflow-auto pr-2">
             {history.length === 0 ? (
-              <div className="text-sm text-gray-500">
+              <div className="text-sm ">
                 No history yet — try a calculation.
               </div>
             ) : (
               history.map((h) => (
                 <div
                   key={h.id}
-                  className="flex items-center justify-between gap-2 p-2 rounded-md hover:bg-gray-50"
+                  className="flex items-center justify-between gap-2 p-2 rounded-md hover:text-indigo-400"
                 >
                   <div className="text-sm">
-                    <div className="text-gray-700 font-medium">{h.expr}</div>
-                    <div className="text-xs text-gray-500">= {h.res}</div>
+                    <div className=" font-medium">{h.expr}</div>
+                    <div className="text-xs">= {h.res}</div>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => loadHistory(h)}
-                      className="text-xs px-2 py-1 rounded bg-indigo-50"
+                      className="text-xs px-2 py-1 rounded border "
                     >
                       Load
                     </button>
@@ -241,7 +240,7 @@ export default function ScientificCalculator() {
                       onClick={() =>
                         setHistory((s) => s.filter((x) => x.id !== h.id))
                       }
-                      className="text-xs px-2 py-1 rounded bg-red-50"
+                      className="text-xs px-2 py-1 rounded border"
                     >
                       Del
                     </button>
@@ -252,7 +251,7 @@ export default function ScientificCalculator() {
           </div>
 
           {/* Tips */}
-          <div className="mt-4 text-sm text-gray-600">
+          <div className="mt-4 text-sm ">
             <p className="font-medium">Tips</p>
             <ul className="list-disc ml-4 mt-1 space-y-1">
               <li>Use ( ) for grouping</li>
@@ -262,7 +261,13 @@ export default function ScientificCalculator() {
             </ul>
           </div>
         </aside>
-      </motion.div>
-    </div>
+
+      </div>
+      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Calculator" />
+      </div>
+    </motion.div>
+
   );
 }

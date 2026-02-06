@@ -8,7 +8,6 @@ import ToolCard from "./ToolCard";
 import {
   textTools,
   imageTools,
-  pdfTools,
   utilityTools,
   calculatorTools,
 } from "../data/toolsData";
@@ -20,13 +19,11 @@ export default function Home() {
     All: [
       ...textTools,
       ...imageTools,
-      ...pdfTools,
       ...utilityTools,
       ...calculatorTools,
     ],
     Text: textTools,
     Image: imageTools,
-    PDF: pdfTools,
     Calculator: calculatorTools,
     Utility: utilityTools,
   };
@@ -36,26 +33,26 @@ export default function Home() {
   return (
     <>
       {/* FIXED BACKGROUND */}
-      <main className="text-black min-h-screen border-b rounded-2xl border-b-white ">
+      <main className="min-h-screen border-b rounded-2xl">
 
         <div className="relative z-10">
 
           {/* HERO SECTION FIXED */}
-          <header className="text-center py-24 px-6 border-b rounded-2xl bg-[#f7f7f7] border-gray-200">
+          <header className="text-center py-24 px-6 border-b dark:border-slate-800 rounded-2xl">
             <div className="max-w-3xl mx-auto">
 
-              <h1 className="text-4xl sm:text-6xl font-extrabold text-gray-900 tracking-tight">
+              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight dark:text-slate-100">
                 The Ultimate All-in-One Toolkit
               </h1>
 
-              <p className="text-gray-600 mt-5 text-lg max-w-2xl mx-auto leading-relaxed">
+              <p className="mt-5 text-lg max-w-2xl mx-auto leading-relaxed dark:text-slate-400">
                 Fast, secure and powerful tools for everyday tasks — text,
                 image, PDF, utilities & calculations. No login required.
               </p>
 
               <Link
                 href="/tools"
-                className="mt-8 inline-block bg-blue-600 text-white px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:bg-blue-700 transition-all"
+                className="mt-8 inline-block bg-indigo-600 text-white dark:bg-indigo-500 dark:text-white px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:bg-blue-700 transition-all"
               >
                 Explore All Tools →
               </Link>
@@ -63,14 +60,14 @@ export default function Home() {
 
             {/* CATEGORY BUTTONS */}
             <div className="mt-5 flex flex-wrap justify-center gap-3">
-              {["All", "Text", "Image", "PDF", "Calculator", "Utility"].map(
+              {["All", "Text", "Image", "Calculator", "Utility"].map(
                 (label) => (
                   <button
                     key={label}
                     onClick={() => setSelectedCategory(label)}
-                    className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-sm ${selectedCategory === label
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                    className={`px-5 py-2.5 rounded-full border dark:border-slate-800 text-sm font-semibold transition-all shadow-sm ${selectedCategory === label
+                      ? "bg-indigo-600 dark:bg-indigo-500 text-white"
+                      : "dark:text-slate-100  transition-colors group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/20 dark:bg-slate-600"
                       }`}
                   >
                     {label}
@@ -83,7 +80,7 @@ export default function Home() {
           {/* TOOLS SECTION */}
           <section className="max-w-7xl mx-auto px-6 py-6">
 
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            <h2 className="text-3xl font-bold dark:text-slate-100 text-center mb-12 ">
               {selectedCategory === "All"
                 ? "Popular Tools"
                 : `${selectedCategory} Tools`}

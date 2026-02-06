@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeftRight, RefreshCcw } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function UnitConverter() {
   const [category, setCategory] = useState("length");
@@ -98,38 +99,45 @@ export default function UnitConverter() {
     Math.abs(num) < 0.000001 ? num.toExponential(4) : Number(num.toFixed(6));
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-blue-100 via-purple-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-6">
+ 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-3xl w-full backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-3xl shadow-xl p-8 border border-white/30 dark:border-gray-700"
+        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
       >
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
+        <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        <h1 className="text-3xl font-bold text-center mb-8 ">
           Unit Converter – Convert Measurements Instantly
         </h1>
 
         {/* Category Selector */}
-        <div className="mb-6">
-          <label className="block text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">
-            Select Category
-          </label>
-          <select
-            value={category}
-            onChange={(e) => {
-              setCategory(e.target.value);
-              setFromUnit(Object.keys(units[e.target.value])[0]);
-              setToUnit(Object.keys(units[e.target.value])[1]);
-            }}
-            className="w-full p-3 rounded-xl border dark:border-gray-700 bg-white/70 dark:bg-gray-700 text-gray-800 dark:text-gray-100 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
-          >
-            {Object.keys(units).map((cat) => (
-              <option key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
+<div className="mb-6">
+  <label className="block text-lg font-semibold mb-2">
+    Select Category
+  </label>
+  <select
+    value={category}
+    onChange={(e) => {
+      const selectedCat = e.target.value;
+      setCategory(selectedCat);
+
+      // Safely set fromUnit and toUnit
+      const unitKeys = Object.keys(units[selectedCat]);
+      if (unitKeys.length >= 2) {
+        setFromUnit(unitKeys[0]);
+        setToUnit(unitKeys[1]);
+      }
+    }}
+    className="w-full p-3 rounded-xl border border-slate-200 shadow-sm focus:ring-2 dark:text-slate-900 outline-none"
+  >
+    {Object.keys(units).map((cat) => (
+      <option key={cat} value={cat}>
+        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+      </option>
+    ))}
+  </select>
+</div>
 
         {/* Conversion Box */}
         <motion.div
@@ -139,20 +147,20 @@ export default function UnitConverter() {
           className="grid sm:grid-cols-3 gap-4 items-center mb-8"
         >
           {/* From */}
-          <div className="p-4 rounded-xl bg-white/50 dark:bg-gray-700 shadow-inner border border-gray-200 dark:border-gray-600">
-            <label className="text-sm text-gray-600 dark:text-gray-300 mb-1 block">
+          <div className="p-4 rounded-xl  shadow-inner border border-slate-200 ">
+            <label className="text-sm text-slate-400  mb-1 block">
               From
             </label>
             <input
               type="number"
               value={inputValue}
               onChange={(e) => setInputValue(Number(e.target.value))}
-              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-2 outline-none focus:ring-2 focus:ring-blue-400 transition"
+              className="w-full p-2 rounded-lg border  mb-2 outline-none focus:ring-2 focus:ring-blue-400 transition"
             />
             <select
               value={fromUnit}
               onChange={(e) => setFromUnit(e.target.value)}
-              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+              className="w-full p-2 rounded-lg border"
             >
               {Object.keys(units[category]).map((u) => (
                 <option key={u} value={u}>
@@ -167,27 +175,27 @@ export default function UnitConverter() {
             <motion.button
               whileTap={{ rotate: 180, scale: 0.9 }}
               onClick={handleSwap}
-              className="p-4 bg-linear-to-r from-blue-500 to-indigo-500 text-white rounded-full shadow-lg hover:shadow-2xl transition-all"
+              className="p-4 bg-indigo-600 hover:bg-indigo-400 rounded-full shadow-lg hover:shadow-2xl transition-all"
             >
               <ArrowLeftRight className="h-6 w-6" />
             </motion.button>
           </div>
 
           {/* To */}
-          <div className="p-4 rounded-xl bg-white/50 dark:bg-gray-700 shadow-inner border border-gray-200 dark:border-gray-600">
-            <label className="text-sm text-gray-600 dark:text-gray-300 mb-1 block">
+          <div className="p-4 rounded-xl  shadow-inner border border-slate-200 ">
+            <label className="text-sm  mb-1 block">
               To
             </label>
             <input
               type="text"
               readOnly
               value={formatNumber(result)}
-              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-2 outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full p-2 rounded-lg border mb-2 outline-none focus:ring-2 focus:ring-purple-400"
             />
             <select
               value={toUnit}
               onChange={(e) => setToUnit(e.target.value)}
-              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+              className="w-full p-2 rounded-lg border"
             >
               {Object.keys(units[category]).map((u) => (
                 <option key={u} value={u}>
@@ -202,7 +210,7 @@ export default function UnitConverter() {
         <div className="flex justify-center mb-10">
           <button
             onClick={() => setInputValue(1)}
-            className="flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-purple-500 to-blue-500 hover:from-blue-500 hover:to-purple-500 text-white font-medium rounded-full shadow-md hover:shadow-lg transition-all"
+            className="flex items-center gap-2 px-6 py-2.5 text-slate-50 bg-indigo-600 hover:bg-indigo-400 font-medium rounded-full shadow-md hover:shadow-lg transition-all"
           >
             <RefreshCcw className="h-4 w-4" /> Reset
           </button>
@@ -231,7 +239,13 @@ export default function UnitConverter() {
             content="Length, Weight, Temperature, Area, and Volume — each with multiple common and advanced units for professionals and students."
           />
         </div>
+
+        </div>
+              {/* Here Moblie card */}
+              <div className="order-2  sm:order-1">
+                <RelatedTools currentTool="Utility" />
+              </div>
       </motion.div>
-    </main>
+
   );
 }

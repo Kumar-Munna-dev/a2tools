@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function EMICalculator() {
   const [principal, setPrincipal] = useState("");
@@ -91,12 +92,12 @@ export default function EMICalculator() {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50 text-black">
-      <motion.div
+  <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white shadow-xl border border-gray-200 rounded-3xl p-10 w-full max-w-4xl"
+        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
       >
+        <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-blue-600">Calculator – Calculate Loan EMI and Interest Easily</h1>
           <p className="text-sm text-gray-600 mt-2">
@@ -112,7 +113,7 @@ export default function EMICalculator() {
               className={`px-4 py-2 rounded-full font-semibold border transition ${
                 interestType === tab.key
                   ? "bg-blue-500 text-white border-blue-500"
-                  : "bg-gray-200 text-black border-gray-300 hover:bg-gray-300"
+                  : " datk:text-slate-100 border-gray-300 hover:bg-gray-300"
               }`}
             >
               {tab.label}
@@ -122,7 +123,7 @@ export default function EMICalculator() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label className="text-sm text-gray-600">Loan Amount</label>
+            <label className="text-sm dark:text-slate-400">Loan Amount</label>
             <input
               type="number"
               value={principal}
@@ -134,7 +135,7 @@ export default function EMICalculator() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">Interest Rate (%)</label>
+            <label className="text-sm dark:text-slate-400">Interest Rate (%)</label>
             <input
               type="number"
               value={rate}
@@ -147,7 +148,7 @@ export default function EMICalculator() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">Duration (Months)</label>
+            <label className="text-sm dark:text-slate-400">Duration (Months)</label>
             <input
               type="number"
               value={months}
@@ -181,7 +182,8 @@ export default function EMICalculator() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-5 rounded-xl bg-blue-100 border border-blue-300 text-center text-xl font-bold shadow-md"
+                className="p-5 rounded-xl 
+                dark:bg-slate-950 border border-blue-300 text-center text-xl font-bold shadow-md"
               >
                 Monthly EMI: ₹{emi}
               </motion.div>
@@ -191,7 +193,7 @@ export default function EMICalculator() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-5 rounded-xl bg-red-100 border border-red-300 text-center text-lg font-semibold shadow-md"
+                className="p-5 rounded-xl dark:bg-slate-950 border border-red-300 text-center text-lg font-semibold shadow-md"
               >
                 Total Interest: ₹{totalInterest}
               </motion.div>
@@ -201,14 +203,20 @@ export default function EMICalculator() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-5 rounded-xl bg-green-100 border border-green-300 text-center text-lg font-semibold shadow-md"
+                className="p-5 rounded-xl dark:bg-slate-950 border border-green-300 text-center text-lg font-semibold shadow-md"
               >
                 Total Payable: ₹{totalPayment}
               </motion.div>
             )}
           </div>
         )}
+        </div>
+
+          {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Calculator" />
+      </div>
       </motion.div>
-    </div>
+
   );
 }

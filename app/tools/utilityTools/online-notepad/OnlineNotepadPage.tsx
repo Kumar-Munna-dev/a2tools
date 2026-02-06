@@ -20,6 +20,7 @@ import {
   Download,
 } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 export default function OnlineNotepadPage() {
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -170,25 +171,25 @@ export default function OnlineNotepadPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45 }}
-        className="max-w-5xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700"
-      >
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+    >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <h1 className="text-2xl font-bold flex items-center gap-2">
             Online Notepad – Write, Edit & Save Notes Online
           </h1>
 
           <div className="flex items-center gap-2">
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
                 checked={autoSave}
                 onChange={(e) => setAutoSave(e.target.checked)}
-                className="h-4 w-4 accent-blue-600"
+                className="h-4 w-4 "
               />
               Auto-save
             </label>
@@ -197,75 +198,75 @@ export default function OnlineNotepadPage() {
               type="text"
               value={filename}
               onChange={(e) => setFilename(e.target.value)}
-              className="hidden sm:inline-block w-40 px-2 py-1 rounded border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm"
+              className="hidden sm:inline-block w-40 px-2 py-1 rounded border text-sm"
               title="Filename (for save)"
             />
           </div>
         </div>
 
         {/* Toolbar */}
-        <div className="flex flex-wrap gap-2 items-center bg-gray-100 dark:bg-gray-700 p-3 rounded mb-3">
-          <button title="Bold" onClick={setBold} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+        <div className="flex flex-wrap gap-2 items-center p-3 rounded mb-3 ">
+          <button title="Bold" onClick={setBold} className="p-2 hover:bg-indigo-400 rounded ">
             <Bold className="h-5 w-5" />
           </button>
-          <button title="Italic" onClick={setItalic} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+          <button title="Italic" onClick={setItalic} className="p-2 hover:bg-indigo-400 rounded ">
             <Italic className="h-5 w-5" />
           </button>
-          <button title="Underline" onClick={setUnderline} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+          <button title="Underline" onClick={setUnderline} className="p-2 rounded hover:bg-indigo-400">
             <Underline className="h-5 w-5" />
           </button>
 
           <div className="border-l h-6 mx-1" />
 
-          <button title="Ordered List" onClick={setOrderedList} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+          <button title="Ordered List" onClick={setOrderedList} className="p-2 rounded hover:bg-indigo-400">
             <ListOrdered className="h-5 w-5" />
           </button>
-          <button title="Bullet List" onClick={setBulletList} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+          <button title="Bullet List" onClick={setBulletList} className="p-2 rounded hover:bg-indigo-400">
             <List className="h-5 w-5" />
           </button>
 
           <div className="border-l h-6 mx-1" />
 
-          <button title="Align Left" onClick={alignLeft} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+          <button title="Align Left" onClick={alignLeft} className="p-2 rounded hover:bg-indigo-400">
             <AlignLeft className="h-5 w-5" />
           </button>
-          <button title="Align Center" onClick={alignCenter} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+          <button title="Align Center" onClick={alignCenter} className="p-2 rounded hover:bg-indigo-400">
             <AlignCenter className="h-5 w-5" />
           </button>
-          <button title="Align Right" onClick={alignRight} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+          <button title="Align Right" onClick={alignRight} className="p-2 rounded hover:bg-indigo-400">
             <AlignRight className="h-5 w-5" />
           </button>
 
           <div className="border-l h-6 mx-1" />
 
-          <button title="Insert Link" onClick={insertLink} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+          <button title="Insert Link" onClick={insertLink} className="p-2 rounded hover:bg-indigo-400">
             <LinkIcon className="h-5 w-5" />
           </button>
-          <button title="Insert Image" onClick={insertImage} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+          <button title="Insert Image" onClick={insertImage} className="p-2 rounded hover:bg-indigo-400 ">
             <ImageIcon className="h-5 w-5" />
           </button>
 
           <div className="flex-1" />
 
           <div className="flex gap-2">
-            <button title="Save HTML" onClick={saveAsHTML} className="p-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+            <button title="Save HTML" onClick={saveAsHTML} className="p-2 rounded bg-blue-600  hover:bg-blue-700">
               <Save className="h-4 w-4" />
             </button>
 
-            <button title="Save as TXT" onClick={saveAsTXT} className="p-2 rounded bg-indigo-600 text-white hover:bg-indigo-700">
+            <button title="Save as TXT" onClick={saveAsTXT} className="p-2 rounded bg-indigo-600  hover:bg-indigo-700">
               <Code className="h-4 w-4" />
             </button>
 
             <button
               title="Open File"
               onClick={() => fileInputRef.current?.click()}
-              className="p-2 rounded bg-green-600 text-white hover:bg-green-700"
+              className="p-2 rounded bg-green-600  hover:bg-green-700"
             >
               <Upload className="h-4 w-4" />
             </button>
             <input ref={fileInputRef} type="file" accept=".html,.htm,.txt,.md" className="hidden" onChange={openFile} />
 
-            <button title="Clear" onClick={clearNote} className="p-2 rounded bg-red-600 text-white hover:bg-red-700">
+            <button title="Clear" onClick={clearNote} className="p-2 rounded bg-red-600  hover:bg-red-700">
               <Trash2 className="h-4 w-4" />
             </button>
 
@@ -280,7 +281,7 @@ export default function OnlineNotepadPage() {
           ref={editorRef}
           contentEditable
           suppressContentEditableWarning
-          className="min-h-[420px] p-4 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 prose max-w-none"
+          className="min-h-[420px] p-4 rounded border border-slate-200  prose max-w-none"
           style={{ outline: "none" }}
           onInput={() => {
             if (autoSave && editorRef.current) {
@@ -290,7 +291,7 @@ export default function OnlineNotepadPage() {
         />
 
         {/* SEO + Info */}
-        <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-4 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+        <div className="mt-8 border-t border-slate-200 dark:border-gray-700 pt-4 text-sm  leading-relaxed">
           <h2 className="font-semibold mb-2">📖 About Professional Offline Notepad</h2>
           <p>
             A secure, offline rich text notepad that lets you write, format, and save notes directly in your browser. Features include bold, italic, underline, lists, alignment, links, image insertion, and file save/open — all private and local.
@@ -315,7 +316,12 @@ export default function OnlineNotepadPage() {
             content="All data is stored locally (localStorage) and in files you download. No servers are involved — your notes remain private."
           />
         </div>
-      </motion.div>
-    </main>
+
+      </div>
+      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Utility" />
+      </div>
+    </motion.div>
   );
 }

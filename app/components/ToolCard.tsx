@@ -19,26 +19,52 @@ export default function ToolCard({
     <Link
       href={href}
       className="
-        block p-6 rounded-2xl bg-white border border-gray-200
-        shadow-sm hover:shadow-lg transition-all duration-300
-        hover:border-blue-500 hover:-translate-y-1
+        group block p-6 rounded-2xl border        
+        shadow-sm
+        transition-all duration-300 ease-out
+        hover:-translate-y-1 hover:shadow-md
+        hover:border-indigo-500/40
+        dark:border-slate-800 dark:bg-slate-900
+        dark:hover:border-indigo-400/40
+        
       "
     >
       {/* ICON */}
-      <div className="
-        w-12 h-12 flex items-center justify-center
-        rounded-xl bg-blue-50 text-blue-600 text-2xl mb-4
-      ">
+      <div
+        className="
+          mb-4 flex h-12 w-12 items-center justify-center rounded-xl
+           text-indigo-600
+          transition-colors
+          group-hover:bg-indigo-100
+          dark:text-indigo-400
+          dark:group-hover:bg-indigo-500/20
+          dark:bg-slate-600
+        "
+      >
         {icon}
       </div>
 
       {/* TITLE */}
-      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+      <h3
+        className="
+          mb-1 text-lg font-semibold
+          transition-colors
+          group-hover:text-indigo-600
+          dark:text-slate-100
+          dark:group-hover:text-indigo-400
+        "
+      >
         {title}
       </h3>
 
       {/* DESCRIPTION */}
-      <p className="text-sm text-gray-600 leading-relaxed">
+      <p
+        className="
+          text-sm leading-relaxed
+          text-slate-600
+          dark:text-slate-400
+        "
+      >
         {description}
       </p>
     </Link>

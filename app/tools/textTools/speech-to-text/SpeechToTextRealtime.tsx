@@ -165,7 +165,7 @@ export default function SpeechToTextRealtime() {
   if (!supported) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
-        <div className="max-w-xl w-full bg-white p-6 rounded-xl shadow">
+        <div className="max-w-xl w-full dark:bg-slate-950 p-6 rounded-xl shadow">
           <h2 className="text-lg font-semibold mb-2">Speech to Text (Realtime)</h2>
           <p className="text-sm text-gray-600 mb-3">Your browser does not support the Web Speech API (SpeechRecognition).</p>
           <p className="text-sm text-gray-600">Recommended: Use Chrome or Edge on desktop, or Chrome on Android. In some sandboxed environments (like this preview) the API is unavailable.</p>
@@ -176,7 +176,7 @@ export default function SpeechToTextRealtime() {
 
   return (
     <div className="mt-20 flex flex-col items-center mb-5 sm:flex-row sm:items-start ">
-      <div className=" w-screen order-1 bg-white rounded-2xl shadow p-4 sm:p-6 sm:order-2">
+      <div className=" w-screen order-1 dark:bg-slate-950 rounded-2xl shadow p-4 sm:p-6 sm:order-2">
         <h1 className="text-2xl font-semibold text-center mb-2">Speech to Text — Real-time Transcription</h1>
         <p className="text-sm text-gray-600 text-center mb-4">Transcribe your voice into editable text as you speak.</p>
 
@@ -214,12 +214,12 @@ export default function SpeechToTextRealtime() {
           </div>
         </div>
 
-        <div className="bg-gray-100 rounded-md p-3 min-h-[140px] border">
+        <div className="dark:bg-slate-950 rounded-md p-3 min-h-[140px] border">
           <textarea
             value={finalText + (interim ? "\n" + interim : "")}
             onChange={(e) => setFinalText(e.target.value)}
             placeholder="Transcribed text will appear here..."
-            className="w-full min-h-[120px] bg-transparent resize-vertical outline-none border-none text-gray-800"
+            className="w-full min-h-[120px] bg-transparent resize-vertical outline-none border-none dark:text-slate-400"
           />
 
           {interim && <div className="text-sm text-gray-500 mt-2">Interim: {interim}</div>}
@@ -238,7 +238,7 @@ export default function SpeechToTextRealtime() {
 
       {/* Here Moblie card */}
       <div className="w-max order-2 flex p-5 items-center justify-center sm:order-1" >
-        <RelatedTools currentTool="/tools/textTools/word-counter" />
+        <RelatedTools currentTool="Text" />
       </div>
     </div>
   );

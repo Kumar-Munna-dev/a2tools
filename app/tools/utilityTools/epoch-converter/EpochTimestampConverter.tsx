@@ -1,194 +1,236 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Clock, CalendarDays, RefreshCcw, Copy } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Clock,
+  Calendar,
+  Copy,
+  Check,
+  RefreshCcw,
+  ArrowRightLeft,
+  Globe,
+  Monitor
+} from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
-export default function EpochTimestampConverter() {
-  const [timestamp, setTimestamp] = useState<number>(Math.floor(Date.now() / 1000));
-  const [date, setDate] = useState<string>(new Date().toISOString().slice(0, 16));
-  const [convertedDate, setConvertedDate] = useState<string>("");
-  const [convertedTimestamp, setConvertedTimestamp] = useState<number | null>(null);
+export default function EpochConverter() {
+  // Live Clock State
+  const [now, setNow] = useState(Math.floor(Date.now() / 1000));
 
-  // ⏱️ Live Timestamp Updater
+  // Converter 1: Timestamp to Date
+  const [timestampInput, setTimestampInput] = useState(Math.floor(Date.now() / 1000).toString());
+  const [copySuccess, setCopySuccess] = useState<string | null>(null);
+
+  // Converter 2: Date to Timestamp
+  const [dateInput, setDateInput] = useState(new Date().toISOString().slice(0, 16));
+
+  // Update Live Clock
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimestamp(Math.floor(Date.now() / 1000));
-    }, 1000);
-    return () => clearInterval(interval);
+    const timer = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
+    return () => clearInterval(timer);
   }, []);
 
-  // 🧮 Convert Timestamp → Date
-  const handleTimestampToDate = () => {
-    if (!timestamp) return;
-    const dateObj = new Date(timestamp * 1000);
-    setConvertedDate(dateObj.toLocaleString());
+  const handleCopy = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopySuccess(id);
+    setTimeout(() => setCopySuccess(null), 2000);
   };
 
-  // 📆 Convert Date → Timestamp
-  const handleDateToTimestamp = () => {
-    if (!date) return;
-    const dateObj = new Date(date);
-    setConvertedTimestamp(Math.floor(dateObj.getTime() / 1000));
-  };
-
-  // 📋 Copy Function
-  const handleCopy = async (text: string) => {
+  // Conversion Logic: Timestamp to Human
+  const getParsedDate = (input: string) => {
     try {
-      await navigator.clipboard.writeText(text);
-      alert("✅ Copied to clipboard!");
+      let val = parseInt(input);
+      if (isNaN(val)) return null;
+
+      // Auto-detect seconds vs milliseconds (Simple rule: > 10^11 is ms)
+      const isMs = val > 99999999999;
+      const date = new Date(isMs ? val : val * 1000);
+
+      if (isNaN(date.getTime())) return null;
+      return date;
     } catch {
-      alert("❌ Copy not supported, please copy manually.");
+      return null;
     }
   };
 
-  // 🔁 Reset
-  const handleReset = () => {
-    setTimestamp(Math.floor(Date.now() / 1000));
-    setDate(new Date().toISOString().slice(0, 16));
-    setConvertedDate("");
-    setConvertedTimestamp(null);
-  };
+  const parsedDate = getParsedDate(timestampInput);
+
+  // Conversion Logic: Human to Timestamp
+  const reverseTimestamp = Math.floor(new Date(dateInput).getTime() / 1000);
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-blue-100 via-purple-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 sm:p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-3xl w-full backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-3xl shadow-xl p-6 sm:p-8 border border-white/30 dark:border-gray-700"
-      >
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
-          Epoch Converter – Convert Unix Timestamp to Date & Time
-        </h1>
 
-        {/* Live Timestamp */}
-        <div className="bg-white/70 dark:bg-gray-700 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-600 mb-6 text-center">
-          <div className="flex justify-center items-center gap-2 mb-2">
-            <Clock className="text-blue-600 dark:text-blue-400 h-6 w-6" />
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100">
-              Current UNIX Timestamp
-            </h2>
-          </div>
-          <div className="text-2xl sm:text-3xl font-mono text-gray-800 dark:text-gray-100 mb-2">
-            {timestamp}
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            Updated in real-time
-          </p>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+    >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        {/* Main Converter Area */}
+        <div className="lg:col-span-2 space-y-8">
 
-        {/* Timestamp → Date */}
-        <div className="bg-white/60 dark:bg-gray-700 p-4 sm:p-5 rounded-xl border border-gray-200 dark:border-gray-600 mb-6">
-          <h3 className="text-lg sm:text-xl font-semibold text-center mb-3 text-gray-900 dark:text-gray-100">
-            🔄 Convert UNIX Timestamp to Date
-          </h3>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4">
-            <input
-              type="number"
-              value={timestamp}
-              onChange={(e) => setTimestamp(Number(e.target.value))}
-              className="w-full sm:w-2/3 p-2 sm:p-3 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-center focus:ring-2 focus:ring-blue-400 outline-none"
-            />
-            <button
-              onClick={handleTimestampToDate}
-              className="px-5 py-2 sm:px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold"
-            >
-              Convert
-            </button>
-          </div>
-          {convertedDate && (
-            <div className="mt-2 text-center">
-              <p className="text-gray-800 dark:text-gray-100 font-medium">
-                📅 <strong>{convertedDate}</strong>
-              </p>
+          {/* Live Clock Card */}
+          <div className="bg-blue-600 rounded-3xl p-8 text-white shadow-xl  relative overflow-hidden">
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 opacity-80 mb-2">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                <span className="text-sm font-bold uppercase tracking-wider">Current Unix Epoch</span>
+              </div>
+              <div className="text-5xl md:text-6xl font-mono font-bold mb-4 tracking-tight tabular-nums">
+                {now}
+              </div>
               <button
-                onClick={() => handleCopy(convertedDate)}
-                className="mt-2 flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline mx-auto"
+                onClick={() => setTimestampInput(now.toString())}
+                className="bg-white/20 hover:bg-white/30 transition-colors px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
               >
-                <Copy className="h-4 w-4" /> Copy
+                <RefreshCcw size={16} /> Insert into converter
               </button>
             </div>
-          )}
-        </div>
-
-        {/* Date → Timestamp */}
-        <div className="bg-white/60 dark:bg-gray-700 p-4 sm:p-5 rounded-xl border border-gray-200 dark:border-gray-600 mb-6">
-          <h3 className="text-lg sm:text-xl font-semibold text-center mb-3 text-gray-900 dark:text-gray-100">
-            📆 Convert Date to UNIX Timestamp
-          </h3>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4">
-            <input
-              type="datetime-local"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full sm:w-2/3 p-2 sm:p-3 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-400 outline-none"
-            />
-            <button
-              onClick={handleDateToTimestamp}
-              className="px-5 py-2 sm:px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-semibold"
-            >
-              Convert
-            </button>
+            <Clock className="absolute right-[-20px] bottom-[-20px] w-64 h-64 text-white/10 rotate-12" />
           </div>
-          {convertedTimestamp && (
-            <div className="mt-2 text-center">
-              <p className="text-gray-800 dark:text-gray-100 font-medium">
-                ⏱️ <strong>{convertedTimestamp}</strong>
-              </p>
-              <button
-                onClick={() => handleCopy(convertedTimestamp.toString())}
-                className="mt-2 flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline mx-auto"
-              >
-                <Copy className="h-4 w-4" /> Copy
-              </button>
+
+          {/* Section 1: Timestamp to Human Date */}
+          <div className="rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 ">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-lg">
+                <ArrowRightLeft size={24} />
+              </div>
+              <h2 className="text-xl font-bold">Epoch to Human Date</h2>
             </div>
-          )}
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-bold mb-2">Unix Timestamp</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={timestampInput}
+                    onChange={(e) => setTimestampInput(e.target.value)}
+                    className="w-full border-2 border-slate-200 rounded-2xl px-6 py-4 text-2xl font-mono focus:border-blue-500 focus:ring-0 outline-none transition-all"
+                    placeholder="Enter timestamp (e.g. 1707221460)"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 bg-white dark:bg-slate-900 px-2 py-1 rounded border">
+                    {timestampInput.length > 11 ? "Milliseconds" : "Seconds"}
+                  </span>
+                </div>
+              </div>
+
+              {parsedDate ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* UTC Result */}
+                  <div className="p-5 rounded-2xl border border-slate-200 relative group">
+                    <div className="flex items-center gap-2 text-slate-500 mb-2 text-xs font-bold uppercase">
+                      <Globe size={14} /> UTC Time
+                    </div>
+                    <div className="text-lg font-semibold truncate">{parsedDate.toUTCString()}</div>
+                    <button
+                      onClick={() => handleCopy(parsedDate.toUTCString(), 'utc')}
+                      className="absolute top-4 right-4 p-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white dark:bg-slate-700 rounded-md shadow-sm"
+                    >
+                      {copySuccess === 'utc' ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                    </button>
+                  </div>
+
+                  {/* Local Result */}
+                  <div className="p-5 rounded-2xl border border-slate-200 relative group">
+                    <div className="flex items-center gap-2 text-slate-500 mb-2 text-xs font-bold uppercase">
+                      <Monitor size={14} /> Your Timezone
+                    </div>
+                    <div className="text-lg font-semibold truncate">{parsedDate.toString().split(' (')[0]}</div>
+                    <button
+                      onClick={() => handleCopy(parsedDate.toString(), 'local')}
+                      className="absolute top-4 right-4 p-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white dark:bg-slate-700 rounded-md shadow-sm"
+                    >
+                      {copySuccess === 'local' ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-6 text-rose-600 rounded-2xl border border-rose-100 dark:border-rose-900/30 text-center font-medium">
+                  Invalid Unix Timestamp. Please enter a valid numeric value.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Section 2: Human Date to Epoch */}
+          <div className="rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-lg">
+                <Calendar size={24} />
+              </div>
+              <h2 className="text-xl font-bold">Human Date to Epoch</h2>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-4 items-end">
+              <div className="flex-1 w-full">
+                <label className="block text-sm font-bold mb-2">Local Date & Time</label>
+                <input
+                  type="datetime-local"
+                  value={dateInput}
+                  onChange={(e) => setDateInput(e.target.value)}
+                  className="w-full  border-2 border-slate-100 rounded-2xl px-6 py-4 text-xl font-mono outline-none focus:border-indigo-500 transition-all"
+                />
+              </div>
+              <div className="flex-1 w-full relative group">
+                <label className="block text-sm font-bold mb-2">Resulting Timestamp</label>
+                <div className="text-indigo-700 dark:text-indigo-300 rounded-2xl px-6 py-4 text-2xl font-mono font-bold flex justify-between items-center border border-indigo-100 dark:border-indigo-900/30">
+                  <span>{reverseTimestamp}</span>
+                  <button
+                    onClick={() => handleCopy(reverseTimestamp.toString(), 'rev')}
+                    className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:scale-110 transition-transform"
+                  >
+                    {copySuccess === 'rev' ? <Check size={18} className="text-emerald-500" /> : <Copy size={18} />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        {/* Sidebar */}
+        <aside className="space-y-6">
+          <div className="rounded-3xl p-6 border border-slate-200">
+            <h3 className="font-bold mb-4 flex items-center gap-2">
+              <Clock size={18} className="text-blue-500" /> Quick Reference
+            </h3>
+            <div className="space-y-3">
+              {[
+                { label: "1 Minute", val: "60 s" },
+                { label: "1 Hour", val: "3,600 s" },
+                { label: "1 Day", val: "86,400 s" },
+                { label: "1 Week", val: "604,800 s" },
+                { label: "1 Month (30d)", val: "2,592,000 s" },
+                { label: "1 Year (365d)", val: "31,536,000 s" },
+              ].map((item, i) => (
+                <div key={i} className="flex justify-between text-sm py-2 border-b border-slate-50 dark:border-slate-800 last:border-0">
+                  <span className="text-slate-500">{item.label}</span>
+                  <span className="font-mono font-bold">{item.val}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
+          {/* SEO / Info Area */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <InfoDropdown
+              title="What is Unix Epoch time?"
+              content="The Unix epoch (or Unix time or POSIX time or Unix timestamp) is the number of seconds that have elapsed since January 1, 1970 (midnight UTC/GMT), not counting leap seconds."
+            />
+            <InfoDropdown
+              title="Seconds vs Milliseconds"
+              content="Standard Unix timestamps use 10 digits (seconds). JavaScript and many modern APIs use 13 digits (milliseconds). This tool automatically detects which one you are using."
+            />
+          </div>
         </div>
 
-        {/* Reset */}
-        <div className="flex justify-center mb-8">
-          <button
-            onClick={handleReset}
-            className="flex items-center gap-2 px-5 py-2 sm:px-6 bg-red-500 hover:bg-red-600 text-white rounded-full font-semibold"
-          >
-            <RefreshCcw className="h-4 w-4" /> Reset
-          </button>
-        </div>
 
-        {/* SEO Info Section */}
-        <div className="space-y-4 sm:space-y-6">
-          <InfoDropdown
-            title="🕓 What Is a UNIX Timestamp?"
-            content="A UNIX timestamp represents the number of seconds that have elapsed since January 1, 1970 (UTC). It’s widely used in programming, databases, and APIs to represent date-time data in numeric form."
-          />
-          <InfoDropdown
-            title="📅 Why Convert Between Timestamps and Dates?"
-            content="Converting between UNIX timestamps and readable dates helps developers, analysts, and system administrators work with time-based data more easily in APIs, logs, and databases."
-          />
-          <InfoDropdown
-            title="🔄 How This Converter Works"
-            content="Simply enter a UNIX timestamp to get a human-readable date or enter a date/time to get the corresponding UNIX timestamp — no internet connection required!"
-          />
-          <InfoDropdown
-            title="📱 Mobile-Friendly and Offline"
-            content="This tool works seamlessly across mobile, tablet, and desktop devices. It also runs entirely in your browser for privacy and offline accessibility."
-          />
-          <InfoDropdown
-            title="🧠 Common Uses of Timestamps"
-            content="Developers use timestamps to track user sessions, event logs, and data synchronization. Analysts use them to compare times, calculate durations, or schedule automation."
-          />
-          <InfoDropdown
-            title="🌐 Timezone Conversion"
-            content="All timestamps are represented in UTC by default. The converted human-readable date adjusts automatically to your local timezone."
-          />
-          <InfoDropdown
-            title="⚡ Privacy & Performance"
-            content="No data is sent to any server — all conversions happen locally, ensuring full data privacy and lightning-fast results."
-          />
-        </div>
-      </motion.div>
-    </main>
+      </div>
+      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Utility" />
+      </div>
+    </motion.div>
+
   );
 }

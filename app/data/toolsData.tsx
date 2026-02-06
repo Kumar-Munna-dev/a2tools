@@ -14,7 +14,6 @@ import {
   Ruler,
   Shield,
   Link as LinkIcon,
-  SpellCheck2,
   KeyRound,
   Hash,
   ClipboardCheck,
@@ -22,11 +21,13 @@ import {
   Mic,
   Scissors,
   Image,
-  PenTool,
-  Edit,
+  Phone,
   Building,
   Download,
 } from "lucide-react";
+
+
+
 
 export interface ToolItem {
   title: string;
@@ -35,10 +36,19 @@ export interface ToolItem {
   href: string;
 }
 
+
+
 /* ================================
    🧩 UTILITY TOOLS
 ================================ */
 export const utilityTools: ToolItem[] = [
+{
+  title: "Phone Number Location Tracker",
+  description: "Find phone number location, country, state, and telecom operator details online for free.",
+  icon: <Phone className="w-5 h-5" />,
+  href: "/tools/utilityTools/phone-number",
+},
+
   {
     title: "Password Generator",
     description: "Generate strong, secure passwords with strength meter.",
@@ -191,59 +201,6 @@ export const textTools: ToolItem[] = [
   },
 ];
 
-/* ================================
-   📄 PDF TOOLS
-================================ */
-export const pdfTools: ToolItem[] = [
-  /*{
-    title: "PDF to Word Converter",
-    description: "Convert PDF files to editable Word documents.",
-    icon: <FileText className="w-5 h-5" />,
-    href: "/tools/pdfTools/pdf-to-word",
-  },
-  {
-    title: "Word to PDF Converter",
-    description: "Convert Word documents to PDF format.",
-    icon: <FileText className="w-5 h-5" />,
-    href: "/tools/pdfTools/word-to-pdf",
-  },
-  {
-    title: "PDF Merge Tool",
-    description: "Merge or split PDF files easily.",
-    icon: <Scissors className="w-5 h-5" />,
-    href: "/tools/pdfTools/merge-split",
-  },
-  {
-    title: "PDF to JPG Converter",
-    description: "Convert PDF pages to JPG images.",
-    icon: <Image className="w-5 h-5" />,
-    href: "/tools/pdfTools/pdf-to-jpg",
-  },
-  {
-    title: "e-Signature Tool",
-    description: "Sign documents electronically.",
-    icon: <PenTool className="w-5 h-5" />,
-    href: "/tools/pdfTools/e-signature",
-  },
-  {
-    title: "PDF Compressor",
-    description: "Reduce PDF file size without losing quality.",
-    icon: <FileArchive className="w-5 h-5" />,
-    href: "/tools/pdfTools/pdf-compressor",
-  },
-  {
-    title: "PDF Editor",
-    description: "Edit text and images directly in PDF files.",
-    icon: <Edit className="w-5 h-5" />,
-    href: "/tools/pdfTools/pdf-editor",
-  },
-  {
-    title: "PDF to Text Converter",
-    description: "Extract text from PDF files for editing.",
-    icon: <FileText className="w-5 h-5" />,
-    href: "/tools/pdfTools/pdf-to-text",
-  },*/
-];
 
 /* ================================
    🧮 CALCULATOR TOOLS
@@ -345,28 +302,11 @@ export const imageTools: ToolItem[] = [
     icon: <Image className="w-5 h-5" />,
     href: "/tools/imageTools/filters-effects",
   },
-  {
-    title: "Image to PDF Converter",
-    description: "Convert multiple images into a single PDF.",
-    icon: <FileText className="w-5 h-5" />,
-    href: "/tools/imageTools/image-to-pdf",
-  },
+  
   {
     title: "Image Metadata Viewer",
     description: "View or remove EXIF data from images.",
     icon: <FileText className="w-5 h-5" />,
     href: "/tools/imageTools/metadata-viewer",
-  },
-  {
-    title: "Screenshot Tool",
-    description: "Capture screenshots of webpages.",
-    icon: <Image className="w-5 h-5" />,
-    href: "/tools/imageTools/screenshot-tool",
-  },
-  {
-    title: "HTML to Image",
-    description: "Convert HTML content to a downloadable image.",
-    icon: <Image className="w-5 h-5" />,
-    href: "/tools/imageTools/html-to-image",
   },
 ];

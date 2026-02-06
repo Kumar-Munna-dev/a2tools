@@ -12,6 +12,7 @@ import {
   FileText,
 } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 /**
  * Simple minifiers (conservative)
@@ -300,14 +301,14 @@ export default function MinifierTool() {
   };
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-start justify-center p-4 sm:p-6">
-      <motion.div
+<motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45 }}
-        className="w-full max-w-4xl backdrop-blur-md bg-white/60 dark:bg-gray-800/60 rounded-3xl shadow-xl p-5 sm:p-8 border border-white/30 dark:border-gray-700"
+        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-500"
       >
-        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">
+        <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
           Code Minifier – Minify HTML, CSS & JavaScript Online
         </h1>
 
@@ -318,7 +319,7 @@ export default function MinifierTool() {
             <select
               value={type}
               onChange={(e) => setType(e.target.value as any)}
-              className="px-3 py-2 rounded border dark:border-gray-600 bg-gray-50 dark:bg-gray-700"
+              className="px-3 py-2 rounded border"
             >
               <option value="html">HTML</option>
               <option value="css">CSS</option>
@@ -385,7 +386,7 @@ export default function MinifierTool() {
         {/* Editor */}
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Input
             </label>
             <textarea
@@ -393,19 +394,19 @@ export default function MinifierTool() {
               onChange={(e) => setInput(e.target.value)}
               placeholder={`Paste your ${type.toUpperCase()} code here...`}
               rows={20}
-              className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-sm font-mono text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+              className="w-full p-3 rounded-lg border border-gray-300 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
             />
-            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="mt-2 text-xs">
               Input size: {input.length} characters
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Output (Minified)
             </label>
 
-            <div className="w-full min-h-[360px] p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-sm font-mono text-gray-900 dark:text-gray-100 overflow-auto whitespace-pre-wrap">
+            <div className="w-full min-h-[360px] p-3 rounded-lg border text-sm font-mono overflow-auto whitespace-pre-wrap">
               {output ? <pre className="whitespace-pre-wrap">{output}</pre> : <div className="text-center text-gray-500 dark:text-gray-400">Result will appear here after minify.</div>}
             </div>
 
@@ -454,7 +455,13 @@ export default function MinifierTool() {
             content="Your code never leaves your device. Everything runs client-side to ensure privacy and speed."
           />
         </div>
+        </div>
+              {/* Here Moblie card */}
+              <div className="order-2  sm:order-1">
+                <RelatedTools currentTool="Utility" />
+              </div>
       </motion.div>
-    </main>
+
+
   );
 }

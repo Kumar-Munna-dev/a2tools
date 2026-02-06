@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeftRight, RefreshCcw } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 interface Rates {
   [key: string]: number;
@@ -186,34 +187,34 @@ const currencyNames: Record<string, string> = {
   }
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-green-100 via-blue-100 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-6">
-      <motion.div
+  <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-3xl w-full backdrop-blur-md bg-white/40 dark:bg-gray-800/60 rounded-3xl shadow-xl p-8 border border-white/30 dark:border-gray-700"
+        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
       >
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
+        <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        <h1 className="text-3xl font-bold text-center mb-8">
           Currency Converter – Convert Exchange Rates Online
         </h1>
 
         {/* Conversion Inputs */}
         <div className="grid sm:grid-cols-3 gap-4 items-center mb-8">
           {/* From */}
-          <div className="p-4 rounded-xl bg-white/60 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-inner">
-            <label className="text-sm text-gray-600 dark:text-gray-300 mb-1 block">
+          <div className="p-4 rounded-xl border border-gray-200  shadow-inner">
+            <label className="text-sm  mb-1 block">
               From
             </label>
             <input
               type="number"
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
-              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-2 outline-none focus:ring-2 focus:ring-green-400"
+              className="w-full p-2 rounded-lg border   mb-2 outline-none focus:ring-2 focus:ring-green-400"
             />
             <select
               value={fromCurrency}
               onChange={(e) => setFromCurrency(e.target.value)}
-              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50  text-gray-800"
             >
               {Object.keys(currencyNames).map((code) => (
                 <option key={code} value={code}>
@@ -228,22 +229,22 @@ const currencyNames: Record<string, string> = {
             <motion.button
               whileTap={{ rotate: 180, scale: 0.9 }}
               onClick={handleSwap}
-              className="p-4 bg-linear-to-r from-green-500 to-blue-500 text-white rounded-full shadow-lg hover:shadow-2xl transition-all"
+              className="p-4 bg-indigo-600 hover:bg-indigo-400 text-slate-50 rounded-full shadow-lg hover:shadow-2xl transition-all"
             >
               <ArrowLeftRight className="h-6 w-6" />
             </motion.button>
           </div>
 
           {/* To */}
-          <div className="p-4 rounded-xl bg-white/60 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-inner">
-            <label className="text-sm text-gray-600 dark:text-gray-300 mb-1 block">
+          <div className="p-4 rounded-xl border border-slate-200 shadow-inner">
+            <label className="text-sm mb-1 block">
               To
             </label>
             <input
               type="text"
               readOnly
               value={formatNumber(result)}
-              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-2 outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full p-2 rounded-lg border  mb-2 outline-none focus:ring-2 focus:ring-blue-400"
             />
             <select
               value={toCurrency}
@@ -296,7 +297,11 @@ const currencyNames: Record<string, string> = {
             content="Supports all major world currencies including USD, EUR, INR, GBP, JPY, CAD, AUD, CNY, AED, SAR, and more."
           />
         </div>
+        </div>
+              <div className="order-2  sm:order-1">
+                <RelatedTools currentTool="Utility" />
+              </div>
       </motion.div>
-    </main>
+
   );
 }

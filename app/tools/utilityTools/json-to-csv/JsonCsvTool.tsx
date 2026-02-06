@@ -11,6 +11,7 @@ import {
   Zap,
 } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 function escapeCsvField(value: any, delimiter = ",") {
   if (value === null || value === undefined) return "";
@@ -150,35 +151,33 @@ Ravi,35,Mumbai`;
   };
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-start justify-center p-3 sm:p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-5xl backdrop-blur-lg bg-white/60 dark:bg-gray-800/60 rounded-3xl shadow-lg p-4 sm:p-8 border border-white/30 dark:border-gray-700"
-      >
-        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+    >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
           JSON to CSV Converter – Convert JSON Data into CSV
         </h1>
 
         {/* Controls */}
         <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6">
           <button
-            className={`px-4 py-2 rounded-full font-semibold ${
-              mode === "json-to-csv"
+            className={`px-4 py-2 rounded-full font-semibold ${mode === "json-to-csv"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-            }`}
+              }`}
             onClick={() => setMode("json-to-csv")}
           >
             JSON → CSV
           </button>
           <button
-            className={`px-4 py-2 rounded-full font-semibold ${
-              mode === "csv-to-json"
+            className={`px-4 py-2 rounded-full font-semibold ${mode === "csv-to-json"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-            }`}
+              }`}
             onClick={() => setMode("csv-to-json")}
           >
             CSV → JSON
@@ -187,7 +186,7 @@ Ravi,35,Mumbai`;
           <select
             value={delimiter}
             onChange={(e) => setDelimiter(e.target.value)}
-            className="px-3 py-2 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100"
+            className="px-3 py-2 rounded-lg border "
           >
             <option value=",">Comma (,)</option>
             <option value=";">Semicolon (;)</option>
@@ -195,7 +194,7 @@ Ravi,35,Mumbai`;
           </select>
 
           {mode === "json-to-csv" ? (
-            <label className="text-sm flex items-center gap-2 text-gray-800 dark:text-gray-300">
+            <label className="text-sm flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={includeHeaders}
@@ -204,7 +203,7 @@ Ravi,35,Mumbai`;
               Include headers
             </label>
           ) : (
-            <label className="text-sm flex items-center gap-2 text-gray-800 dark:text-gray-300">
+            <label className="text-sm flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={hasHeaders}
@@ -231,7 +230,7 @@ Ravi,35,Mumbai`;
             onClick={() =>
               setInput(mode === "json-to-csv" ? sampleJson : sampleCsv)
             }
-            className="px-3 py-2 bg-gray-300 dark:bg-gray-700 rounded-lg text-gray-800 dark:text-gray-200"
+            className="px-3 py-2 border rounded-lg"
           >
             Sample
           </button>
@@ -241,7 +240,7 @@ Ravi,35,Mumbai`;
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Input */}
           <div>
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+            <label className="block text-sm font-semibold mb-2">
               {mode === "json-to-csv" ? "Input (JSON Array)" : "Input (CSV)"}
             </label>
             <textarea
@@ -251,16 +250,16 @@ Ravi,35,Mumbai`;
               placeholder={
                 mode === "json-to-csv" ? sampleJson : sampleCsv
               }
-              className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-sm font-mono text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-400 outline-none resize-none"
+              className="w-full p-3 rounded-lg border  text-sm font-mono focus:ring-2 focus:ring-blue-400 outline-none resize-none"
             />
           </div>
 
           {/* Output */}
           <div>
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+            <label className="block text-sm font-semibold mb-2">
               {mode === "json-to-csv" ? "Output (CSV)" : "Output (JSON)"}
             </label>
-            <div className="min-h-[200px] max-h-[360px] overflow-auto w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-sm font-mono text-gray-900 dark:text-gray-100 whitespace-pre-wrap">
+            <div className="min-h-[200px] max-h-[360px] overflow-auto w-full p-3 rounded-lg border  text-sm font-mono whitespace-pre-wrap">
               {error ? (
                 <div className="text-red-600 dark:text-red-400">
                   ❌ {error}
@@ -268,7 +267,7 @@ Ravi,35,Mumbai`;
               ) : output ? (
                 <pre>{output}</pre>
               ) : (
-                <div className="text-gray-500 dark:text-gray-400 text-center">
+                <div className="text-center">
                   Result will appear here.
                 </div>
               )}
@@ -327,7 +326,11 @@ Ravi,35,Mumbai`;
             content="Everything runs locally in your browser — no data is uploaded or stored. Safe and private for sensitive data."
           />
         </div>
-      </motion.div>
-    </main>
+      </div>
+      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Utility" />
+      </div>
+    </motion.div>
   );
 }

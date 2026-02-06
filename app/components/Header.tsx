@@ -1,9 +1,11 @@
- "use client";
+"use client";
 
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, Menu, X } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
+
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
@@ -23,9 +25,9 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-md">
+    <header className="fixed top-0 w-full z-50  dark:bg-slate-950 backdrop-blur-md border-b  dark:border-slate-800 shadow-md">
       <div className="max-w mx-auto flex items-center justify-between px-4 h-16">
-        
+
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="w-9 h-9 relative">
@@ -40,7 +42,7 @@ export default function Header() {
             <Link
               key={item.label}
               href={item.href}
-              className="text-md font-bold text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:text-lg dark:hover:text-cyan-400"
+              className="text-md font-bold  dark:text-slate-400 hover:text-indigo-400 hover:text-lg"
             >
               {item.label}
             </Link>
@@ -52,16 +54,11 @@ export default function Header() {
               ref={searchRef}
               type="search"
               placeholder="Search..."
-              className="pl-8 pr-3 py-1.5 text-sm border rounded-full bg-white/80 dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="pl-8 pr-3 py-1.5 text-sm border rounded-2xl dark:bg-slate-950 dark:text-slate-100 outline-none"
             />
           </form>
 
-          <Link
-            href="/request-tool"
-            className="px-4 py-2 text-white text-sm font-semibold rounded-full bg-gradient-to-r from-indigo-600 to-blue-500 hover:scale-105 transition"
-          >
-            Request Tool
-          </Link>
+          <ThemeToggle />
         </nav>
 
         {/* Mobile Button */}
@@ -75,14 +72,14 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800">
+        <div className="md:hidden dark:bg-slate-950">
           <div className="p-4 space-y-3">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="block text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400"
+                className="block dark:text-slate-100 hover:text-blue-600 dark:hover:text-cyan-400"
               >
                 {item.label}
               </Link>
@@ -94,17 +91,11 @@ export default function Header() {
                 ref={searchRef}
                 type="search"
                 placeholder="Search..."
-                className="w-full pl-8 pr-3 py-2 text-sm border rounded-full bg-white/80 dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full pl-8 pr-3 py-2 text-sm border rounded-full dark:bg-slate-950 focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </form>
 
-            <Link
-              href="/request-tool"
-              onClick={() => setOpen(false)}
-              className="block text-center px-4 py-2 bg-linear-to-r from-indigo-600 to-blue-500 text-white rounded-full hover:scale-105 transition"
-            >
-              Request Tool
-            </Link>
+            <ThemeToggle />
           </div>
         </div>
       )}

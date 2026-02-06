@@ -1,5 +1,6 @@
 "use client";
 
+import RelatedTools from "@/app/components/RelatedTools";
 import Head from "next/head";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -70,44 +71,15 @@ export default function BasicCalculator() {
 
   return (
     <>
-      <Head>
-        <title>Basic Calculator Online - Free Calculator Tool | a2tool.com</title>
-        <meta
-          name="description"
-          content="Use the Basic Calculator online to quickly perform addition, subtraction, multiplication, and division. Accurate, mobile-friendly, and easy to use from a2tool.com."
-        />
-        <meta
-          name="keywords"
-          content="basic calculator, online calculator, math calculator, arithmetic calculator, simple calculator, a2tool calculator"
-        />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://a2tool.com/tools/calculatorTools/basic-calculator" />
-        <meta property="og:title" content="Basic Calculator Online | Free Calculator Tool" />
-        <meta
-          property="og:description"
-          content="Perform basic arithmetic operations like addition, subtraction, multiplication, and division using our free online calculator tool."
-        />
-        <meta
-          property="og:image"
-          content="https://a2tool.com/assets/og-basic-calculator.jpg"
-        />
-        <meta property="og:url" content="https://a2tool.com/tools/calculatorTools/basic-calculator" />
-      </Head>
-
-      <main className="min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-100 via-blue-50 to-cyan-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
+      <main className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100">
         <section
-          className="bg-transparent rounded-2xl shadow-2xl p-5 w-full max-w-md md:max-w-sm mt-10"
+          className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2"
           aria-label="Online Basic Calculator"
         >
-          <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-4">
+          <h1 className="text-3xl font-bold text-center  dark:text-slate-100 mb-4">
             Basic Calculator Online
           </h1>
 
-          <p className="text-gray-600 dark:text-gray-300 text-center mb-6 leading-relaxed">
-            Use our <strong>free online basic calculator</strong> to perform quick math operations
-            like <em>addition (+)</em>, <em>subtraction (−)</em>, <em>multiplication (×)</em>, and{" "}
-            <em>division (÷)</em>. It’s fast, accurate, and works on all devices — from desktop to mobile.
-          </p>
 
           <div className="mb-4">
             <input
@@ -116,7 +88,7 @@ export default function BasicCalculator() {
               readOnly
               value={display}
               aria-label="Calculator display"
-              className="w-full p-3 text-right text-2xl font-mono bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 overflow-x-auto whitespace-nowrap"
+              className="w-full p-3 text-right text-2xl font-mono dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 overflow-x-auto whitespace-nowrap"
               style={{ caretColor: "transparent" }}
             />
           </div>
@@ -128,11 +100,10 @@ export default function BasicCalculator() {
                 <button
                   key={btn}
                   onClick={() => handleClick(btn)}
-                  className={`py-3 md:py-4 px-2 rounded-lg text-base md:text-lg font-semibold transition-transform transform active:scale-95 shadow-sm ${
-                    isOp
+                  className={`py-3 md:py-4 px-2 rounded-lg border text-base md:text-lg font-semibold transition-transform transform active:scale-95 shadow-sm ${isOp
                       ? "bg-blue-500 hover:bg-blue-600 text-white"
-                      : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100"
-                  }`}
+                      : " dark:bg-gray-800 dark:hover:bg-gray-100 dark:text-gray-50"
+                    }`}
                 >
                   {btn === "/" ? "÷" : btn === "*" ? "×" : btn}
                 </button>
@@ -155,7 +126,7 @@ export default function BasicCalculator() {
           </div>
 
           {/* ✅ SEO Content Section */}
-          <div className="mt-8 text-gray-700 dark:text-gray-300 space-y-4">
+          <div className="mt-8 dark:text-slate-300 space-y-4">
             <h2 className="text-xl font-semibold">What is a Basic Calculator?</h2>
             <p>
               A <strong>basic calculator</strong> is a simple mathematical tool that allows you to
@@ -196,6 +167,9 @@ export default function BasicCalculator() {
               Once loaded in your browser, it can work even if you go offline temporarily.
             </p>
           </div>
+        </section>
+        <section className="order-2  sm:order-1 justify-center">
+          <RelatedTools currentTool="Calculator" />
         </section>
       </main>
     </>

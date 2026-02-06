@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Copy, RefreshCcw, Droplet, Palette } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
+import RelatedTools from "@/app/components/RelatedTools";
 
 /* ---------------------- Utilities ---------------------- */
 async function copyToClipboard(text: string) {
@@ -80,7 +81,7 @@ function hslToRgb(h: number, s: number, l: number) {
   else if (h < 180) [r, g, b] = [0, c, x];
   else if (h < 240) [r, g, b] = [0, x, c];
   else if (h < 300) [r, g, b] = [x, 0, c];
-  else [r, g, b] = [c, 0, x];
+  else[r, g, b] = [c, 0, x];
   return { r: Math.round((r + m) * 255), g: Math.round((g + m) * 255), b: Math.round((b + m) * 255) };
 }
 
@@ -98,7 +99,7 @@ export default function ColorConverterPicker() {
       const { h, s, l } = rgbToHsl(r, g, b);
       setHsl(`hsl(${h}, ${s}%, ${l}%)`);
       setHex(value);
-    } catch {}
+    } catch { }
   };
 
   const updateFromRgb = (value: string) => {
@@ -110,7 +111,7 @@ export default function ColorConverterPicker() {
       const { h, s, l } = rgbToHsl(r, g, b);
       setHsl(`hsl(${h}, ${s}%, ${l}%)`);
       setRgb(value);
-    } catch {}
+    } catch { }
   };
 
   const updateFromHsl = (value: string) => {
@@ -122,7 +123,7 @@ export default function ColorConverterPicker() {
       setRgb(`rgb(${r}, ${g}, ${b})`);
       setHex(rgbToHex(r, g, b));
       setHsl(value);
-    } catch {}
+    } catch { }
   };
 
   const handleCopy = async (text: string, label: string) => {
@@ -136,14 +137,14 @@ export default function ColorConverterPicker() {
   const reset = () => updateFromHex("#FF5733");
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-pink-50 via-blue-50 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex justify-center p-4 sm:p-8">
-      <motion.div
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-4xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg rounded-3xl shadow-xl p-5 sm:p-8 border border-white/40 dark:border-gray-700"
-      >
-        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+    >
+      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
           Color Converter & Picker – Convert and Pick Colors Instantly
         </h1>
 
@@ -153,7 +154,7 @@ export default function ColorConverterPicker() {
             type="color"
             value={hex}
             onChange={(e) => updateFromHex(e.target.value)}
-            className="w-24 h-24 rounded-full border-4 border-gray-300 dark:border-gray-600 shadow-md cursor-pointer"
+            className="w-24 h-24 rounded-full border-4 shadow-md cursor-pointer"
           />
           <div
             className="w-full h-16 rounded-xl border border-gray-300 dark:border-gray-600 shadow-inner transition-all"
@@ -164,18 +165,18 @@ export default function ColorConverterPicker() {
         {/* Input Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           {/* HEX */}
-          <div className="flex flex-col p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <label className="text-sm font-semibold mb-1 text-gray-800 dark:text-gray-200">
+          <div className="flex flex-col p-4 rounded-xl border">
+            <label className="text-sm font-semibold mb-1 ">
               HEX
             </label>
             <input
               value={hex}
               onChange={(e) => updateFromHex(e.target.value)}
-              className="w-full text-center p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 font-mono"
+              className="w-full text-center p-2 rounded border border-slate-200 font-mono"
             />
             <button
               onClick={() => handleCopy(hex, "HEX")}
-              className="mt-2 text-sm px-3 py-1 bg-blue-600 text-white rounded-full"
+              className="mt-2 text-sm px-3 py-1 bg-indigo-600 text-white rounded-full"
             >
               <Copy className="inline h-4 w-4 mr-1" />
               {copied === "HEX" ? "Copied" : "Copy"}
@@ -183,14 +184,14 @@ export default function ColorConverterPicker() {
           </div>
 
           {/* RGB */}
-          <div className="flex flex-col p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <label className="text-sm font-semibold mb-1 text-gray-800 dark:text-gray-200">
+          <div className="flex flex-col p-4 border rounded-xl">
+            <label className="text-sm font-semibold mb-1">
               RGB
             </label>
             <input
               value={rgb}
               onChange={(e) => updateFromRgb(e.target.value)}
-              className="w-full text-center p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 font-mono"
+              className="w-full text-center p-2 rounded border border-gray-300 font-mono"
             />
             <button
               onClick={() => handleCopy(rgb, "RGB")}
@@ -202,14 +203,14 @@ export default function ColorConverterPicker() {
           </div>
 
           {/* HSL */}
-          <div className="flex flex-col p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <label className="text-sm font-semibold mb-1 text-gray-800 dark:text-gray-200">
+          <div className="flex flex-col p-4 border rounded-xl">
+            <label className="text-sm font-semibold mb-1">
               HSL
             </label>
             <input
               value={hsl}
               onChange={(e) => updateFromHsl(e.target.value)}
-              className="w-full text-center p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 font-mono"
+              className="w-full text-center p-2 rounded border border-gray-300 font-mono"
             />
             <button
               onClick={() => handleCopy(hsl, "HSL")}
@@ -254,7 +255,11 @@ export default function ColorConverterPicker() {
             content="This color converter runs completely offline in your browser — no data is sent to any server."
           />
         </div>
-      </motion.div>
-    </main>
+      </div>      {/* Here Moblie card */}
+      <div className="order-2  sm:order-1">
+        <RelatedTools currentTool="Utility" />
+      </div>
+    </motion.div>
+
   );
 }

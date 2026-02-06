@@ -66,9 +66,9 @@ export default function TextToSpeechTTS() {
 
   return (
     <div className="flex flex-col items-center mb-5 mt-20 sm:flex-row sm:items-start ">
-      <div className="w-screen order-1 bg-white shadow-md rounded-2xl p-6 sm:order-2">
+      <div className="w-screen order-1 dark:bg-slate-950 shadow-md rounded-2xl p-6 sm:order-2">
         <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-4">Text to Speech (TTS)</h1>
-        <p className="text-sm text-gray-600 text-center mb-4">Convert your text into natural-sounding speech with multiple voice models.</p>
+        <p className="text-sm dark:text-slate-100 text-center mb-4">Convert your text into natural-sounding speech with multiple voice models.</p>
 
         {/* Text Area */}
         <textarea
@@ -80,7 +80,7 @@ export default function TextToSpeechTTS() {
 
         {/* Voice Selection */}
         <div className="mt-4">
-          <label className="text-sm font-medium text-gray-700">Voice Model:</label>
+          <label className="text-sm font-medium dark:text-slate-100">Voice Model:</label>
           <select
             value={selectedVoice}
             onChange={(e) => setSelectedVoice(e.target.value)}
@@ -97,7 +97,7 @@ export default function TextToSpeechTTS() {
         {/* Pitch & Speed Controls */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
           <div>
-            <label className="text-sm font-medium text-gray-700">Pitch: {pitch}</label>
+            <label className="text-sm font-medium dark:text-slate-100">Pitch: {pitch}</label>
             <input
               type="range"
               min="0.5"
@@ -110,7 +110,7 @@ export default function TextToSpeechTTS() {
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700">Speed: {rate}</label>
+            <label className="text-sm font-medium dark:text-slate-100">Speed: {rate}</label>
             <input
               type="range"
               min="0.5"
@@ -152,7 +152,7 @@ export default function TextToSpeechTTS() {
       </div>
       {/* Here Moblie card */}
       <div className="w-max order-2 flex p-5 items-center justify-center sm:order-1" >
-        <RelatedTools currentTool="/tools/textTools/word-counter" />
+        <RelatedTools currentTool="Text" />
       </div>
     </div>
   );
