@@ -8,21 +8,21 @@ export default function AboutPage() {
   return (
     <>
       {/* ==== HERO ==== */}
-      <section className="relative overflow-hidden bg-linear-to-br from-blue-900 via-blue-800 to-indigo-900 text-white">
+      <section className="relative overflow-hidden dark:bg-slate-950 dark:text-slate-50">
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply blur-3xl opacity-30"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply blur-3xl opacity-30"></div>
+          <div className="absolute top-20 left-20 w-72 h-72 rounded-full mix-blend-multiply blur-3xl opacity-30"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96  rounded-full mix-blend-multiply blur-3xl opacity-30"></div>
         </div>
 
         <div className="relative container mx-auto px-6 py-24 md:py-32 text-center max-w-4xl">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
             Welcome to{' '}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-300">
+            <span className="text-transparent bg-clip-text">
               A2Tool
             </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
+          <p className="text-xl md:text-2xl mb-8 leading-relaxed">
             Empowering developers and businesses with cutting-edge tools that simplify workflows,
             boost productivity, and drive innovation.
           </p>
@@ -30,7 +30,7 @@ export default function AboutPage() {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="/tools"
-              className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 transition-colors rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg"
+              className="px-8 py-3 transition-colors rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg"
             >
               Explore Tools <ArrowRight className="w-5 h-5" />
             </a>
@@ -45,30 +45,30 @@ export default function AboutPage() {
       </section>
 
       {/* ==== MISSION & VISION ==== */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 ">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            <div className="bg-white p-8 rounded-2xl shadow-xl">
+            <div className=" p-8 rounded-2xl shadow-xl">
               <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-linear-to-br from-blue-500 to-blue-600 rounded-xl">
-                  <Target className="w-8 h-8 text-white" />
+                <div className="p-3  rounded-xl">
+                  <Target className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800">Our Mission</h3>
+                <h3 className="text-2xl font-bold ">Our Mission</h3>
               </div>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="leading-relaxed">
                 To deliver intuitive, reliable, and powerful tools that remove complexity from
                 development and help teams focus on building amazing products.
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-xl">
+            <div className="p-8 rounded-2xl shadow-xl">
               <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-linear-to-br from-purple-500 to-indigo-600 rounded-xl">
+                <div className="p-3 rounded-xl">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800">Our Vision</h3>
+                <h3 className="text-2xl font-bold">Our Vision</h3>
               </div>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="leading-relaxed">
                 A world where every developer has access to smart, efficient, and beautifully
                 crafted tools that accelerate creativity without limits.
               </p>
@@ -78,12 +78,12 @@ export default function AboutPage() {
       </section>
 
       {/* ==== CORE VALUES ==== */}
-      <section className="py-20 bg-white">
+      <section className="py-20">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+          <h2 className="text-4xl font-bold mb-4">
             Core Values That Drive Us
           </h2>
-          <p className="text-lg text-gray-600 mb-16 max-w-2xl mx-auto">
+          <p className="text-lg  mb-16 max-w-2xl mx-auto">
             Everything we build is rooted in principles that ensure quality, trust, and impact.
           </p>
 
@@ -107,13 +107,13 @@ export default function AboutPage() {
             ].map((v, i) => (
               <div
                 key={i}
-                className="group p-8 bg-linear-to-br from-gray-50 to-gray-100 rounded-2xl hover:shadow-2xl transition-shadow border border-gray-200"
+                className="group p-8 rounded-2xl hover:shadow-2xl transition-shadow border border-gray-200"
               >
                 <div className="inline-flex p-4 bg-linear-to-br from-blue-500 to-cyan-500 text-white rounded-xl mb-6 group-hover:scale-110 transition-transform">
                   {v.icon}
                 </div>
-                <h4 className="text-xl font-bold text-gray-800 mb-3">{v.title}</h4>
-                <p className="text-gray-600">{v.desc}</p>
+                <h4 className="text-xl fo mb-3">{v.title}</h4>
+                <p className="">{v.desc}</p>
               </div>
             ))}
           </div>
@@ -121,13 +121,13 @@ export default function AboutPage() {
       </section>
 
       {/* ==== FINAL CTA ==== */}
-      <section className="py-20 bg-linear-to-r from-indigo-600 to-blue-700 text-white">
+      <section className="py-20">
         <div className="container mx-auto px-6 text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-4xl font-bold mb-6">
               Ready to Transform Your Workflow?
             </h2>
-            <p className="text-xl mb-8 text-blue-100">
+            <p className="text-xl mb-8">
               Join thousands of developers who trust A2Tool to supercharge their projects.
             </p>
             <a

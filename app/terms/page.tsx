@@ -17,31 +17,31 @@ export default function TermsPage() {
   return (
     <>
       {/* ==== HERO SECTION ==== */}
-      <section className="relative bg-linear-to-br from-blue-900 via-indigo-800 to-purple-900 text-white py-24">
-        <div className="absolute inset-0 bg-black opacity-40"></div>
+      <section className="relative dark:bg-slate-950 dark:text-slate-50 py-24">
+        <div className="absolute inset-0"></div>
 
         <div className="relative container mx-auto px-6 text-center max-w-4xl">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
             Terms of Service
           </h1>
-          <p className="text-xl md:text-2xl text-blue-100 mb-8 animate-slide-up animation-delay-200">
+          <p className="text-xl md:text-2xl  mb-8 animate-slide-up animation-delay-200">
             Last updated: <strong>November 5, 2025</strong>
           </p>
-          <p className="text-lg text-blue-200 animate-slide-up animation-delay-400">
+          <p className="text-lg animate-slide-up animation-delay-400">
             By using A2Tool, you agree to these terms. Please read them carefully.
           </p>
         </div>
       </section>
 
       {/* ==== MAIN CONTENT ==== */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20">
         <div className="container mx-auto px-6 max-w-4xl">
-          <article className="prose prose-lg max-w-none text-gray-700 space-y-12">
+          <article className="prose prose-lg max-w-none space-y-12">
 
             {/* 1. Acceptance */}
             <div className="animate-fade-in animation-delay-600">
-              <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-4">
-                <FileText className="w-7 h-7 text-cyan-600" />
+              <h2 className="flex items-center gap-3 text-2xl font-bold  mb-4">
+                <FileText className="w-7 h-7 " />
                 1. Acceptance of Terms
               </h2>
               <p>
@@ -56,7 +56,7 @@ export default function TermsPage() {
 
             {/* 2. Use of Service */}
             <div className="animate-slide-up animation-delay-800">
-              <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-4">
+              <h2 className="flex items-center gap-3 text-2xl font-bold mb-4">
                 <Shield className="w-7 h-7 text-green-600" />
                 2. Permitted Use
               </h2>
@@ -72,7 +72,7 @@ export default function TermsPage() {
 
             {/* 3. Prohibited Activities */}
             <div className="animate-fade-in animation-delay-1000">
-              <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-4">
+              <h2 className="flex items-center gap-3 text-2xl font-bold  mb-4">
                 <AlertCircle className="w-7 h-7 text-red-600" />
                 3. Prohibited Activities
               </h2>
@@ -87,7 +87,7 @@ export default function TermsPage() {
 
             {/* 4. Privacy & Data */}
             <div className="animate-slide-up animation-delay-1200">
-              <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-4">
+              <h2 className="flex items-center gap-3 text-2xl font-bold  mb-4">
                 <Clock className="w-7 h-7 text-indigo-600" />
                 4. Privacy & Data Processing
               </h2>
@@ -106,7 +106,7 @@ export default function TermsPage() {
 
             {/* 5. Intellectual Property */}
             <div className="animate-fade-in animation-delay-1400">
-              <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-4">
+              <h2 className="flex items-center gap-3 text-2xl font-bold mb-4">
                 <Shield className="w-7 h-7 text-purple-600" />
                 5. Intellectual Property
               </h2>
@@ -118,7 +118,7 @@ export default function TermsPage() {
 
             {/* 6. Limitation of Liability */}
             <div className="animate-slide-up animation-delay-1600">
-              <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-4">
+              <h2 className="flex items-center gap-3 text-2xl font-bold mb-4">
                 <AlertCircle className="w-7 h-7 text-orange-600" />
                 6. Limitation of Liability
               </h2>
@@ -130,7 +130,7 @@ export default function TermsPage() {
 
             {/* 7. Changes to Terms */}
             <div className="animate-fade-in animation-delay-1800">
-              <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-4">
+              <h2 className="flex items-center gap-3 text-2xl font-bold mb-4">
                 <FileText className="w-7 h-7 text-teal-600" />
                 7. Changes to Terms
               </h2>
@@ -141,14 +141,14 @@ export default function TermsPage() {
             </div>
 
             {/* 8. Contact */}
-            <div className="animate-slide-up animation-delay-2000 p-6 bg-blue-50 rounded-xl border border-blue-200">
-              <h2 className="flex items-center gap-3 text-xl font-bold text-gray-800 mb-3">
+            <div className="animate-slide-up animation-delay-2000 p-6 rounded-xl border border-blue-200">
+              <h2 className="flex items-center gap-3 text-xl font-bold  mb-3">
                 <Mail className="w-6 h-6 text-blue-600" />
                 Questions?
               </h2>
               <p>
                 Contact us at{' '}
-                <a href="mailto:support@a2tool.com" className="text-cyan-600 hover:underline font-medium">
+                <a href="mailto:support@a2tool.com" className="hover:underline font-medium">
                   support@a2tool.com
                 </a>
               </p>

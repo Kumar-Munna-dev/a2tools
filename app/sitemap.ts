@@ -29,9 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://a2tool.com/tools/imageTools/rotator-flipper/', lastModified },
     { url: 'https://a2tool.com/tools/imageTools/watermark-tool/', lastModified },
     { url: 'https://a2tool.com/tools/imageTools/filters-effects/', lastModified },
-    { url: 'https://a2tool.com/tools/imageTools/image-to-pdf/', lastModified },
     { url: 'https://a2tool.com/tools/imageTools/metadata-viewer/', lastModified },
-    { url: 'https://a2tool.com/tools/imageTools/screenshot-tool/', lastModified },
     { url: 'https://a2tool.com/tools/imageTools/html-to-image/', lastModified },
 
     // Utility Tools
