@@ -1,27 +1,15 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
-  Plus,
-  Download,
-  Trash2,
-  Type,
-  Image as ImageIcon,
   Settings2,
-  Move,
-  Eye,
-  Github,
   Maximize2,
-  RefreshCw,
   LayoutGrid
 } from 'lucide-react';
 import { ImageFile, WatermarkConfig } from '@/app/types';
 import Sidebar from '@/app/components/Sidebar';
 import CanvasPreview from '@/app/components/CanvasPreview';
 import ImageDropzone from '@/app/components/ImageDropzone';
-
-
-
 
 const DEFAULT_CONFIG: WatermarkConfig = {
   type: 'text',
@@ -43,7 +31,9 @@ export default function App() {
   const [logoImage, setLogoImage] = useState<ImageFile | null>(null);
   const [config, setConfig] = useState<WatermarkConfig>(DEFAULT_CONFIG);
   const [isExporting, setIsExporting] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  
+  // FIX: Use null! to satisfy strict TypeScript RefObject requirements
+  const canvasRef = useRef<HTMLCanvasElement>(null!);
 
   const handleImageUpload = (file: File, type: 'source' | 'logo') => {
     const reader = new FileReader();
@@ -71,67 +61,62 @@ export default function App() {
     reader.readAsDataURL(file);
   };
 
-
   const downloadImage = () => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !sourceImage) return;
     setIsExporting(true);
 
-    // Small delay to show feedback if needed, but usually instant
-    setTimeout(() => {
+    try {
       const link = document.createElement('a');
-      link.download = `watermarked-${sourceImage?.file.name || 'image'}.png`;
-      link.href = canvasRef.current!.toDataURL('image/png', 1.0);
+      const originalName = sourceImage.file.name.split('.')[0];
+      link.download = `watermarked-${originalName}.png`;
+      link.href = canvasRef.current.toDataURL('image/png', 1.0);
       link.click();
+    } catch (err) {
+      console.error("Export failed", err);
+    } finally {
       setIsExporting(false);
-    }, 100);
-  };
-
-  const resetAll = () => {
-    setSourceImage(null);
-    setLogoImage(null);
-    setConfig(DEFAULT_CONFIG);
+    }
   };
 
   return (
-    <div className="mt-20 flex flex-col h-screen dark:bg-slate-950 overflow-hidden ">
-
-
-      <main className="flex-1 flex overflow-hidden">
+    <div className="min-h-screen flex flex-col dark:bg-slate-950 dark:text-slate-50 overflow-x-hidden">
+      <main className="flex-1 flex flex-col md:flex-row overflow-hidden pt-20">
+        
         {/* Workspace Area */}
-        <div className="flex-1 relative flex items-center justify-center md: dark:bg-slate-800 ">
+        <div className="flex-1 relative flex items-center justify-center  p-4 overflow-auto">
           {!sourceImage ? (
-            <div className="max-w-xl w-full">
+            <div className="max-w-xl w-full px-4">
               <ImageDropzone
                 onFileSelect={(file) => handleImageUpload(file, 'source')}
               />
 
               <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div className="space-y-2">
-                  <div className="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center mx-auto">
+                  <div className="w-10 h-10 rounded-lg shadow-sm flex items-center justify-center mx-auto">
                     <LayoutGrid className="w-5 h-5 text-indigo-500" />
                   </div>
-                  <h3 className="font-medium dark:text-slate-800">Batch Ready</h3>
-                  <p className="text-xs text-slate-500">Fast processing for high-res images</p>
+                  <h3 className="font-medium text-sm">Batch Ready</h3>
+                  <p className="text-xs ">Fast processing for high-res images</p>
                 </div>
                 <div className="space-y-2">
-                  <div className="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center mx-auto">
+                  <div className="w-10 h-10  rounded-lg shadow-sm flex items-center justify-center mx-auto">
                     <Maximize2 className="w-5 h-5 text-indigo-500" />
                   </div>
-                  <h3 className="font-medium dark:text-slate-800">Full Resolution</h3>
-                  <p className="text-xs text-slate-500">No compression during watermarking</p>
+                  <h3 className="font-medium text-sm">Full Resolution</h3>
+                  <p className="text-xs ">No compression during watermarking</p>
                 </div>
                 <div className="space-y-2">
-                  <div className="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center mx-auto">
+                  <div className="w-10 h-10 rounded-lg shadow-sm flex items-center justify-center mx-auto">
                     <Settings2 className="w-5 h-5 text-indigo-500" />
                   </div>
-                  <h3 className="font-medium dark:text-slate-800">Pro Controls</h3>
-                  <p className="text-xs text-slate-500">Fine-tune every single pixel</p>
+                  <h3 className="font-medium text-sm">Pro Controls</h3>
+                  <p className="text-xs">Fine-tune every single pixel</p>
                 </div>
               </div>
             </div>
           ) : (
-            <div className=' ' >
-              <div className="w-full flex items-center justify-center overflow-auto shadow-2xl shadow-cyan-950">
+            <div className="flex flex-col items-center w-full max-w-full">
+              <div className="w-full flex items-center justify-center shadow-2xl rounded-lg overflow-hidden border dark:border-slate-800">
                 <CanvasPreview
                   sourceImage={sourceImage}
                   logoImage={logoImage}
@@ -139,38 +124,38 @@ export default function App() {
                   canvasRef={canvasRef}
                 />
               </div>
-              <div className='flex h-100 w-full items-center justify-center custom-scrollbar  not-sr-only md:sr-only'>
-
+              
+              {/* Mobile Sidebar (Visible only on small screens) */}
+              <div className="w-full mt-6 md:hidden">
                 <Sidebar
                   config={config}
                   setConfig={setConfig}
                   logoImage={logoImage}
-                  onLogoUpload={(file) => handleImageUpload(file,'logo')}
+                  onLogoUpload={(file) => handleImageUpload(file, 'logo')}
                   onRemoveLogo={() => setLogoImage(null)}
                   onDownload={downloadImage}
                   isExporting={isExporting}
                 />
               </div>
             </div>
-
           )}
         </div>
 
-        {/* Controls Sidebar */}
-        <div className='flex sr-only md:not-sr-only'>{sourceImage && (
-          <Sidebar
-            config={config}
-            setConfig={setConfig}
-            logoImage={logoImage}
-            onLogoUpload={(file) => handleImageUpload(file, 'logo')}
-            onRemoveLogo={() => setLogoImage(null)}
-            onDownload={downloadImage}
-            isExporting={isExporting}
-          />
-        )}</div>
+        {/* Desktop Sidebar (Visible only on md+ screens) */}
+        {sourceImage && (
+          <aside className="hidden md:flex w-80 border-l dark:bg-slate-950 overflow-y-auto">
+            <Sidebar
+              config={config}
+              setConfig={setConfig}
+              logoImage={logoImage}
+              onLogoUpload={(file) => handleImageUpload(file, 'logo')}
+              onRemoveLogo={() => setLogoImage(null)}
+              onDownload={downloadImage}
+              isExporting={isExporting}
+            />
+          </aside>
+        )}
       </main>
     </div>
   );
 }
-
-
