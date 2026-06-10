@@ -7,7 +7,7 @@ import ToolCard from "@/app/components/ToolCard";
 export default function CalculatorTools() {
   return (
     <>      {/* 🌈 Page Layout */}
-      <div className="min-h-screen bg-linear-to-br from-blue-100 via-indigo-100 to-cyan-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500">
+      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-100 to-cyan-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500">
         <div className="max-w-6xl mx-auto px-4 py-12">
           {/* 🧮 Header */}
           <h1 className="text-4xl font-extrabold text-center mb-6 mt-10 bg-linear-to-r from-blue-600 via-indigo-500 to-cyan-400 bg-clip-text text-transparent">

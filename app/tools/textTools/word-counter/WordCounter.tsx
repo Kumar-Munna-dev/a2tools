@@ -3,8 +3,8 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Clipboard, Trash2 } from "lucide-react";
-import { useToast } from "../../../components/ui/useToast ";
-import Button from "../../../components/ui/Button";
+import { useToast } from "../../../components/ui";
+import { Button } from "../../../components/ui";
 import RelatedTools from "@/app/components/RelatedTools";
 import { title } from "process";
 

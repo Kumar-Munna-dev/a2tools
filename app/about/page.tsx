@@ -1,144 +1,91 @@
-// app/about/page.tsx
-import { Building2, Users, Target, Sparkles, ArrowRight, CheckCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle, Users, Target, Sparkles } from "lucide-react";
 
-// Force static generation (SSG)
-export const dynamic = 'force-static';
+export const metadata = {
+  title: "About | A2Tool",
+  description:
+    "A2Tool offers easy browser-based PDF, image, text, and file utilities for simple, fast workflows.",
+};
+
+export const dynamic = "force-static";
 
 export default function AboutPage() {
   return (
-    <>
-      {/* ==== HERO ==== */}
-      <section className="relative overflow-hidden dark:bg-slate-950 dark:text-slate-50">
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-72 h-72 rounded-full mix-blend-multiply blur-3xl opacity-30"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96  rounded-full mix-blend-multiply blur-3xl opacity-30"></div>
-        </div>
-
-        <div className="relative container mx-auto px-6 py-24 md:py-32 text-center max-w-4xl">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Welcome to{' '}
-            <span className="text-transparent bg-clip-text">
-              A2Tool
-            </span>
-          </h1>
-
-          <p className="text-xl md:text-2xl mb-8 leading-relaxed">
-            Empowering developers and businesses with cutting-edge tools that simplify workflows,
-            boost productivity, and drive innovation.
+    <main className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+      <section className="container mx-auto px-6 py-16 max-w-5xl">
+        <div className="space-y-6">
+          <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
+            About A2Tool
           </p>
-
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <h1 className="text-4xl md:text-5xl font-bold">Simple online tools for every task.</h1>
+          <p className="max-w-3xl text-lg leading-8 text-slate-700 dark:text-slate-300">
+            A2Tool delivers clean, reliable utilities for PDFs, images, text, and files. Everything works instantly in your browser with no sign-up and no clutter.
+          </p>
+          <div className="flex flex-wrap gap-4">
             <a
               href="/tools"
-              className="px-8 py-3 transition-colors rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg"
+              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-white transition hover:bg-slate-800"
             >
-              Explore Tools <ArrowRight className="w-5 h-5" />
+              Browse tools <ArrowRight className="w-4 h-4" />
             </a>
             <a
               href="/contact"
-              className="px-8 py-3 border-2 border-cyan-400 hover:bg-cyan-400 hover:bg-opacity-20 transition-colors rounded-full font-semibold"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-slate-900 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
             >
-              Contact Us
+              Contact support
             </a>
           </div>
         </div>
-      </section>
 
-      {/* ==== MISSION & VISION ==== */}
-      <section className="py-20 ">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            <div className=" p-8 rounded-2xl shadow-xl">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3  rounded-xl">
-                  <Target className="w-8 h-8" />
-                </div>
-                <h3 className="text-2xl font-bold ">Our Mission</h3>
+        <section className="mt-16 grid gap-6 md:grid-cols-3">
+          {[
+            {
+              icon: <Target className="w-6 h-6" />,
+              title: "Focus",
+              desc: "Tools that keep every task simple and fast.",
+            },
+            {
+              icon: <Sparkles className="w-6 h-6" />,
+              title: "Quality",
+              desc: "Reliable results without unnecessary complexity.",
+            },
+            {
+              icon: <Users className="w-6 h-6" />,
+              title: "Friendly",
+              desc: "A clean interface built for everyone.",
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+            >
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white">
+                {item.icon}
               </div>
-              <p className="leading-relaxed">
-                To deliver intuitive, reliable, and powerful tools that remove complexity from
-                development and help teams focus on building amazing products.
-              </p>
+              <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+              <p className="text-slate-600 dark:text-slate-300">{item.desc}</p>
             </div>
+          ))}
+        </section>
 
-            <div className="p-8 rounded-2xl shadow-xl">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 rounded-xl">
-                  <Sparkles className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold">Our Vision</h3>
-              </div>
-              <p className="leading-relaxed">
-                A world where every developer has access to smart, efficient, and beautifully
-                crafted tools that accelerate creativity without limits.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ==== CORE VALUES ==== */}
-      <section className="py-20">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-4">
-            Core Values That Drive Us
-          </h2>
-          <p className="text-lg  mb-16 max-w-2xl mx-auto">
-            Everything we build is rooted in principles that ensure quality, trust, and impact.
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <section className="mt-16 space-y-6">
+          <h2 className="text-3xl font-bold">Why people choose A2Tool</h2>
+          <ul className="grid gap-4 sm:grid-cols-2">
             {[
-              {
-                icon: <CheckCircle className="w-10 h-10" />,
-                title: 'Reliability',
-                desc: 'Tools you can depend on, every single time.',
-              },
-              {
-                icon: <Users className="w-10 h-10" />,
-                title: 'Community',
-                desc: 'Built with and for developers worldwide.',
-              },
-              {
-                icon: <Building2 className="w-10 h-10" />,
-                title: 'Innovation',
-                desc: 'Pushing boundaries with modern solutions.',
-              },
-            ].map((v, i) => (
-              <div
-                key={i}
-                className="group p-8 rounded-2xl hover:shadow-2xl transition-shadow border border-gray-200"
+              "No signup required",
+              "Fast browser-based processing",
+              "Clear, friendly interface",
+              "Covering PDF, image, text, and file tools",
+            ].map((item, index) => (
+              <li
+                key={index}
+                className="rounded-3xl border border-slate-200 bg-white p-5 text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
               >
-                <div className="inline-flex p-4 bg-linear-to-br from-blue-500 to-cyan-500 text-white rounded-xl mb-6 group-hover:scale-110 transition-transform">
-                  {v.icon}
-                </div>
-                <h4 className="text-xl fo mb-3">{v.title}</h4>
-                <p className="">{v.desc}</p>
-              </div>
+                {item}
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
       </section>
-
-      {/* ==== FINAL CTA ==== */}
-      <section className="py-20">
-        <div className="container mx-auto px-6 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl font-bold mb-6">
-              Ready to Transform Your Workflow?
-            </h2>
-            <p className="text-xl mb-8">
-              Join thousands of developers who trust A2Tool to supercharge their projects.
-            </p>
-            <a
-              href="/signup"
-              className="inline-flex items-center gap-3 px-10 py-4 bg-white text-indigo-700 font-bold rounded-full hover:bg-gray-100 transition-colors shadow-xl text-lg"
-            >
-              Get Started Now <ArrowRight className="w-6 h-6" />
-            </a>
-          </div>
-        </div>
-      </section>
-    </>
+    </main>
   );
 }

@@ -24,6 +24,13 @@ export const metadata: Metadata = {
   description:
     "Access 50+ free online tools including unit converters, JSON formatter, text encryptor, QR code generator, file compressor, and more.",
   metadataBase: new URL("https://a2tool.com"),
+  openGraph: {
+    type: "website",
+    siteName: "A2Tool",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({

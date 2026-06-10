@@ -9,9 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://a2tool.com/tools/', lastModified },
     { url: 'https://a2tool.com/about/', lastModified },
     { url: 'https://a2tool.com/contact/', lastModified },
-    { url: 'https://a2tool.com/request-tool/', lastModified },
-    { url: 'https://a2tool.com/privacy/', lastModified },
-    { url: 'https://a2tool.com/privacy-policy', lastModified },
+    { url: 'https://a2tool.com/privacy-policy/', lastModified },
     { url: 'https://a2tool.com/terms/', lastModified },
 
     // Text Tools

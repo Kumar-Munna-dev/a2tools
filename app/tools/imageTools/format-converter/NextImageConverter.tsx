@@ -1,405 +1,486 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import {
+  Upload,
+  Download,
+  X,
+  Image as ImageIcon,
+  Zap,
+  RotateCw,
+  Maximize,
+  RefreshCw,
+} from "lucide-react";
+import ImageDropzone from "@/app/components/ImageDropzone";
 
-type SupportedClientFormat =
+type SupportedFormat =
   | "image/jpeg"
   | "image/png"
   | "image/webp"
+  | "image/avif"
   | "image/gif"
   | "image/bmp"
-  | "image/x-icon";
+  | "image/x-icon"
+  | "image/tiff";
 
-const CLIENT_FORMATS: { label: string; mime: SupportedClientFormat; ext: string }[] = [
-  { label: "JPEG (.jpg/.jpeg)", mime: "image/jpeg", ext: "jpg" },
-  { label: "PNG (.png)", mime: "image/png", ext: "png" },
-  { label: "WebP (.webp)", mime: "image/webp", ext: "webp" },
-  { label: "GIF (.gif) — static export (first frame)", mime: "image/gif", ext: "gif" },
-  { label: "BMP (.bmp)", mime: "image/bmp", ext: "bmp" },
-  { label: "ICO (.ico)", mime: "image/x-icon", ext: "ico" },
+interface FormatOption {
+  label: string;
+  mime: SupportedFormat;
+  ext: string;
+  description: string;
+}
+
+const FORMATS: FormatOption[] = [
+  { label: "JPEG", mime: "image/jpeg", ext: "jpg", description: "Best for photos" },
+  { label: "PNG", mime: "image/png", ext: "png", description: "Supports transparency" },
+  { label: "WebP", mime: "image/webp", ext: "webp", description: "Modern, smaller files" },
+  { label: "AVIF", mime: "image/avif", ext: "avif", description: "Next-gen format" },
+  { label: "GIF", mime: "image/gif", ext: "gif", description: "Animated or static" },
+  { label: "BMP", mime: "image/bmp", ext: "bmp", description: "Uncompressed" },
+  { label: "ICO", mime: "image/x-icon", ext: "ico", description: "Favicon format" },
+  { label: "TIFF", mime: "image/tiff", ext: "tiff", description: "High quality archival" },
 ];
 
-const EXT_HINTS = `
-Note: The browser-only converter handles common raster formats (jpg, png, webp, gif, bmp, ico).
-`;
+interface ConvertedFile {
+  file: File;
+  status: "pending" | "success" | "error";
+  blob?: Blob;
+  error?: string;
+}
 
 export default function NextImageConverter() {
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useState<File[]>([]);
-  const [outputFormat, setOutputFormat] = useState<SupportedClientFormat>(
-    "image/jpeg"
-  );
-  const [quality, setQuality] = useState(0.85);
-  const [width, setWidth] = useState<number | "auto">("auto");
-  const [height, setHeight] = useState<number | "auto">("auto");
+  const [previews, setPreviews] = useState<string[]>([]);
+  const previewsRef = React.useRef<string[]>([]);
+  const [outputFormat, setOutputFormat] = useState<SupportedFormat>("image/webp");
+  const [quality, setQuality] = useState(85);
+  const [width, setWidth] = useState<number | "">(0);
+  const [height, setHeight] = useState<number | "">(0);
   const [keepAspect, setKeepAspect] = useState(true);
-  const [rotate, setRotate] = useState(0); // degrees
+  const [rotate, setRotate] = useState(0);
   const [flipH, setFlipH] = useState(false);
   const [flipV, setFlipV] = useState(false);
   const [processing, setProcessing] = useState(false);
-  const [message, setMessage] = useState(EXT_HINTS);
+  const [converted, setConverted] = useState<ConvertedFile[]>([]);
+  const [statusMessage, setStatusMessage] = useState(
+    "Upload images to convert. Supports batch processing with quality, resize, and rotation controls."
+  );
 
-  function handleFiles(selected: FileList | null) {
-    if (!selected) return;
-    const arr = Array.from(selected);
-    setFiles((prev) => [...prev, ...arr]);
-  }
+  const handleFileSelect = (file: File) => {
+    if (file.type.startsWith("image/")) {
+      setFiles([file]);
+      setStatusMessage(`Selected: ${file.name}`);
+    } else {
+      setStatusMessage("Please select a valid image file.");
+    }
+  };
 
-  function onDrop(e: React.DragEvent) {
-    e.preventDefault();
-    handleFiles(e.dataTransfer.files);
-  }
+  const addMoreFiles = (file: File) => {
+    if (file.type.startsWith("image/")) {
+      setFiles((prev) => [...prev, file]);
+    }
+  };
 
-  function onDragOver(e: React.DragEvent) {
-    e.preventDefault();
-  }
+  const removeFile = (_index: number) => {
+    // single-file mode: clear everything
+    previewsRef.current.forEach((u) => {
+      try {
+        URL.revokeObjectURL(u);
+      } catch {}
+    });
+    previewsRef.current = [];
+    setPreviews([]);
+    setFiles([]);
+    setStatusMessage("File removed. Upload a new image to convert.");
+  };
 
-  async function fileToImageBitmap(file: File): Promise<ImageBitmap> {
-    // createImageBitmap does a good job for many formats
-    const blob = file;
-    // For animated GIF we will still get an bitmap for first frame in most browsers
-    return await createImageBitmap(blob as Blob);
-  }
+  const clearAll = () => {
+    setFiles([]);
+    setConverted([]);
+    setStatusMessage("Cleared. Upload new images to convert.");
+  };
 
   function computeSize(
     imgW: number,
     imgH: number,
-    targetW: number | "auto",
-    targetH: number | "auto",
+    targetW: number,
+    targetH: number,
     keepAspectRatio: boolean
-  ) {
-    if (targetW === "auto" && targetH === "auto") return { w: imgW, h: imgH };
+  ): { w: number; h: number } {
+    if (targetW === 0 && targetH === 0) return { w: imgW, h: imgH };
     if (keepAspectRatio) {
-      if (targetW === "auto") {
-        const ratio = targetH as number / imgH;
-        return { w: Math.round(imgW * ratio), h: targetH as number };
+      if (targetW === 0) {
+        const ratio = targetH / imgH;
+        return { w: Math.round(imgW * ratio), h: targetH };
       }
-      if (targetH === "auto") {
-        const ratio = (targetW as number) / imgW;
-        return { w: targetW as number, h: Math.round(imgH * ratio) };
+      if (targetH === 0) {
+        const ratio = targetW / imgW;
+        return { w: targetW, h: Math.round(imgH * ratio) };
       }
-      // both defined — fit into target box preserving aspect
-      const rw = (targetW as number) / imgW;
-      const rh = (targetH as number) / imgH;
+      const rw = targetW / imgW;
+      const rh = targetH / imgH;
       const r = Math.min(rw, rh);
       return { w: Math.round(imgW * r), h: Math.round(imgH * r) };
     }
-    // non-aspect forced
     return {
-      w: targetW === "auto" ? imgW : (targetW as number),
-      h: targetH === "auto" ? imgH : (targetH as number),
+      w: targetW === 0 ? imgW : targetW,
+      h: targetH === 0 ? imgH : targetH,
     };
   }
 
-  async function convertSingle(file: File): Promise<Blob | { server: true; info: any } | null> {
-    // Determine whether conversion can be done client-side
-    const mime = file.type;
-    const clientMimeList = CLIENT_FORMATS.map((f) => f.mime);
-    // Browser conversion supported for many raster inputs — attempt for most image/* types
-    if (!mime.startsWith("image/") || mime === "image/svg+xml") {
-      // treat svg as server-only if vector->raster or raster->vector needed
-      return { server: true, info: { reason: "format-not-supported-client" } };
-    }
-
+  async function convertSingle(file: File): Promise<Blob | null> {
     try {
-      const imgBitmap = await fileToImageBitmap(file);
+      const imgBitmap = await createImageBitmap(file);
       const sourceW = imgBitmap.width;
       const sourceH = imgBitmap.height;
-      const { w, h } = computeSize(sourceW, sourceH, width, height, keepAspect);
 
-      // create canvas
+      const targetW = width === "" ? 0 : width;
+      const targetH = height === "" ? 0 : height;
+      const { w, h } = computeSize(sourceW, sourceH, targetW, targetH, keepAspect);
+
       const canvas = document.createElement("canvas");
       canvas.width = w;
       canvas.height = h;
       const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Canvas not supported");
 
-      // apply transforms
+      if (!ctx) throw new Error("Canvas context not available");
+
       ctx.save();
-      // move to center for rotation
       ctx.translate(w / 2, h / 2);
       if (rotate !== 0) ctx.rotate((rotate * Math.PI) / 180);
       const scaleX = flipH ? -1 : 1;
       const scaleY = flipV ? -1 : 1;
       ctx.scale(scaleX, scaleY);
-      // draw image centered
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
       ctx.drawImage(imgBitmap, -w / 2, -h / 2, w, h);
       ctx.restore();
 
-      // determine output mime
-      const outMime = outputFormat;
-      // default quality only applicable to lossy formats (jpeg, webp)
-      const q = Math.max(0.01, Math.min(1, quality));
-
-      return await new Promise<Blob | null>((res, rej) => {
-        // For PNG and BMP and GIF browsers will ignore quality param
+      return new Promise<Blob | null>((res, rej) => {
         canvas.toBlob(
           (blob) => {
-            if (!blob) return rej(new Error("Conversion failed"));
+            if (!blob) return rej(new Error("Blob creation failed"));
             res(blob);
           },
-          outMime as any,
-          q
+          outputFormat,
+          quality / 100
         );
       });
-    } catch (err) {
-      console.error(err);
-      return { server: true, info: { reason: "client-conversion-error", err } };
+    } catch (error) {
+      console.error("Conversion error:", error);
+      throw error;
     }
   }
 
   async function processAndDownload() {
-    if (files.length === 0) return setMessage("No files selected");
+    if (files.length === 0) {
+      setStatusMessage("No files selected. Please upload images first.");
+      return;
+    }
+
     setProcessing(true);
-    setMessage("Processing...");
-    const results: { file: File; blob?: Blob; server?: boolean; info?: any }[] = [];
+    setStatusMessage("Converting images...");
+    const results: ConvertedFile[] = [];
 
-    for (const f of files) {
-      // attempt client-side conversion
-      const res = await convertSingle(f);
-      if (res === null) {
-        results.push({ file: f, server: true, info: { reason: "null-result" } });
-        continue;
-      }
-      if ((res as any).server) {
-        // mark server-needed
-        results.push({ file: f, server: true, info: (res as any).info });
-        continue;
-      }
-      results.push({ file: f, blob: res as Blob });
-    }
-
-    // For client-converted blobs, create download links
-    for (const r of results) {
-      if (r.blob) {
-        const ext = CLIENT_FORMATS.find((c) => c.mime === outputFormat)?.ext || "bin";
-        const name = `${r.file.name.replace(/\.[^.]+$/, "")}.${ext}`;
-        const url = URL.createObjectURL(r.blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
+    for (const file of files) {
+      try {
+        const blob = await convertSingle(file);
+        if (blob) {
+          results.push({ file, status: "success", blob });
+        } else {
+          results.push({ file, status: "error", error: "Conversion returned null" });
+        }
+      } catch (error) {
+        results.push({
+          file,
+          status: "error",
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
       }
     }
 
-    // If any server work required, notify user with instructions or attempt upload
-    const serverNeeded = results.filter((r) => r.server);
-    if (serverNeeded.length > 0) {
-      setMessage(
-        `Some files require server-side conversion (vector/complex formats or conversion failed client-side). ${serverNeeded.length} file(s). Implement /api/convert to handle formats: svg/pdf/eps/ai/psd/heic/raw.`
+    setConverted(results);
+
+    const successCount = results.filter((r) => r.status === "success").length;
+    const errorCount = results.filter((r) => r.status === "error").length;
+
+    if (successCount > 0) {
+      setStatusMessage(
+        `Converted ${successCount} file(s)${errorCount > 0 ? ` (${errorCount} failed)` : ""}. Click download buttons below.`
       );
-      // Optionally auto-upload to /api/convert (commented out). You can implement server conversion using sharp, imagemagick, or cloud services.
-      // await uploadToServer(serverNeeded.map(s => s.file));
     } else {
-      setMessage("Done — downloaded converted files.");
+      setStatusMessage(`Conversion failed for all files. Please try again.`);
     }
 
     setProcessing(false);
   }
 
-  async function uploadToServer(list: File[]) {
-    // Example server upload helper — requires /api/convert endpoint on your Next.js app.
-    const form = new FormData();
-    list.forEach((f) => form.append("files", f));
-    form.append("format", outputFormat);
-    form.append("quality", String(quality));
-    form.append("width", String(width));
-    form.append("height", String(height));
-    const resp = await fetch("/api/convert", { method: "POST", body: form });
-    if (!resp.ok) throw new Error("Server conversion failed");
-    const blob = await resp.blob();
-    // returns a single blob (zip recommended server-side for multiple)
-    return blob;
-  }
+  const downloadFile = (result: ConvertedFile) => {
+    if (!result.blob) return;
 
-  function clearAll() {
-    setFiles([]);
-    setMessage(EXT_HINTS);
-  }
+    const formatOpt = FORMATS.find((f) => f.mime === outputFormat);
+    const ext = formatOpt?.ext || "bin";
+    const name = `${result.file.name.replace(/\.[^.]+$/, "")}.${ext}`;
+
+    const url = URL.createObjectURL(result.blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  useEffect(() => {
+    // cleanup converted blobs' object URLs if we created any elsewhere
+    return () => {
+      previewsRef.current.forEach((u) => {
+        try {
+          URL.revokeObjectURL(u);
+        } catch {}
+      });
+      previewsRef.current = [];
+    };
+  }, []);
+
+  // Generate preview URLs whenever files change
+  useEffect(() => {
+    // revoke old previews
+    previewsRef.current.forEach((u) => {
+      try {
+        URL.revokeObjectURL(u);
+      } catch {}
+    });
+    const urls = files.map((f) => (f.type.startsWith("image/") ? URL.createObjectURL(f) : ""));
+    previewsRef.current = urls;
+    setPreviews(urls);
+
+    return () => {
+      urls.forEach((u) => {
+        try {
+          URL.revokeObjectURL(u);
+        } catch {}
+      });
+      previewsRef.current = [];
+    };
+  }, [files]);
+
+  const selectedFormat = FORMATS.find((f) => f.mime === outputFormat);
 
   return (
-    <div className="mt-20 p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4 items-center">Image Format Converter – Convert JPG, PNG & WEBP</h1>
-      <p className="text-sm dark:text-slate-400 mb-4">{EXT_HINTS}</p>
-
-      {files.length === 0 ? (<div
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        className="border-2 border-dashed border-gray-300 rounded-2xl h-[200px] p-4 mb-4 flex flex-col items-center justify-center gap-4 "
-      >
-        <div className="flex items-center gap-4">
-          <input
-            ref={inputRef}
-            type="file"
-            onChange={(e) => handleFiles(e.target.files)}
-            multiple
-            accept="image/*,application/pdf,application/postscript,application/illustrator,application/vnd.adobe.photoshop"
-            className="hidden"
-            id="fileinput"
-          />
-
-          <label
-            htmlFor="fileinput"
-            className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
-          >
-            Choose files
-          </label>
-
-          <button
-            onClick={clearAll}
-            className="px-3 py-2 bg-red-50 text-red-700 rounded"
-          >
-            Clear
-          </button>
-        </div>
-
-        <p className="text-xs text-gray-500">
-          Or drag & drop files here (multiple allowed)
-        </p>
-      </div>
-        ) :
-        (<div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="space-y-3">
-              <label className="block text-sm">Output format</label>
-              <select
-                value={outputFormat}
-                onChange={(e) => setOutputFormat(e.target.value as SupportedClientFormat)}
-                className="w-full p-2 border rounded"
-              >
-                {CLIENT_FORMATS.map((f) => (
-                  <option key={f.mime} value={f.mime}>
-                    {f.label}
-                  </option>
-                ))}
-
-              </select>
-
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 py-10">
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
+        <section className="rounded-[2rem] bg-white p-8 shadow-xl ring-1 ring-slate-200/70 dark:bg-slate-900 dark:ring-slate-700/50">
+          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+                <ImageIcon className="h-5 w-5 text-indigo-500" />
+                <span className="text-sm font-semibold uppercase tracking-[0.24em]">Image Format Converter</span>
+              </div>
               <div>
-                <label className="block text-sm">Quality ({Math.round(quality * 100)}%)</label>
-                <input
-                  type="range"
-                  min={1}
-                  max={100}
-                  value={Math.round(quality * 100)}
-                  onChange={(e) => setQuality(Number(e.target.value) / 100)}
-                  className="w-full"
-                />
-                <p className="text-xs text-gray-500">Applies to JPG / WebP (lossy). PNG/BMP/GIF ignore quality.</p>
+                <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Convert images between multiple formats instantly</h1>
+                <p className="mt-4 max-w-2xl text-slate-600 dark:text-slate-300">
+                  Convert JPG, PNG, WebP, AVIF, GIF, BMP, ICO, and TIFF formats. Adjust quality, resize, rotate, and flip images without quality loss.
+                </p>
               </div>
-
-              <div className="flex gap-2">
-                <div className="flex-1">
-                  <label className="block text-sm">Width (px or auto)</label>
-                  <input
-                    type="text"
-                    value={width}
-                    onChange={(e) => setWidth(e.target.value === "auto" ? "auto" : Number(e.target.value))}
-                    className="w-full p-2 border rounded"
-                  />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-3xl bg-slate-50 p-4 text-slate-700 shadow-sm dark:bg-slate-800 dark:text-slate-200">
+                  <p className="text-sm uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">8 formats</p>
+                  <p className="mt-2 text-base">Support for all popular image formats</p>
                 </div>
-                <div className="flex-1">
-                  <label className="block text-sm">Height (px or auto)</label>
-                  <input
-                    type="text"
-                    value={height}
-                    onChange={(e) => setHeight(e.target.value === "auto" ? "auto" : Number(e.target.value))}
-                    className="w-full p-2 border rounded"
-                  />
+                <div className="rounded-3xl bg-slate-50 p-4 text-slate-700 shadow-sm dark:bg-slate-800 dark:text-slate-200">
+                  <p className="text-sm uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Full control</p>
+                  <p className="mt-2 text-base">Quality, size, rotation, flip options</p>
                 </div>
-              </div>
-
-              <div className="flex items-center gap-3 mt-2">
-                <label className="inline-flex items-center gap-2">
-                  <input type="checkbox" checked={keepAspect} onChange={(e) => setKeepAspect(e.target.checked)} />
-                  <span className="text-sm text-gray-700">Keep aspect ratio</span>
-                </label>
-                <label className="inline-flex items-center gap-2">
-                  <input type="checkbox" checked={flipH} onChange={(e) => setFlipH(e.target.checked)} />
-                  <span className="text-sm text-gray-700">Flip horizontal</span>
-                </label>
-                <label className="inline-flex items-center gap-2">
-                  <input type="checkbox" checked={flipV} onChange={(e) => setFlipV(e.target.checked)} />
-                  <span className="text-sm text-gray-700">Flip vertical</span>
-                </label>
-              </div>
-
-              <div className="mt-2">
-                <label className="block text-sm">Rotate (deg)</label>
-                <input
-                  type="number"
-                  value={rotate}
-                  onChange={(e) => setRotate(Number(e.target.value))}
-                  className="w-28 p-2 border rounded"
-                />
               </div>
             </div>
+            <div className="rounded-[2rem] bg-indigo-600 p-6 text-white shadow-2xl">
+              <div className="flex items-center gap-3 text-sm uppercase tracking-[0.24em]">
+                <Zap className="h-5 w-5" />
+                <span>How it works</span>
+              </div>
+              <ul className="mt-6 space-y-4 text-sm leading-6">
+                <li>1. Upload an image in any format.</li>
+                <li>2. Select output format and adjust settings.</li>
+                <li>3. Convert and download instantly.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
 
-            <div className="space-y-3">
-              <div className="border p-2 rounded h-64 overflow-auto">
-                <h3 className="font-medium">Selected files</h3>
-                {files.length === 0 && <p className="text-sm text-gray-500">No files yet</p>}
-                <ul className="mt-2 space-y-2">
-                  {files.map((f, i) => (
-                    <li key={i} className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-12 h-12 bg-gray-100 rounded overflow-hidden flex items-center justify-center text-xs text-gray-500">
-                          {f.type.startsWith("image/") ? (
-                            <img
-                              src={URL.createObjectURL(f)}
-                              alt={f.name}
-                              className="object-cover w-full h-full"
-                            />
-                          ) : (
-                            <span className="p-1">{f.name.split(".").pop()}</span>
-                          )}
+        {files.length === 0 ? (
+          <section className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+            <div className="rounded-[2rem] bg-white p-6 shadow-xl ring-1 ring-slate-200/70 dark:bg-slate-900 dark:ring-slate-700/50">
+              <h2 className="text-xl font-semibold">Upload your image</h2>
+              <p className="mt-2 text-slate-600 dark:text-slate-400">
+                Supports JPG, PNG, WebP, AVIF, GIF, BMP, ICO, TIFF. Max 10MB per file.
+              </p>
+              <div className="mt-6">
+                <ImageDropzone onFileSelect={handleFileSelect} maxSizeMB={10} />
+              </div>
+            </div>
+            <div className="rounded-[2rem] bg-slate-50 p-6 shadow-inner shadow-slate-200/50 dark:bg-slate-900/80 dark:shadow-slate-800/50">
+              <h3 className="text-lg font-semibold">Supported formats</h3>
+              <p className="mt-3 text-slate-600 dark:text-slate-400">
+                Convert your images to any modern format with full quality control.
+              </p>
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                {FORMATS.map((fmt) => (
+                  <div key={fmt.mime} className="text-sm">
+                    <p className="font-semibold text-slate-900 dark:text-slate-50">{fmt.label}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">{fmt.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="space-y-8">
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div className="rounded-[1.5rem] bg-white p-6 shadow-xl ring-1 ring-slate-200/70 dark:bg-slate-900 dark:ring-slate-700/50 flex flex-col items-center justify-center">
+                <div className="w-full max-w-2xl">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-inner">
+                      {previews[0] ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={previews[0]} alt={files[0]?.name || "preview"} className="w-full h-96 object-contain bg-black/5" />
+                      ) : (
+                        <div className="h-96 flex items-center justify-center p-6">
+                          <ImageIcon className="h-12 w-12 text-indigo-500" />
                         </div>
-                        <div>
-                          <div className="text-sm">{f.name}</div>
-                          <div className="text-xs text-gray-500">{Math.round(f.size / 1024)} KB — {f.type || "n/a"}</div>
-                        </div>
+                      )}
+                    </div>
+                    <div className="w-full mt-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-semibold truncate">{files[0]?.name}</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">{files[0] ? `${(files[0].size / 1024 / 1024).toFixed(2)} MB` : ""}</p>
                       </div>
                       <div className="flex gap-2">
                         <button
-                          onClick={() => setFiles((prev) => prev.filter((x) => x !== f))}
-                          className="px-2 py-1 text-xs bg-red-50 text-red-700 rounded"
+                          onClick={() => removeFile(0)}
+                          className="rounded-2xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-100 dark:bg-red-950 dark:hover:bg-red-900"
                         >
                           Remove
                         </button>
-                        <a
-                          href={URL.createObjectURL(f)}
-                          download={f.name}
-                          className="px-2 py-1 text-xs bg-indigo-500 rounded"
+                        <button
+                          onClick={clearAll}
+                          className="rounded-2xl bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200"
                         >
-                          Download
-                        </a>
+                          Clear
+                        </button>
                       </div>
-                    </li>
-                  ))}
-                </ul>
+                    </div>
+                    <div className="w-full mt-4">
+                      <button
+                        onClick={processAndDownload}
+                        disabled={processing || files.length === 0}
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-3xl bg-indigo-600 px-6 py-4 text-base font-semibold text-white shadow-xl transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {processing ? (
+                          <>
+                            <RefreshCw className="animate-spin" /> Converting...
+                          </>
+                        ) : (
+                          <>
+                            <Zap size={18} /> Convert image
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">{statusMessage}</p>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <button
-                  onClick={processAndDownload}
-                  disabled={processing || files.length === 0}
-                  className={`w-full py-2 rounded text-white ${processing ? "bg-gray-400" : "bg-blue-600"}`}
-                >
-                  {processing ? "Processing..." : "Convert & Download"}
-                </button>
+              <div className="rounded-[1.5rem] bg-white p-6 shadow-xl ring-1 ring-slate-200/70 dark:bg-slate-900 dark:ring-slate-700/50">
+                <h3 className="text-lg font-semibold mb-4">Adjust & Export</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Output format</label>
+                    <select
+                      value={outputFormat}
+                      onChange={(e) => setOutputFormat(e.target.value as SupportedFormat)}
+                      className="w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    >
+                      {FORMATS.map((f) => (
+                        <option key={f.mime} value={f.mime}>{f.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Quality: {quality}%</label>
+                    <input type="range" min={1} max={100} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full" />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <input type="number" min={0} value={width} onChange={(e) => setWidth(e.target.value === "" ? "" : Number(e.target.value))} placeholder="Width (px)" className="rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-700 bg-white dark:bg-slate-950" />
+                    <input type="number" min={0} value={height} onChange={(e) => setHeight(e.target.value === "" ? "" : Number(e.target.value))} placeholder="Height (px)" className="rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-700 bg-white dark:bg-slate-950" />
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={keepAspect} onChange={(e) => setKeepAspect(e.target.checked)} className="rounded" />
+                      <span className="text-sm">Keep aspect</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={flipH} onChange={(e) => setFlipH(e.target.checked)} className="rounded" />
+                      <span className="text-sm">Flip H</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={flipV} onChange={(e) => setFlipV(e.target.checked)} className="rounded" />
+                      <span className="text-sm">Flip V</span>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Rotate: {rotate}°</label>
+                    <input type="range" min={0} max={360} step={15} value={rotate} onChange={(e) => setRotate(Number(e.target.value))} className="w-full" />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-4 p-3 rounded dark:bg-slate-900 text-sm dark:text-slate-400">
-            <strong>Message:</strong>
-            <div className="mt-2 whitespace-pre-wrap">{message}</div>
-          </div>
-
-        </div>)}
+            {converted.length > 0 && (
+              <div className="rounded-[2rem] bg-white p-6 shadow-xl ring-1 ring-slate-200/70 dark:bg-slate-900 dark:ring-slate-700/50">
+                <h2 className="text-xl font-semibold mb-6">Conversion results</h2>
+                <div className="grid gap-4">
+                  {converted.map((result, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex items-center justify-between gap-4 rounded-2xl border p-4 ${
+                        result.status === "success"
+                          ? "border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950"
+                          : "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950"
+                      }`}
+                    >
+                      <div>
+                        <p className="font-medium">{result.file.name}</p>
+                        <p className={`text-sm ${
+                          result.status === "success"
+                            ? "text-green-700 dark:text-green-200"
+                            : "text-red-700 dark:text-red-200"
+                        }`}>
+                          {result.status === "success" ? "Converted successfully" : result.error}
+                        </p>
+                      </div>
+                      {result.status === "success" && result.blob && (
+                        <button
+                          onClick={() => downloadFile(result)}
+                          className="inline-flex items-center gap-2 rounded-2xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500"
+                        >
+                          <Download size={16} /> Download
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+      </main>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { utilityTools } from "@/app/data/toolsData";
 import ToolCard from "@/app/components/ToolCard";
 
 export default function UtilityTools() {
-    const newLocal = "min-h-screen bg-linear-to-br from-indigo-100 via-blue-50 to-cyan-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all";
+    const newLocal = "min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-cyan-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all";
   return (
     <>
       {/* 🌈 Main Page Content */}

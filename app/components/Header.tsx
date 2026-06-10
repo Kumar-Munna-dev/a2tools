@@ -25,8 +25,8 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 w-full z-50  dark:bg-slate-950 backdrop-blur-md border-b  dark:border-slate-800 shadow-md">
-      <div className="max-w mx-auto flex items-center justify-between px-4 h-16">
+    <header className="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-md">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-16">
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -42,7 +42,7 @@ export default function Header() {
             <Link
               key={item.label}
               href={item.href}
-              className="text-md font-bold  dark:text-slate-400 hover:text-indigo-400 hover:text-lg"
+                  className="text-md font-bold text-slate-900 dark:text-slate-400 hover:text-indigo-400 hover:text-lg"
             >
               {item.label}
             </Link>
@@ -54,11 +54,11 @@ export default function Header() {
               ref={searchRef}
               type="search"
               placeholder="Search..."
-              className="pl-8 pr-3 py-1.5 text-sm border rounded-2xl dark:bg-slate-950 dark:text-slate-100 outline-none"
+              className="pl-8 pr-3 py-1.5 text-sm border border-slate-200 rounded-2xl dark:bg-slate-950 dark:text-slate-100 dark:border-slate-800 outline-none"
             />
           </form>
 
-          <ThemeToggle />
+          {/*<ThemeToggle />*/}
         </nav>
 
         {/* Mobile Button */}
@@ -71,15 +71,15 @@ export default function Header() {
       </div>
 
       {/* Mobile Menu */}
-      {open && (
-        <div className="md:hidden dark:bg-slate-950">
+        {open && (
+        <div className="md:hidden bg-white/90 dark:bg-slate-950/90">
           <div className="p-4 space-y-3">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="block dark:text-slate-100 hover:text-blue-600 dark:hover:text-cyan-400"
+                    className="block text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-cyan-400"
               >
                 {item.label}
               </Link>
@@ -91,11 +91,11 @@ export default function Header() {
                 ref={searchRef}
                 type="search"
                 placeholder="Search..."
-                className="w-full pl-8 pr-3 py-2 text-sm border rounded-full dark:bg-slate-950 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full pl-8 pr-3 py-2 text-sm border border-slate-200 rounded-full dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </form>
 
-            <ThemeToggle />
+            {/*<ThemeToggle />*/}
           </div>
         </div>
       )}

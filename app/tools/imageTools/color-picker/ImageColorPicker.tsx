@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Upload, Copy, Pipette, Check, RotateCcw, Palette, X, Crosshair, ImageIcon } from 'lucide-react';
+import { Copy, Pipette, Check, RotateCcw, Palette, Crosshair, ImageIcon } from 'lucide-react';
 import ImageDropzone from '@/app/components/ImageDropzone';
+import InfoDropdown from '@/app/components/InfoDropdown';
+import RelatedTools from '@/app/components/RelatedTools';
 
 // Color conversion utilities
 const rgbToHex = (r: number, g: number, b: number) => 
@@ -43,194 +45,373 @@ export default function AdvancedColorPicker() {
   const [isPicking, setIsPicking] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [imageReady, setImageReady] = useState(false);
 
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number | null>(null);
+  const imageUrlRef = useRef<string | null>(null);
+  const imageLoadedRef = useRef(false);
 
   const hex = rgbToHex(color.r, color.g, color.b);
 
-  const handleUpload = (file:File) => {
-    const files = file;
-    if (files) {
-      const reader = new FileReader();
-      reader.onload = (ev) => setImage(ev.target?.result as string);
-      reader.readAsDataURL(files);
+  const handleUpload = (file: File) => {
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    if (imageUrlRef.current) {
+      try { URL.revokeObjectURL(imageUrlRef.current); } catch {}
     }
+    imageUrlRef.current = url;
+    setImage(url);
+    imageLoadedRef.current = false;
+    setImageReady(false);
   };
 
   const updateColor = useCallback((clientX: number, clientY: number) => {
-    if (!imgRef.current || !canvasRef.current) return;
+    if (!imgRef.current || !canvasRef.current || !imageLoadedRef.current) return;
     const img = imgRef.current;
     const canvas = canvasRef.current;
     const rect = img.getBoundingClientRect();
 
-    // Calculate internal coordinates
-    const x = Math.max(0, Math.min(((clientX - rect.left) / rect.width) * img.naturalWidth, img.naturalWidth - 1));
-    const y = Math.max(0, Math.min(((clientY - rect.top) / rect.height) * img.naturalHeight, img.naturalHeight - 1));
+    const x = Math.floor(Math.max(0, Math.min(((clientX - rect.left) / rect.width) * img.naturalWidth, img.naturalWidth - 1)));
+    const y = Math.floor(Math.max(0, Math.min(((clientY - rect.top) / rect.height) * img.naturalHeight, img.naturalHeight - 1)));
 
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
-    
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    ctx.drawImage(img, 0, 0);
 
     const pixel = ctx.getImageData(x, y, 1, 1).data;
     setColor({ r: pixel[0], g: pixel[1], b: pixel[2] });
     setPos({ x, y, displayX: clientX - rect.left, displayY: clientY - rect.top });
   }, []);
 
+  const handleImageLoad = useCallback(() => {
+    const img = imgRef.current;
+    const canvas = canvasRef.current;
+    if (!img || !canvas) return;
+    try {
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      imageLoadedRef.current = true;
+      setImageReady(true);
+      const rect = img.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      setPos({ x: Math.floor(img.naturalWidth / 2), y: Math.floor(img.naturalHeight / 2), displayX: rect.width / 2, displayY: rect.height / 2 });
+      requestAnimationFrame(() => updateColor(centerX, centerY));
+    } catch (err) {
+      imageLoadedRef.current = false;
+      setImageReady(false);
+    }
+  }, [updateColor]);
+
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isPicking) return;
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    updateColor(clientX, clientY);
+    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => updateColor(clientX, clientY));
   };
 
   const saveToHistory = () => {
     if (!history.includes(hex)) setHistory(prev => [hex, ...prev].slice(0, 12));
   };
 
-  const copy = (text: string, field: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(field);
-    setTimeout(() => setCopiedField(null), 2000);
+  const copy = async (text: string, field: string) => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+      }
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      // ignore
+    }
   };
 
+  useEffect(() => {
+    return () => {
+      if (imageUrlRef.current) {
+        try { URL.revokeObjectURL(imageUrlRef.current); } catch {}
+        imageUrlRef.current = null;
+      }
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
   return (
-    <div className="mt-20 min-h-screen dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-500/30">
+      
+      {/* Header */}
+      <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 pt-16">
+        <div className="max-w-7xl mx-auto px-4 py-8 md:py-10">
+          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+            <div className="p-3 rounded-2xl bg-indigo-600 text-white shadow-sm inline-flex">
+              <Pipette size={24} />
+            </div>
+            <div className="flex-1">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Image Color Picker</h1>
+              <p className="mt-2 text-slate-600 dark:text-slate-400 max-w-2xl text-sm md:text-base">
+                Upload any image, pick colors by clicking, and instantly convert between HEX, RGB, HSL, and CMYK formats. Completely private and browser-based.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 py-8 md:py-12">
+      <main className="max-w-7xl mx-auto px-4 py-12 md:py-16">
         {!image ? (
-  <ImageDropzone onFileSelect={handleUpload} />
-) : (
-        
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-10 items-start">
-          
-          {/* Workspace Area */}
-          <div className="xl:col-span-8 space-y-6">
-            {!image ? (
-              <div className="h-[60vh] flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-[3rem] dark:bg-slate-900/30">
-                <ImageIcon size={64} className="text-slate-700 mb-6" />
-                <h2 className="text-2xl font-bold text-slate-400">No Image Loaded</h2>
+          <div className="space-y-8">
+            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/30 border border-indigo-200 dark:border-indigo-800 rounded-3xl p-8 md:p-12">
+              <div className="max-w-3xl mx-auto">
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">Get Started</h2>
+                <p className="text-slate-700 dark:text-slate-300 mb-8 leading-relaxed">
+                  Upload an image to begin picking colors. Click or drag to select a file. Supported: <span className="font-semibold">JPG, PNG, WebP, AVIF, GIF (max 10MB)</span>
+                </p>
+                <ImageDropzone onFileSelect={handleUpload} maxSizeMB={10} />
+                <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-white dark:bg-slate-900/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
+                    <div className="text-indigo-600 dark:text-indigo-400 font-bold mb-2">1. Upload</div>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Select an image file</p>
+                  </div>
+                  <div className="bg-white dark:bg-slate-900/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
+                    <div className="text-indigo-600 dark:text-indigo-400 font-bold mb-2">2. Pick</div>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Click colors to sample</p>
+                  </div>
+                  <div className="bg-white dark:bg-slate-900/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
+                    <div className="text-indigo-600 dark:text-indigo-400 font-bold mb-2">3. Convert</div>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Copy formats instantly</p>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <div 
-                className="relative dark:bg-slate-900 rounded-2xl border dark:border-slate-400 overflow-hidden shadow-2xl touch-none"
-                onMouseDown={(e) => { setIsPicking(true); updateColor(e.clientX, e.clientY); }}
-                onMouseMove={handleMove}
-                onMouseUp={() => { setIsPicking(false); saveToHistory(); }}
-                onTouchStart={(e) => { setIsPicking(true); updateColor(e.touches[0].clientX, e.touches[0].clientY); }}
-                onTouchMove={handleMove}
-                onTouchEnd={() => { setIsPicking(false); saveToHistory(); }}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {/* Action Bar */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 rounded-3xl shadow-sm">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-50">Picker Canvas</h2>
+                <p className="max-w-3xl text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                  Click or tap on the image to pick a color. Use Arrow keys to fine-tune your selection. Press <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md border border-slate-300 dark:border-slate-600 text-xs">Enter</kbd> to save to history.
+                </p>
+              </div>
+              <button
+                onClick={() => { setImage(null); setHistory([]); }}
+                className="w-full md:w-auto px-5 py-2.5 rounded-2xl border border-slate-300 bg-white hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold transition-all flex-shrink-0"
               >
-                <img 
-                  ref={imgRef} 
-                  src={image} 
-                  alt="Editor" 
-                  className="w-full h-100 select-none pointer-events-none object-contain" 
-                />
-                <canvas ref={canvasRef} className="hidden" />
+                Upload New Image
+              </button>
+            </div>
 
-                {/* Loupe (Magnifier) - Offsets above finger on mobile */}
-                {isPicking && (
-                  <div 
-                    className="absolute pointer-events-none transition-transform duration-75"
-                    style={{ 
-                      left: pos.displayX, 
-                      top: pos.displayY, 
-                      transform: 'translate(-50%, -140%)' // Keeps loupe above your finger
-                    }}
-                  >
-                    <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-slate-800">
-                      {/* Zoomed Content */}
-                      <div 
-                        className="absolute inset-0"
-                        style={{
-                          backgroundImage: `url(${image})`,
-                          backgroundRepeat: 'no-repeat',
-                          backgroundSize: `${imgRef.current?.width! * 6}px`, // 6x Zoom
-                          backgroundPosition: `${-pos.displayX * 6 + (window.innerWidth < 768 ? 48 : 64)}px ${-pos.displayY * 6 + (window.innerWidth < 768 ? 48 : 64)}px`,
-                          imageRendering: 'pixelated'
-                        }}
-                      />
-                      {/* Crosshair */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-full h-px bg-white/30" />
-                        <div className="h-full w-px bg-white/30" />
-                        <div className="w-2 h-2 border-2 border-white rounded-full shadow-black shadow-sm" />
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+              {/* Canvas */}
+              <div className="xl:col-span-8">
+                <div 
+                  className="relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-lg hover:shadow-xl transition-all cursor-crosshair focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  tabIndex={0}
+                  aria-label="Image color picker canvas"
+                  style={{ touchAction: 'none' }}
+                  onKeyDown={(e) => {
+                    if (!imgRef.current) return;
+                    const step = e.shiftKey ? 10 : 1;
+                    const rect = imgRef.current.getBoundingClientRect();
+                    let nx = pos.displayX, ny = pos.displayY;
+                    if (e.key === 'ArrowLeft') nx = Math.max(0, nx - step);
+                    if (e.key === 'ArrowRight') nx = Math.min(rect.width, nx + step);
+                    if (e.key === 'ArrowUp') ny = Math.max(0, ny - step);
+                    if (e.key === 'ArrowDown') ny = Math.min(rect.height, ny + step);
+                    if (nx !== pos.displayX || ny !== pos.displayY) {
+                      updateColor(rect.left + nx, rect.top + ny);
+                      e.preventDefault();
+                    }
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      saveToHistory();
+                      e.preventDefault();
+                    }
+                  }}
+                  onMouseDown={(e) => { setIsPicking(true); updateColor(e.clientX, e.clientY); }}
+                  onMouseMove={handleMove}
+                  onMouseUp={() => { setIsPicking(false); saveToHistory(); }}
+                  onTouchStart={(e) => { setIsPicking(true); updateColor(e.touches[0].clientX, e.touches[0].clientY); }}
+                  onTouchMove={handleMove}
+                  onTouchEnd={() => { setIsPicking(false); saveToHistory(); }}
+                >
+                  <img 
+                    ref={imgRef} 
+                    src={image || undefined} 
+                    alt="Image color picker" 
+                    onLoad={handleImageLoad}
+                    className="w-full max-h-[65vh] select-none pointer-events-none object-contain" 
+                  />
+                  <canvas ref={canvasRef} className="hidden" aria-hidden />
+
+                  {imageReady && (
+                    <div
+                      className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 drop-shadow-md"
+                      style={{ left: pos.displayX, top: pos.displayY }}
+                    >
+                      <div className="relative flex h-6 w-6 items-center justify-center">
+                        <span className="absolute inset-0 rounded-full border-2 border-white shadow-lg bg-black/25" />
+                        <span className="relative h-2.5 w-2.5 rounded-full bg-white" />
                       </div>
                     </div>
-                    {/* Color Preview Badge */}
-                    <div className="mt-2 bg-white text-black px-2 py-1 rounded text-[10px] font-black text-center shadow-lg">
-                      {hex}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+                  )}
 
-          {/* Color Details Panel */}
-          <div className="xl:col-span-4 space-y-6">
-            <div className="dark:bg-slate-900 border dark:border-slate-800 p-8 rounded-[2.5rem] shadow-2xl">
-              <div 
-                className="w-full h-32 rounded-3xl mb-8 shadow-inner border dark:border-slate-400 flex items-end justify-end p-4 transition-colors"
-                style={{ backgroundColor: hex }}
-              >
-                <div className="dark:bg-slate-100 backdrop-blur-md p-2 rounded-lg"><Crosshair size={20}/></div>
+                  {isPicking && (
+                    <div 
+                      className="absolute pointer-events-none transition-transform duration-75"
+                      style={{ 
+                        left: pos.displayX, 
+                        top: pos.displayY, 
+                        transform: 'translate(-50%, -130%)'
+                      }}
+                    >
+                      <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-[3px] border-white shadow-2xl overflow-hidden bg-slate-800 ring-1 ring-black/10">
+                        <div 
+                          className="absolute inset-0"
+                          style={{
+                            backgroundImage: `url(${image})`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundSize: `${imgRef.current?.width! * 6}px`,
+                            backgroundPosition: `${-pos.displayX * 6 + (window.innerWidth < 768 ? 48 : 64)}px ${-pos.displayY * 6 + (window.innerWidth < 768 ? 48 : 64)}px`,
+                            imageRendering: 'pixelated'
+                          }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-full h-px bg-white/30" />
+                          <div className="h-full w-px bg-white/30" />
+                          <div className="w-2 h-2 border-2 border-white rounded-full shadow-black shadow-sm" />
+                        </div>
+                      </div>
+                      <div className="mt-2 bg-white text-black px-2 py-1 rounded text-[10px] font-black text-center shadow-lg">
+                        {hex}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="grid gap-4">
-                {[
-                  { label: 'HEX', value: hex },
-                  { label: 'RGB', value: `${color.r}, ${color.g}, ${color.b}` },
-                  { label: 'HSL', value: rgbToHsl(color.r, color.g, color.b) },
-                  { label: 'CMYK', value: rgbToCmyk(color.r, color.g, color.b) }
-                ].map((field) => (
-                  <div key={field.label} className="group relative dark:bg-slate-800/50 border border-slate-400 rounded-2xl p-4 hover:border-indigo-500/50 transition-all">
-                    <span className="block text-[10px] font-black dark:text-slate-400 uppercase tracking-widest mb-1">{field.label}</span>
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-mono font-bold tracking-tight">{field.value}</span>
-                      <button 
-                        onClick={() => copy(field.value, field.label)}
-                        className={`p-2 rounded-lg transition-all ${copiedField === field.label ? 'text-emerald-400' : 'text-slate-500 hover:bg-slate-700'}`}
-                      >
-                        {copiedField === field.label ? <Check size={18}/> : <Copy size={18}/>}
-                      </button>
-                    </div>
+              {/* Color Panel */}
+              <div className="xl:col-span-4 space-y-6">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 md:p-8 rounded-3xl shadow-lg">
+                  <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+                    <span className="inline-flex h-4 w-4 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm" style={{ backgroundColor: hex }} />
+                    Current Color
+                  </h3>
+                  <div 
+                    className="w-full h-32 md:h-40 rounded-3xl mb-8 shadow-inner border border-slate-200 dark:border-slate-700 flex items-end justify-end p-4 transition-all"
+                    style={{ backgroundColor: hex }}
+                    role="img"
+                    aria-label={`Current color: ${hex}`}
+                  >
+                    <div className="dark:bg-slate-100 backdrop-blur-md p-2 rounded-lg"><Crosshair size={20}/></div>
                   </div>
-                ))}
+
+                  <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+                    {[
+                      { label: 'HEX', value: hex },
+                      { label: 'RGB', value: `${color.r}, ${color.g}, ${color.b}` },
+                      { label: 'HSL', value: rgbToHsl(color.r, color.g, color.b) },
+                      { label: 'CMYK', value: rgbToCmyk(color.r, color.g, color.b) }
+                    ].map((field) => (
+                      <div key={field.label} className="group relative bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 md:p-4 hover:border-indigo-500/50 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 transition-all">
+                        <span className="block text-[10px] font-black dark:text-slate-400 uppercase tracking-widest mb-2">{field.label}</span>
+                        <div className="flex justify-between items-center gap-2">
+                          <span className="text-sm md:text-base font-mono font-bold tracking-tight break-words">{field.value}</span>
+                          <button 
+                            onClick={() => copy(field.value, field.label)}
+                            aria-label={`Copy ${field.label}`}
+                            className={`p-2 rounded-lg transition-all flex-shrink-0 ${copiedField === field.label ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30' : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            title={copiedField === field.label ? 'Copied!' : 'Copy'}
+                          >
+                            {copiedField === field.label ? <Check size={18}/> : <Copy size={18}/>}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* History */}
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 md:p-8 rounded-3xl shadow-lg">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="font-bold flex items-center gap-2 text-lg">
+                      <Palette size={18}/> Recent
+                    </h3>
+                    {history.length > 0 && (
+                      <button onClick={() => setHistory([])} aria-label="Clear" className="text-slate-600 hover:text-red-500 dark:hover:text-red-400 transition-colors"><RotateCcw size={16}/></button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 xl:grid-cols-6 gap-3">
+                    {history.length > 0 ? (
+                      history.map((h, i) => (
+                        <button 
+                          key={i} 
+                          onClick={() => {
+                            const r = parseInt(h.slice(1,3), 16);
+                            const g = parseInt(h.slice(3,5), 16);
+                            const b = parseInt(h.slice(5,7), 16);
+                            setColor({r,g,b});
+                          }}
+                          aria-label={`Apply ${h}`}
+                          className="aspect-square rounded-2xl border border-slate-200 dark:border-slate-600 hover:scale-110 hover:border-indigo-500 transition-all shadow-sm"
+                          style={{ backgroundColor: h }}
+                          title={h}
+                        />
+                      ))
+                    ) : (
+                      <p className="col-span-6 text-center text-sm text-slate-500 py-4">No colors yet</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* Palette History */}
-            <div className="dark:bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem]">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="font-bold flex items-center gap-2 uppercase tracking-tighter text-slate-400">
-                  <Palette size={18}/> Palette History
-                </h3>
-                <button onClick={() => setHistory([])} className="text-slate-600 hover:text-red-400"><RotateCcw size={16}/></button>
-              </div>
-              <div className="grid grid-cols-6 gap-3">
-                {history.map((h, i) => (
-                  <button 
-                    key={i} 
-                    onClick={() => {
-                      const r = parseInt(h.slice(1,3), 16);
-                      const g = parseInt(h.slice(3,5), 16);
-                      const b = parseInt(h.slice(5,7), 16);
-                      setColor({r,g,b});
-                    }}
-                    className="aspect-square rounded-lg border border-white/5 hover:scale-110 transition-transform shadow-lg"
-                    style={{ backgroundColor: h }}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
+        )}
 
-        </div>)}
+        {/* SEO & Info Section */}
+        <div className="mt-16 pt-12 border-t border-slate-200 dark:border-slate-800 grid lg:grid-cols-3 gap-12">
+          <div className="lg:col-span-2 space-y-6">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-slate-50">About Image Color Picker</h2>
+            
+            <InfoDropdown
+              title="🎨 What is an Image Color Picker?"
+              content="An image color picker is a tool that allows you to upload any image and extract the exact colors used within it. This is incredibly useful for designers, developers, and artists who need to find specific color codes from reference images, photos, or screenshots without needing complex software."
+            />
+            <InfoDropdown
+              title="🔍 How do I extract a color from an image?"
+              content="Simply upload your image (JPG, PNG, WebP, GIF, etc.) using the dropzone. Once the image is loaded, move your cursor or tap anywhere on the image. Click or tap to lock in a color. The tool will instantly display the color's exact HEX, RGB, HSL, and CMYK values for you to copy."
+            />
+            <InfoDropdown
+              title="📋 What color formats are supported?"
+              content="This tool automatically converts the extracted color into four standard formats: HEX (e.g., #4F46E5), RGB (e.g., 79, 70, 229), HSL (e.g., 243°, 76%, 59%), and CMYK (e.g., 65%, 69%, 0%, 10%). These formats cover almost all use cases for web design, digital art, and print media."
+            />
+            <InfoDropdown
+              title="🔒 Are my images secure?"
+              content="Yes, 100% secure. All image processing and color extraction happen locally within your browser. Your images are never uploaded to our servers, ensuring complete privacy and security for your files."
+            />
+             <InfoDropdown
+              title="📱 Does it work on mobile?"
+              content="Absolutely. Our color picker is fully responsive and touch-friendly. You can upload photos directly from your phone's gallery and use touch gestures to pick colors with high precision."
+            />
+          </div>
+          <div className="flex flex-col gap-6">
+            <RelatedTools currentTool="Image" />
+          </div>
+        </div>
       </main>
     </div>
   );

@@ -42,7 +42,7 @@ const POPULAR_TOOLS = [
   },
   {
     label: "EMI Calculator",
-    href: "tools/calculatorTools/emi-calculator",
+    href: "/tools/calculatorTools/emi-calculator",
     icon: <FileText className="w-4 h-4" />,
   },
   {
@@ -57,7 +57,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className=" w-full h-min dark:bg-slate-950 drrk:text-slate-300">
+    <footer className="w-full h-min dark:bg-slate-950 dark:text-slate-300">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -142,7 +142,7 @@ export default function Footer() {
 
           <div className="flex gap-4">
             <Link
-              href="/privacy"
+              href="/privacy-policy"
               className="flex items-center gap-1 hover:text-indigo-600 transition"
             >
               <FileLock className="w-3 h-3" />

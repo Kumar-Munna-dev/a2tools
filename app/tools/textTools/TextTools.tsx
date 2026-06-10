@@ -5,7 +5,7 @@ import ToolCard from "@/app/components/ToolCard";
 
 export default function TextTools() {
   return (
-    <div className="min-h-screen bg-linear-to-brrom-indigo-100 via-blue-50 to-cyan-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-cyan-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500">
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* 🏷️ Header */}
         <h1 className="text-4xl font-extrabold text-center mb-6 bg-linear-to-r from-indigo-600 via-blue-500 to-cyan-400 bg-clip-text text-transparent">

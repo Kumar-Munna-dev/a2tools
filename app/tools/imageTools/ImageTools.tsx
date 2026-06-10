@@ -28,7 +28,7 @@ export default function ImageTools() {
   return (
     <>
       {/* 🌈 Page Layout */}
-      <div className="min-h-screen bg-linear-to-br from-pink-100 via-purple-100 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500">
+      <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500">
         <div className="max-w-6xl mx-auto px-4 py-12">
           {/* 🏷️ Header */}
           <h1 className="text-4xl font-extrabold text-center mb-6 bg-linear-to-r from-pink-600 via-purple-600 to-indigo-500 bg-clip-text text-transparent">
