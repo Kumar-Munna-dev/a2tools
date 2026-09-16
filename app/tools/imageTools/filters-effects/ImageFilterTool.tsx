@@ -77,11 +77,11 @@ export default function ImageEffects() {
   };
 
   return (
-    <div className="mt-20 min-h-screen dark:bg-slate-950 dark:text-slate-50 font-sans">
+    <div className=" min-h-screen dark:bg-slate-950 dark:text-slate-50 font-sans">
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {!image ? (
-          <div className="max-w-xl mx-auto mt-20">
+          <div className="max-w-xl mx-auto ">
             <label className="flex flex-col items-center justify-center h-80 bg-white border-2 border-dashed border-slate-200 rounded-[2.5rem] cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 transition-all group">
               <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Upload size={28} />

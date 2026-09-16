@@ -66,7 +66,7 @@ export default function URLShortener() {
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+        className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
       >
         <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <h1 className="text-2xl font-bold text-center mb-6 flex justify-center items-center gap-2">
@@ -80,7 +80,7 @@ export default function URLShortener() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="Enter your long URL here..."
-            className="w-full p-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full p-3 pr-10 border border-gray-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
           />
           <Link2 className="absolute right-3 top-3 h-5 w-5 text-gray-500" />
         </div>
@@ -140,7 +140,7 @@ export default function URLShortener() {
         )}
 
         {/* SEO Description */}
-        <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-4 text-sm leading-relaxed">
+        <div className="mt-8 border-t border-gray-300 dark:border-slate-700 pt-4 text-sm leading-relaxed">
           <h2 className="font-semibold mb-2">📖 About URL Shortener Tool</h2>
           <p>
             The <strong>URL Shortener Tool</strong> allows you to instantly

@@ -1,15 +1,14 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import ToolLayout from "@/app/components/ToolLayout";
+import { generatePasswordLogic, calculatePasswordStrength, PasswordOptions } from "@/app/utils/passwordLogic";
 import { Copy, RefreshCw } from "lucide-react";
 import InfoDropdown from "@/app/components/InfoDropdown";
-import RelatedTools from "@/app/components/RelatedTools";
 
 export default function PasswordGenerator() {
   const [password, setPassword] = useState("");
   const [length, setLength] = useState(16);
-  const [options, setOptions] = useState({
+  const [options, setOptions] = useState<PasswordOptions>({
     uppercase: true,
     lowercase: true,
     numbers: true,
@@ -17,62 +16,29 @@ export default function PasswordGenerator() {
   });
   const [strength, setStrength] = useState({ score: 0, text: "Very Weak" });
 
-  const calculateStrength = (pwd: string) => {
-    let score = 0;
-    if (pwd.length >= 8) score++;
-    if (pwd.length >= 12) score++;
-    if (/[a-z]/.test(pwd)) score++;
-    if (/[A-Z]/.test(pwd)) score++;
-    if (/[0-9]/.test(pwd)) score++;
-    if (/[^A-Za-z0-9]/.test(pwd)) score++;
-
-    let text = "Very Weak";
-    if (score > 5) text = "Very Strong";
-    else if (score > 4) text = "Strong";
-    else if (score > 2) text = "Moderate";
-    else if (score > 1) text = "Weak";
-
-    setStrength({ score, text });
-  };
-
-  const generatePassword = () => {
-    const { uppercase, lowercase, numbers, symbols } = options;
-    const sets = {
-      uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-      lowercase: "abcdefghijklmnopqrstuvwxyz",
-      numbers: "0123456789",
-      symbols: "!@#$%^&*()_+~`|}{[]:;?><,./-=",
-    };
-
-    let charset = "";
-    if (uppercase) charset += sets.uppercase;
-    if (lowercase) charset += sets.lowercase;
-    if (numbers) charset += sets.numbers;
-    if (symbols) charset += sets.symbols;
-
-    if (!charset) {
+  const handleGenerate = () => {
+    const pwd = generatePasswordLogic(length, options);
+    if (!pwd) {
       alert("Please select at least one character type!");
       return;
     }
-
-    let pwd = "";
-    for (let i = 0; i < length; i++) {
-      pwd += charset.charAt(Math.floor(Math.random() * charset.length));
-    }
-
     setPassword(pwd);
-    calculateStrength(pwd);
+    setStrength(calculatePasswordStrength(pwd));
   };
 
-  const copyToClipboard = () => {
+  const copyToClipboard = async () => {
     if (!password) return;
-    navigator.clipboard.writeText(password);
-    alert("✅ Password copied to clipboard!");
+    try {
+      await navigator.clipboard.writeText(password);
+      alert("Copied to clipboard!");
+    } catch {
+      alert("Failed to copy");
+    }
   };
 
   useEffect(() => {
-    generatePassword();
-  }, [length, options]);
+    handleGenerate();
+  }, [length, options]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getStrengthColor = () => {
     if (strength.score > 4) return "bg-green-500";
@@ -81,56 +47,67 @@ export default function PasswordGenerator() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+    <ToolLayout 
+      title="Password Generator" 
+      description="Create strong, secure, and random passwords instantly." 
+      toolType="Utility"
+      categoryPath="/tools/utilityTools"
+      categoryName="Utility Tools"
+      howToUse={[
+        "Select your desired password length using the slider (between 6 and 50 characters).",
+        "Check the boxes to include Uppercase letters, Lowercase letters, Numbers, and Symbols.",
+        "Click the 'Regenerate Password' button to generate a new secure string.",
+        "Check the strength meter to ensure your password is secure.",
+        "Click the copy icon to instantly copy the password to your clipboard."
+      ]}
+      features={[
+        "Cryptographically secure pseudo-random generation",
+        "Real-time password strength meter",
+        "Customizable character sets (A-Z, a-z, 0-9, Symbols)",
+        "Instant one-click clipboard copy",
+        "100% Client-side processing — your passwords are never sent to a server"
+      ]}
+      faqs={[
+        { question: "What makes a strong password?", answer: "A strong password is generally at least 12-16 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and symbols. It should not contain dictionary words or personal information." },
+        { question: "Are the passwords generated here secure?", answer: "Yes. This tool uses local client-side processing, meaning the passwords are created directly in your browser. They are never transmitted over the internet or saved on our servers." },
+        { question: "Why should I use a password generator?", answer: "Humans are naturally bad at creating truly random strings. A generator ensures your password is not susceptible to dictionary or brute-force attacks by using true entropy." }
+      ]}
     >
-
-      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
-        {/* Header */}
-        <h1 className="text-3xl font-extrabold text-center mb-6 dark:text-slate-50">
-          Password Generator – Create Strong & Secure Passwords
-        </h1>
-
+      <div className="flex flex-col gap-6">
         {/* Password Display */}
-        <div className="relative mb-6">
+        <div className="relative">
           <input
             type="text"
             value={password}
             readOnly
-            className="w-full h-14 px-4 pr-24 border  border-slate-400 
-                     rounded-xl bg-gray-800/70 text-lg font-mono 
-                      focus:ring-2 focus:ring-blue-500 
-                     outline-none transition"
+            className="w-full h-14 px-4 pr-24 rounded-xl border dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-lg font-mono outline-none transition"
             placeholder="Your password will appear here"
           />
-          <div className="absolute inset-y-0 right-2 flex items-center space-x-2">
+          <div className="absolute inset-y-0 right-2 flex items-center space-x-1">
             <button
               onClick={copyToClipboard}
-              className="p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 transition"
-              aria-label="Copy password"
+              className="p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 transition"
+              title="Copy password"
             >
-              <Copy className="h-5 w-5 text-blue-600 dark:text-cyan-400" />
+              <Copy size={20} />
             </button>
             <button
-              onClick={generatePassword}
-              className="p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 transition"
-              aria-label="Regenerate password"
+              onClick={handleGenerate}
+              className="p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 transition"
+              title="Regenerate password"
             >
-              <RefreshCw className="h-5 w-5 text-blue-600 dark:text-cyan-400" />
+              <RefreshCw size={20} />
             </button>
           </div>
         </div>
 
         {/* Strength Meter */}
-        <div className="mb-6">
-          <div className="flex justify-between text-sm mb-2 ">
+        <div>
+          <div className="flex justify-between text-sm mb-2 dark:text-slate-300">
             <span>Password Strength</span>
             <span className="font-semibold">{strength.text}</span>
           </div>
-          <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
             <div
               className={`h-full ${getStrengthColor()} transition-all duration-300`}
               style={{ width: `${(strength.score / 6) * 100}%` }}
@@ -139,9 +116,10 @@ export default function PasswordGenerator() {
         </div>
 
         {/* Length Slider */}
-        <div className="mb-6">
-          <label className="block  mb-1 font-medium">
-            Length: <span className="text-blue-600 ">{length}</span>
+        <div>
+          <label className="flex justify-between items-center text-sm font-medium dark:text-slate-300 mb-2">
+            <span>Length</span>
+            <span className="text-indigo-500 font-bold">{length}</span>
           </label>
           <input
             type="range"
@@ -149,21 +127,21 @@ export default function PasswordGenerator() {
             max="50"
             value={length}
             onChange={(e) => setLength(Number(e.target.value))}
-            className="w-full accent-blue-500 cursor-pointer"
+            className="w-full accent-indigo-500 cursor-pointer"
           />
         </div>
 
         {/* Character Options */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-4">
           {Object.entries({
-            uppercase: "Uppercase",
-            lowercase: "Lowercase",
-            numbers: "Numbers",
-            symbols: "Symbols",
+            uppercase: "Uppercase (A-Z)",
+            lowercase: "Lowercase (a-z)",
+            numbers: "Numbers (0-9)",
+            symbols: "Symbols (!@#)",
           }).map(([key, label]) => (
             <label
               key={key}
-              className="flex items-center gap-2 "
+              className="flex items-center gap-3 p-3 rounded-xl border dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900/50 transition"
             >
               <input
                 type="checkbox"
@@ -174,55 +152,22 @@ export default function PasswordGenerator() {
                     [key]: e.target.checked,
                   }))
                 }
-                className="w-4 h-4 accent-blue-600"
+                className="w-5 h-5 rounded text-indigo-500 focus:ring-indigo-400 accent-indigo-500"
               />
-              <span>{label}</span>
+              <span className="text-sm font-medium dark:text-slate-300">{label}</span>
             </label>
           ))}
         </div>
 
         {/* Generate Button */}
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={generatePassword}
-          className="w-full py-3 bg-indigo-600
-                   hover:from-indigo-700  text-white font-semibold 
-                   rounded-xl shadow-md hover:shadow-lg transition-all"
+        <button
+          onClick={handleGenerate}
+          className="mt-2 w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-xl shadow-sm transition flex items-center justify-center gap-2"
         >
-          <div className="flex items-center justify-center gap-2">
-            <RefreshCw className="h-5 w-5" /> Regenerate Password
-          </div>
-        </motion.button>
-
-        {/* Info Sections */}
-        <div className="mt-10 space-y-6">
-          <InfoDropdown
-            title="🔐 What is a Password Generator Tool?"
-            content="A password generator tool helps users create secure, random, and unique passwords instantly, reducing the risk of hacking or data theft."
-          />
-          <InfoDropdown
-            title="⚙️ How Does It Work?"
-            content="It uses a randomization algorithm to create strong passwords based on your chosen settings: uppercase, lowercase, numbers, and symbols."
-          />
-          <InfoDropdown
-            title="🧠 Why Use Strong Passwords?"
-            content="Strong passwords prevent brute-force attacks and protect your digital identity. Use a mix of characters for maximum security."
-          />
-          <InfoDropdown
-            title="🔒 Tips for Strong Passwords"
-            content="Use 12–16+ characters, include all character types, avoid personal info, and never reuse passwords."
-          />
-          <InfoDropdown
-            title="🌍 Benefits of Using Our Tool"
-            content="Our generator works 100% offline in your browser. No data storage or tracking — just fast, private password creation."
-          />
-        </div>
-
+          <RefreshCw size={18} />
+          Regenerate Password
+        </button>
       </div>
-      {/* Here Moblie card */}
-      <div className="order-2  sm:order-1">
-        <RelatedTools currentTool="Utility" />
-      </div>
-    </motion.div>
+    </ToolLayout>
   );
 }

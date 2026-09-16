@@ -36,7 +36,7 @@ export default function DiscountCalculator() {
 <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
+        className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
       >
         <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         {/* Heading */}
@@ -81,7 +81,7 @@ export default function DiscountCalculator() {
 
           <button
             onClick={clearAll}
-            className="py-3 rounded-xl bg-gray-200 text-gray-800 text-sm font-semibold shadow hover:shadow-lg active:scale-95 transition"
+            className="py-3 rounded-xl bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-100 text-sm font-semibold shadow hover:shadow-lg active:scale-95 transition"
           >
             Clear
           </button>

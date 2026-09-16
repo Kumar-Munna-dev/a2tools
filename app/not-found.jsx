@@ -2,6 +2,10 @@
 export const metadata = {
   title: "404 Not Found | A2Tool",
   description: "The page you are looking for does not exist. Return to A2Tool and continue with fast PDF, image, and text tools.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 const NotFound = () => {

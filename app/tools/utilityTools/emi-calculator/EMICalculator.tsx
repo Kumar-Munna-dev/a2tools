@@ -1,25 +1,24 @@
 'use client';
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import RelatedTools from '@/app/components/RelatedTools';
+import ToolLayout from '@/app/components/ToolLayout';
 
 export default function EMICalculator() {
-  const [loanAmount, setLoanAmount] = useState(1000000);
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [loanTenure, setLoanTenure] = useState(5);
+  const [loanAmount, setLoanAmount] = useState<number | string>(1000000);
+  const [interestRate, setInterestRate] = useState<number | string>(6.5);
+  const [loanTenure, setLoanTenure] = useState<number | string>(5);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
-      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
 
   const emiData = useMemo(() => {
-    const principal = loanAmount;
-    const rate = interestRate / 100 / 12;
-    const tenure = loanTenure * 12;
+    const principal = Number(loanAmount) || 0;
+    const rate = (Number(interestRate) || 0) / 100 / 12;
+    const tenure = (Number(loanTenure) || 0) * 12;
 
     if (principal > 0 && rate > 0 && tenure > 0) {
       const emi =
@@ -37,163 +36,177 @@ export default function EMICalculator() {
     return { emi: 0, totalAmount: 0, totalInterest: 0, principal };
   }, [loanAmount, interestRate, loanTenure]);
 
-  const interestPercentage = (emiData.totalInterest / emiData.totalAmount) * 100;
+  const interestPercentage =
+    emiData.totalAmount > 0
+      ? (emiData.totalInterest / emiData.totalAmount) * 100
+      : 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+    <ToolLayout
+      title="EMI Calculator"
+      description="Calculate your Equated Monthly Installment (EMI) instantly with precision."
+      toolType="Utility"
+      categoryPath="/tools/utilityTools"
+      categoryName="Utility Tools"
+      howToUse={[
+        "Enter your total loan amount (principal).",
+        "Enter the annual interest rate.",
+        "Set the loan tenure (duration) in years.",
+        "The calculator instantly updates your monthly EMI, total interest, and total payable amount.",
+        "Review the visual chart to see the ratio of principal vs interest."
+      ]}
+      features={[
+        "Real-time instant EMI calculation",
+        "Interactive sliders and precise numeric inputs",
+        "Visual chart displaying interest vs principal breakdown",
+        "100% private, client-side browser processing",
+        "Accurate Indian Rupee (₹) currency formatting"
+      ]}
+      faqs={[
+        { question: "What is an EMI?", answer: "Equated Monthly Installment (EMI) is a fixed payment amount made by a borrower to a lender at a specified date each calendar month. EMIs are used to pay off both interest and principal each month so that over a specified number of years, the loan is paid off in full." },
+        { question: "How is the EMI calculated?", answer: "EMI is calculated using the formula: P x R x (1+R)^N / [(1+R)^N-1] where P stands for the loan amount, R is the interest rate per month, and N is the number of monthly installments." },
+        { question: "Is this EMI calculator accurate for home and car loans?", answer: "Yes! As long as your bank uses standard reducing-balance interest formulas (which almost all banks do for home, car, and personal loans), this calculator will provide exact EMI figures." }
+      ]}
     >
- 
-      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
-        <h1 className="text-2xl font-bold text-center dark:text-slate-50">
-          EMI Calculator – Calculate Monthly Loan EMI Instantly
-        </h1>
-
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* LEFT SIDE CONTROLS */}
-          <div className="lg:col-span-3 space-y-8">
-            {/* Loan Amount */}
-            <div>
-              <div className="flex justify-between mb-2">
-                <label htmlFor="loanAmount" className="font-medium">
-                  Loan amount
-                </label>
-                <div className="bg-indigo-500 dark:text-slate-50 rounded-md px-3 py-1 font-semibold">
-                  ₹ {loanAmount.toLocaleString('en-IN')}
-                </div>
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* INPUTS SECTION */}
+        <div className="space-y-8">
+          {/* Loan Amount */}
+          <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <label htmlFor="loanAmount" className="font-semibold text-slate-700 dark:text-slate-300">
+                Loan Amount (₹)
+              </label>
               <input
-                type="range"
-                id="loanAmount"
-                min="10000"
-                max="5000000"
-                step="10000"
+                type="number"
                 value={loanAmount}
-                onChange={(e) => setLoanAmount(Number(e.target.value))}
-                className="w-full indigo-300"
+                onChange={(e) => setLoanAmount(e.target.value)}
+                className="w-full sm:w-32 px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                min="0"
               />
             </div>
+            <input
+              type="range"
+              min="10000"
+              max="10000000"
+              step="10000"
+              value={Number(loanAmount) || 0}
+              onChange={(e) => setLoanAmount(Number(e.target.value))}
+              className="w-full accent-indigo-500"
+            />
+          </div>
 
-            {/* Interest Rate */}
-            <div>
-              <div className="flex justify-between mb-2">
-                <label htmlFor="interestRate" className="font-medium">
-                  Interest rate (p.a)
-                </label>
-                <div className="bg-indigo-500 dark:text-slate-50 rounded-md px-3 py-1 font-semibold">
-                  {interestRate} %
-                </div>
-              </div>
+          {/* Interest Rate */}
+          <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <label htmlFor="interestRate" className="font-semibold text-slate-700 dark:text-slate-300">
+                Interest Rate (% p.a.)
+              </label>
               <input
-                type="range"
-                id="interestRate"
-                min="1"
-                max="20"
-                step="0.1"
+                type="number"
                 value={interestRate}
-                onChange={(e) => setInterestRate(Number(e.target.value))}
-                className="w-full indigo-300"
+                onChange={(e) => setInterestRate(e.target.value)}
+                className="w-full sm:w-32 px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                min="0"
+                step="0.1"
               />
             </div>
+            <input
+              type="range"
+              min="1"
+              max="30"
+              step="0.1"
+              value={Number(interestRate) || 0}
+              onChange={(e) => setInterestRate(Number(e.target.value))}
+              className="w-full accent-indigo-500"
+            />
+          </div>
 
-            {/* Loan Tenure */}
-            <div>
-              <div className="flex justify-between mb-2">
-                <label htmlFor="loanTenure" className="font-medium">
-                  Loan tenure (years)
-                </label>
-                <div className=" bg-indigo-500 dark:text-slate-50 rounded-md px-3 py-1 font-semibold">
-                  {loanTenure} Yr
-                </div>
-              </div>
+          {/* Loan Tenure */}
+          <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <label htmlFor="loanTenure" className="font-semibold text-slate-700 dark:text-slate-300">
+                Loan Tenure (Years)
+              </label>
               <input
-                type="range"
-                id="loanTenure"
-                min="1"
-                max="30"
-                step="1"
+                type="number"
                 value={loanTenure}
-                onChange={(e) => setLoanTenure(Number(e.target.value))}
-                className="w-full bg-indigo-300"
+                onChange={(e) => setLoanTenure(e.target.value)}
+                className="w-full sm:w-32 px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                min="0"
+                max="30"
               />
             </div>
-          </div>
-
-          {/* RIGHT SIDE CHART */}
-          <div className="lg:col-span-2 flex flex-col items-center justify-center">
-            <div className="relative w-48 h-48">
-              <svg className="w-full h-full" viewBox="0 0 36 36">
-                <path
-                  className="text-gray-200"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                />
-                <motion.path
-                  className="text-indigo-400"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeDasharray={`${interestPercentage}, 100`}
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  initial={{ strokeDashoffset: 100 }}
-                  animate={{ strokeDashoffset: 0 }}
-                  transition={{ duration: 0.5 }}
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span className="text-xs ">Monthly EMI</span>
-                <span className="text-2xl font-bold dark:text-slate-400">
-                  {formatCurrency(emiData.emi)}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex justify-center gap-6 mt-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-gray-200"></div>
-                <span className="text-sm">Principal</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-indigo-600"></div>
-                <span className="text-sm">Interest</span>
-              </div>
-            </div>
+            <input
+              type="range"
+              min="1"
+              max="30"
+              step="1"
+              value={Number(loanTenure) || 0}
+              onChange={(e) => setLoanTenure(Number(e.target.value))}
+              className="w-full accent-indigo-500"
+            />
           </div>
         </div>
 
-        {/* RESULTS */}
-        <div className="border-t pt-6 space-y-3">
-          <div className="flex justify-between text-lg">
-            <p className="">Principal amount</p>
-            <p className="font-semibold ">
-              {formatCurrency(emiData.principal)}
-            </p>
+        {/* RESULTS & CHART SECTION */}
+        <div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+          <div className="relative w-48 h-48 mb-8">
+            <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+              <path
+                className="text-slate-200 dark:text-slate-800"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+              />
+              <motion.path
+                className="text-indigo-500"
+                stroke="currentColor"
+                strokeWidth="3"
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray={`${interestPercentage}, 100`}
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                initial={{ strokeDasharray: "0, 100" }}
+                animate={{ strokeDasharray: `${interestPercentage}, 100` }}
+                transition={{ duration: 1, ease: "easeOut" }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+              <span className="text-xs text-slate-500 dark:text-slate-400">Monthly EMI</span>
+              <span className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                {formatCurrency(emiData.emi)}
+              </span>
+            </div>
           </div>
-          <div className="flex justify-between text-lg">
-            <p className="">Total interest</p>
-            <p className="font-semibold ">
-              {formatCurrency(emiData.totalInterest)}
-            </p>
-          </div>
-          <div className="flex justify-between text-lg">
-            <p className="">Total amount</p>
-            <p className="font-semibold ">
-              {formatCurrency(emiData.totalAmount)}
-            </p>
+
+          <div className="w-full space-y-4">
+            <div className="flex justify-between items-center text-sm">
+              <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                <div className="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+                Principal Amount
+              </div>
+              <div className="font-semibold text-slate-900 dark:text-slate-100">
+                {formatCurrency(emiData.principal)}
+              </div>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
+                Total Interest
+              </div>
+              <div className="font-semibold text-slate-900 dark:text-slate-100">
+                {formatCurrency(emiData.totalInterest)}
+              </div>
+            </div>
+            <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-base font-bold">
+              <span className="text-slate-800 dark:text-slate-200">Total Payable</span>
+              <span className="text-indigo-600 dark:text-indigo-400">{formatCurrency(emiData.totalAmount)}</span>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Here Moblie card */}
-      <div className="order-2  sm:order-1">
-        <RelatedTools currentTool="Utility" />
-      </div>
-    </motion.div>
+    </ToolLayout>
   );
 }

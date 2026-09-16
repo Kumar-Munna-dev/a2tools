@@ -41,7 +41,7 @@ export default function PercentageCalculator() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
+      className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
     >
       <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <div className="text-center mb-6">
@@ -101,7 +101,7 @@ export default function PercentageCalculator() {
 
           <button
             onClick={clearAll}
-            className="py-3 rounded-xl bg-gray-200 text-gray-800 text-sm font-semibold shadow hover:shadow-md active:scale-95 transition"
+            className="py-3 rounded-xl bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-100 text-sm font-semibold shadow hover:shadow-md active:scale-95 transition"
           >
             Clear
           </button>
@@ -112,7 +112,7 @@ export default function PercentageCalculator() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mt-8 p-5 bg-gray-900 text-white rounded-2xl text-center text-xl font-bold shadow-lg"
+            className="mt-8 p-5 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 rounded-2xl text-center text-xl font-bold shadow-lg"
           >
             Result: {result}
           </motion.div>

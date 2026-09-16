@@ -175,7 +175,7 @@ export default function OnlineNotepadPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45 }}
-      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+      className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
     >
       <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <div className="flex items-center justify-between mb-4">
@@ -291,7 +291,7 @@ export default function OnlineNotepadPage() {
         />
 
         {/* SEO + Info */}
-        <div className="mt-8 border-t border-slate-200 dark:border-gray-700 pt-4 text-sm  leading-relaxed">
+        <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-4 text-sm  leading-relaxed">
           <h2 className="font-semibold mb-2">📖 About Professional Offline Notepad</h2>
           <p>
             A secure, offline rich text notepad that lets you write, format, and save notes directly in your browser. Features include bold, italic, underline, lists, alignment, links, image insertion, and file save/open — all private and local.

@@ -46,7 +46,7 @@ export default function TextFormatterCleaner() {
   };
 
   return (
-    <div className="mt-20 flex flex-col mb-5 sm:flex-row">
+    <div className=" flex flex-col mb-5 sm:flex-row">
       <div className="order-2 w-screen dark:bg-slate-950 rounded-2xl p-6 sm:order-2">
         <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-4">Text Formatter / Cleaner</h1>
         <p className="text-sm dark:text-gray-200 text-center mb-4">Remove extra spaces, normalize line breaks, or strip HTML tags quickly.</p>
@@ -69,8 +69,8 @@ export default function TextFormatterCleaner() {
 
         <div className="flex gap-3 mt-4 flex-wrap">
           <button onClick={copyToClipboard} className="px-4 py-2 bg-green-600 text-white rounded-lg">Copy</button>
-          <button onClick={downloadTxt} className="px-4 py-2 bg-gray-800 text-white rounded-lg">Download</button>
-          <button onClick={clearAll} className="px-4 py-2 bg-gray-800 text-white rounded-lg">Clear</button>
+          <button onClick={downloadTxt} className="px-4 py-2 bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900 rounded-lg">Download</button>
+          <button onClick={clearAll} className="px-4 py-2 bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900 rounded-lg">Clear</button>
 
           <div className="ml-auto text-sm text-gray-500 self-center">{message}</div>
         </div>

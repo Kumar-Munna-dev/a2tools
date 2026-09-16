@@ -141,7 +141,7 @@ export default function ColorConverterPicker() {
       initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+      className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
     >
       <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
@@ -157,7 +157,7 @@ export default function ColorConverterPicker() {
             className="w-24 h-24 rounded-full border-4 shadow-md cursor-pointer"
           />
           <div
-            className="w-full h-16 rounded-xl border border-gray-300 dark:border-gray-600 shadow-inner transition-all"
+            className="w-full h-16 rounded-xl border border-gray-300 dark:border-slate-700 shadow-inner transition-all"
             style={{ backgroundColor: hex }}
           ></div>
         </div>

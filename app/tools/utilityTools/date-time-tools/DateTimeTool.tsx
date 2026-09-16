@@ -55,7 +55,7 @@ export default function DateTimeTool() {
       initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+      className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
     >
 
       <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
@@ -82,7 +82,7 @@ export default function DateTimeTool() {
           <select
             value={timezone}
             onChange={(e) => setTimezone(e.target.value)}
-            className="w-full sm:w-2/3 p-2 sm:p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            className="w-full sm:w-2/3 p-2 sm:p-3 rounded-lg border border-gray-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 dark:bg-slate-800 text-slate-900 dark:text-slate-100 dark:text-gray-100"
           >
             {timezones.map((tz) => (
               <option key={tz} value={tz}>

@@ -19,26 +19,23 @@ export default function ToolCard({
     <Link
       href={href}
       className="
-        group block p-6 rounded-2xl border        
-        shadow-sm
-        transition-all duration-300 ease-out
-        hover:-translate-y-1 hover:shadow-md
-        hover:border-indigo-500/40
-        dark:border-slate-800 dark:bg-slate-900
-        dark:hover:border-indigo-400/40
-        
+        group block p-6 rounded-2xl
+        bg-white dark:bg-slate-900/80
+        border border-slate-200 dark:border-slate-800
+        shadow-sm transition-all duration-300 ease-out
+        hover:-translate-y-1 hover:shadow-lg
+        hover:border-indigo-500/30 dark:hover:border-indigo-400/30
       "
     >
       {/* ICON */}
       <div
         className="
-          mb-4 flex h-12 w-12 items-center justify-center rounded-xl
-           text-indigo-600
-          transition-colors
-          group-hover:bg-indigo-100
-          dark:text-indigo-400
-          dark:group-hover:bg-indigo-500/20
-          dark:bg-slate-600
+          mb-5 flex h-12 w-12 items-center justify-center rounded-xl
+          bg-indigo-50/50 text-indigo-600
+          transition-colors duration-300
+          group-hover:bg-indigo-100 group-hover:text-indigo-700
+          dark:bg-indigo-500/10 dark:text-indigo-400
+          dark:group-hover:bg-indigo-500/20 dark:group-hover:text-indigo-300
         "
       >
         {icon}
@@ -47,11 +44,9 @@ export default function ToolCard({
       {/* TITLE */}
       <h3
         className="
-          mb-1 text-lg font-semibold
-          transition-colors
-          group-hover:text-indigo-600
-          dark:text-slate-100
-          dark:group-hover:text-indigo-400
+          mb-2 text-lg font-bold text-slate-900 dark:text-slate-100
+          transition-colors duration-300
+          group-hover:text-indigo-600 dark:group-hover:text-indigo-400
         "
       >
         {title}
@@ -60,9 +55,8 @@ export default function ToolCard({
       {/* DESCRIPTION */}
       <p
         className="
-          text-sm leading-relaxed
-          text-slate-600
-          dark:text-slate-400
+          text-sm leading-relaxed text-slate-500 dark:text-slate-400
+          line-clamp-3
         "
       >
         {description}

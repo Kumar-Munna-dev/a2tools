@@ -29,7 +29,7 @@ export default function TextCaseConverter() {
 
     return (
         <>
-            <div className="flex flex-col sm:flex-row mt-20 gap-20">
+            <div className="flex flex-col sm:flex-row  gap-20">
                 
                                {/* Here Moblie card */}
                 <div className="w-max order-2 flex items-center justify-center sm:order-1" >

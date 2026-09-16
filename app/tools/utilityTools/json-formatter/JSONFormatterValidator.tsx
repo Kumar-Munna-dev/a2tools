@@ -132,7 +132,7 @@ export default function JSONFormatterValidator() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+            className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
         >
             <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
                 <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
@@ -234,19 +234,19 @@ export default function JSONFormatterValidator() {
                             <div className="flex gap-2 flex-wrap">
                                 <button
                                     onClick={() => handleBeautifyExamples("pretty2")}
-                                    className="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded text-gray-800 dark:text-gray-100"
+                                    className="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded text-slate-800 dark:text-slate-100 dark:text-gray-100"
                                 >
                                     Prettify (2)
                                 </button>
                                 <button
                                     onClick={() => handleBeautifyExamples("pretty4")}
-                                    className="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded text-gray-800 dark:text-gray-100"
+                                    className="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded text-slate-800 dark:text-slate-100 dark:text-gray-100"
                                 >
                                     Prettify (4)
                                 </button>
                                 <button
                                     onClick={() => handleBeautifyExamples("compact")}
-                                    className="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded text-gray-800 dark:text-gray-100"
+                                    className="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded text-slate-800 dark:text-slate-100 dark:text-gray-100"
                                 >
                                     Compact
                                 </button>
@@ -267,8 +267,8 @@ export default function JSONFormatterValidator() {
                         <div
                             className={`w-full min-h-80 sm:min-h-[380px] max-h-[500px] overflow-auto p-3 rounded-lg border ${error
                                 ? "border-red-400 bg-red-50 dark:bg-red-900/30"
-                                : "border-gray-300 dark:border-gray-600 dark:bg-gray-800"
-                                } text-sm sm:text-sm font-mono text-gray-900 dark:text-gray-100`}
+                                : "border-gray-300 dark:border-slate-700 dark:bg-slate-800"
+                                } text-sm sm:text-sm font-mono text-slate-900 dark:text-slate-100 dark:text-gray-100`}
                         >
                             {error ? (
                                 <div className="flex items-start gap-3">

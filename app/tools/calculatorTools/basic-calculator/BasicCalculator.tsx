@@ -71,7 +71,7 @@ export default function BasicCalculator() {
 
   return (
     <>
-      <main className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100">
+      <main className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100">
         <section
           className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2"
           aria-label="Online Basic Calculator"
@@ -88,7 +88,7 @@ export default function BasicCalculator() {
               readOnly
               value={display}
               aria-label="Calculator display"
-              className="w-full p-3 text-right text-2xl font-mono dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 overflow-x-auto whitespace-nowrap"
+              className="w-full p-3 text-right text-2xl font-mono dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 overflow-x-auto whitespace-nowrap"
               style={{ caretColor: "transparent" }}
             />
           </div>
@@ -102,7 +102,7 @@ export default function BasicCalculator() {
                   onClick={() => handleClick(btn)}
                   className={`py-3 md:py-4 px-2 rounded-lg border text-base md:text-lg font-semibold transition-transform transform active:scale-95 shadow-sm ${isOp
                       ? "bg-blue-500 hover:bg-blue-600 text-white"
-                      : " dark:bg-gray-800 dark:hover:bg-gray-100 dark:text-gray-50"
+                      : " dark:bg-slate-800 dark:hover:bg-gray-100 dark:text-gray-50"
                     }`}
                 >
                   {btn === "/" ? "÷" : btn === "*" ? "×" : btn}

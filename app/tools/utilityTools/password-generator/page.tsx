@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import PasswordGenerator from './PasswordGenerator';
+import SeoMeta from '@/app/components/SeoMeta';
 
 export const metadata: Metadata = {
   title: {
@@ -38,6 +39,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function  Page() {
-  return  <PasswordGenerator />;
+export default function Page() {
+  return (
+    <>
+      <SeoMeta
+        title="Password Generator"
+        description="Free online password generator. Create strong and secure passwords."
+        url="https://a2tool.com/tools/utilityTools/password-generator/"
+        toolType="WebApplication"
+        breadcrumbs={[
+          { name: "Home", item: "https://a2tool.com/" },
+          { name: "Utility Tools", item: "https://a2tool.com/tools/utilityTools/" },
+          { name: "Password Generator", item: "https://a2tool.com/tools/utilityTools/password-generator/" }
+        ]}
+        faqs={[
+          { question: "What makes a strong password?", answer: "A strong password is generally at least 12-16 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and symbols." },
+          { question: "Are the passwords generated here secure?", answer: "Yes. This tool uses local client-side processing, meaning the passwords are created directly in your browser." },
+          { question: "Why should I use a password generator?", answer: "Humans are naturally bad at creating truly random strings. A generator ensures your password is not susceptible to dictionary or brute-force attacks." }
+        ]}
+      />
+      <PasswordGenerator />
+    </>
+  );
 }

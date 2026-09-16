@@ -180,7 +180,7 @@ const currencyNames: Record<string, string> = {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <main className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 dark:bg-slate-800">
         <div className="text-gray-700 dark:text-gray-300">Fetching live exchange rates...</div>
       </main>
     );
@@ -191,7 +191,7 @@ const currencyNames: Record<string, string> = {
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
+        className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50"
       >
         <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <h1 className="text-3xl font-bold text-center mb-8">
@@ -214,7 +214,7 @@ const currencyNames: Record<string, string> = {
             <select
               value={fromCurrency}
               onChange={(e) => setFromCurrency(e.target.value)}
-              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50  text-gray-800"
+              className="w-full p-2 rounded-lg border dark:border-slate-700 bg-slate-50 dark:bg-slate-900  text-slate-800 dark:text-slate-100"
             >
               {Object.keys(currencyNames).map((code) => (
                 <option key={code} value={code}>
@@ -249,7 +249,7 @@ const currencyNames: Record<string, string> = {
             <select
               value={toCurrency}
               onChange={(e) => setToCurrency(e.target.value)}
-              className="w-full p-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+              className="w-full p-2 rounded-lg border dark:border-slate-700 bg-slate-50 dark:bg-slate-900 dark:bg-slate-800 text-slate-800 dark:text-slate-100 dark:text-gray-100"
             >
               {Object.keys(currencyNames).map((code) => (
                 <option key={code} value={code}>

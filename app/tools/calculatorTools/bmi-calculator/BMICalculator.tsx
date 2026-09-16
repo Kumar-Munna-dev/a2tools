@@ -62,7 +62,7 @@ export default function BMICalculator() {
   <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
+        className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
       >
        <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2"> {/* Title */}
         <h1 className="text-3xl font-bold text-center mb-2">
@@ -81,7 +81,7 @@ export default function BMICalculator() {
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               placeholder="e.g. 70"
-              className="mt-1 w-full p-3 border rounded-xl dark:bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
+              className="mt-1 w-full p-3 border rounded-xl dark:bg-slate-950 dark:text-slate-100 border-slate-300 dark:border-slate-800 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
           </div>
 
@@ -92,7 +92,7 @@ export default function BMICalculator() {
               value={height}
               onChange={(e) => setHeight(e.target.value)}
               placeholder="e.g. 170"
-              className="mt-1 w-full p-3 border rounded-xl dark:bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
+              className="mt-1 w-full p-3 border rounded-xl dark:bg-slate-950 dark:text-slate-100 border-slate-300 dark:border-slate-800 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
           </div>
 
@@ -103,7 +103,7 @@ export default function BMICalculator() {
               value={age}
               onChange={(e) => setAge(e.target.value)}
               placeholder="e.g. 25"
-              className="mt-1 w-full p-3 border rounded-xl dark:bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none"
+              className="mt-1 w-full p-3 border rounded-xl dark:bg-slate-950 dark:text-slate-100 border-slate-300 dark:border-slate-800 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
           </div>
 
@@ -132,7 +132,7 @@ export default function BMICalculator() {
 
           <button
             onClick={clearAll}
-            className="py-3 rounded-xl bg-gray-200 text-gray-700 font-semibold hover:shadow-sm transition"
+            className="py-3 rounded-xl bg-slate-200 dark:bg-slate-800 dark:text-slate-100 text-gray-700 font-semibold hover:shadow-sm transition"
           >
             Clear
           </button>

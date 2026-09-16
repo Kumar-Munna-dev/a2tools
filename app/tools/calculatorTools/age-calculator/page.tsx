@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import AgeCalculator from './AgeCalculator';
+import SeoMeta from '@/app/components/SeoMeta';
 
 export const metadata: Metadata = {
   title: {
@@ -37,6 +38,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function  Page() {
-  return  <AgeCalculator />;
+export default function Page() {
+  return (
+    <>
+      <SeoMeta 
+        title="Age Calculator"
+        description="Calculate your exact age instantly in years, months, and days."
+        url="https://a2tool.com/tools/calculatorTools/age-calculator/"
+        toolType="WebApplication"
+      />
+      <AgeCalculator />
+    </>
+  );
 }

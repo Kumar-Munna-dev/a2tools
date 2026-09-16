@@ -63,7 +63,7 @@ export default function PasswordStrengthChecker() {
     };
 
     return (
-        <main className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50">
+        <main className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50">
             <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
                 <h1 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
                     <ShieldCheck className="h-6 w-6 text-blue-600" /> Password Strength Checker – Test Password Security Online
@@ -105,7 +105,7 @@ export default function PasswordStrengthChecker() {
                 </div>
 
                 {/* Tips Section */}
-                <div className="mt-20 border-t dark:border-slate-400">
+                <div className=" border-t dark:border-slate-400">
                     <h2 className="font-semibold text-lg mb-2">🔑 Strength Tips</h2>
                     {password.length === 0 ? (
                         <p className="">Start typing to check your password strength.</p>
@@ -123,7 +123,7 @@ export default function PasswordStrengthChecker() {
                 </div>
 
                 {/* SEO About Section */}
-                <div className="mt-30 border-t border-gray-300 dark:border-gray-700 pt-4 text-sm leading-relaxed ">
+                <div className="mt-30 border-t border-gray-300 dark:border-slate-700 pt-4 text-sm leading-relaxed ">
                     <h2 className="text-lg font-bold mb-2">🧠 About Password Strength Checker Tool</h2>
                     <p>
                         Our <strong>Password Strength Checker</strong> helps you evaluate

@@ -46,7 +46,7 @@ const handleCopy = async () => {
   };
 
   return (
-    <main className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50">
+    <main className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-50">
       <div
         
         className=" flex flex-col gap-5 p-5 w-screen order-2 sm:order-2"
@@ -61,7 +61,7 @@ const handleCopy = async () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={3}
-          className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none"
+          className="w-full p-3 rounded-lg border border-gray-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
           placeholder="Enter text or URL to generate QR code..."
         />
 
@@ -95,7 +95,7 @@ const handleCopy = async () => {
         </div>
 
         {/* SEO Intro Text */}
-        <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-4 text-sm  leading-relaxed">
+        <div className="mt-8 border-t border-gray-300 dark:border-slate-700 pt-4 text-sm  leading-relaxed">
           <h2 className="font-semibold mb-2">📖 About QR Code Generator Tool</h2>
           <p>
             This <strong>QR Code Generator</strong> lets you instantly create

@@ -95,7 +95,7 @@ export default function EMICalculator() {
   <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
+        className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
       >
         <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
         <div className="text-center mb-10">
@@ -170,7 +170,7 @@ export default function EMICalculator() {
 
           <button
             onClick={clearAll}
-            className="py-3 rounded-xl bg-gray-200 text-black hover:bg-gray-300 transition font-semibold shadow-md active:scale-95"
+            className="py-3 rounded-xl bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-100 hover:bg-gray-300 transition font-semibold shadow-md active:scale-95"
           >
             Clear
           </button>

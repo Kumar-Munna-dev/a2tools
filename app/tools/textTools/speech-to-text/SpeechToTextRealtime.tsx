@@ -175,8 +175,8 @@ export default function SpeechToTextRealtime() {
   }
 
   return (
-    <div className="mt-20 flex flex-col items-center mb-5 sm:flex-row sm:items-start ">
-      <div className=" w-screen order-1 dark:bg-slate-950 rounded-2xl shadow p-4 sm:p-6 sm:order-2">
+    <div className="flex flex-col items-center gap-6 p-4 sm:p-6 mb-5 lg:flex-row lg:items-start max-w-7xl mx-auto">
+      <div className="w-full lg:w-2/3 order-1 dark:bg-slate-950 rounded-2xl shadow p-4 sm:p-6 lg:order-2">
         <h1 className="text-2xl font-semibold text-center mb-2">Speech to Text — Real-time Transcription</h1>
         <p className="text-sm text-gray-600 text-center mb-4">Transcribe your voice into editable text as you speak.</p>
 
@@ -209,7 +209,7 @@ export default function SpeechToTextRealtime() {
 
             <button
               onClick={clearAll}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
+              className="px-4 py-2 bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-100 rounded-md"
             >Clear</button>
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function SpeechToTextRealtime() {
 
         <div className="flex items-center gap-3 mt-4 flex-wrap">
           <button onClick={copyToClipboard} className="px-4 py-2 bg-blue-600 text-white rounded-md">Copy</button>
-          <button onClick={downloadTxt} className="px-4 py-2 bg-gray-800 text-white rounded-md">Download</button>
+          <button onClick={downloadTxt} className="px-4 py-2 bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900 rounded-md">Download</button>
           <div className="ml-auto text-xs text-gray-500">Status: {listening ? "Listening..." : "Idle"}</div>
         </div>
 
@@ -237,7 +237,7 @@ export default function SpeechToTextRealtime() {
       </div>
 
       {/* Here Moblie card */}
-      <div className="w-max order-2 flex p-5 items-center justify-center sm:order-1" >
+      <div className="w-full lg:w-1/3 order-2 flex items-center justify-center lg:order-1">
         <RelatedTools currentTool="Text" />
       </div>
     </div>

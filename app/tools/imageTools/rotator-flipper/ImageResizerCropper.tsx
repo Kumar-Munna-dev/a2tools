@@ -102,7 +102,7 @@ export default function App() {
   }, [image, transform]);
 
   return (
-    <div className="min-h-screen mt-20 flex flex-col dark:bg-slate-950 dark:text-slate-50 selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen  flex flex-col dark:bg-slate-950 dark:text-slate-50 selection:bg-indigo-500 selection:text-white">
       <main className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Editor Area */}
         <div className="flex-1 dark:bg-slate-950 relative flex items-center justify-center p-4 md:p-12 overflow-auto">

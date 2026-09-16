@@ -1,59 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import RelatedTools from "@/app/components/RelatedTools";
+import ToolLayout from "@/app/components/ToolLayout";
+import { calculateAge } from "@/app/utils/calculators";
+import { Copy, Calculator, Trash2 } from "lucide-react";
 
-/* -------------------------------------------
-   FIXED FULL AGE CALCULATOR FUNCTION (TS SAFE)
--------------------------------------------- */
-function calculateAge(birth: Date, now: Date = new Date()) {
-  if (!(birth instanceof Date) || isNaN(birth.getTime())) return null;
-
-  let years = now.getFullYear() - birth.getFullYear();
-  let months = now.getMonth() - birth.getMonth();
-  let days = now.getDate() - birth.getDate();
-
-  if (days < 0) {
-    months--;
-    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-    days += prevMonth.getDate();
-  }
-
-  if (months < 0) {
-    years--;
-    months += 12;
-  }
-
-  const diffMs = now.getTime() - birth.getTime();
-  const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  const totalMonths = years * 12 + months;
-  const weeks = Math.floor(totalDays / 7);
-
-  let nextBirthday = new Date(now.getFullYear(), birth.getMonth(), birth.getDate());
-  if (nextBirthday < now) {
-    nextBirthday.setFullYear(now.getFullYear() + 1);
-  }
-
-  const daysToNext = Math.ceil(
-    (nextBirthday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  return {
-    years,
-    months,
-    days,
-    totalDays,
-    totalMonths,
-    weeks,
-    nextBirthday: nextBirthday.toDateString(),
-    daysToNext,
-  };
-}
-
-/* -------------------------------------------
-       MAIN COMPONENT (UI)
--------------------------------------------- */
 export default function AgeCalculator() {
   const [dob, setDob] = useState("");
   const [toDate, setToDate] = useState("");
@@ -70,7 +20,7 @@ export default function AgeCalculator() {
 
     if (!data) return setResult({ error: "Could not calculate" });
 
-    setResult({ ...(data as any), calculatedAt: now.toLocaleString() });
+    setResult({ ...data, calculatedAt: now.toLocaleString() });
   };
 
   const handleClear = () => {
@@ -81,15 +31,7 @@ export default function AgeCalculator() {
 
   const copyResult = async () => {
     if (!result) return;
-
-    const text = `
-Age: ${result.years} years, ${result.months} months, ${result.days} days
-Total days: ${result.totalDays}
-Total months: ${result.totalMonths}
-Weeks lived: ${result.weeks}
-Next birthday: ${result.nextBirthday} (in ${result.daysToNext} days)
-    `;
-
+    const text = `Age: ${result.years} years, ${result.months} months, ${result.days} days\nTotal days: ${result.totalDays}\nTotal months: ${result.totalMonths}\nWeeks lived: ${result.weeks}\nNext birthday: ${result.nextBirthday} (in ${result.daysToNext} days)`;
     try {
       await navigator.clipboard.writeText(text);
       alert("Copied!");
@@ -99,128 +41,90 @@ Next birthday: ${result.nextBirthday} (in ${result.daysToNext} days)
   };
 
   return (
-   <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mt-20 flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
-      >
-        <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
-        <div className="text-center mb-4">
-          <h1 className="text-2xl sm:text-3xl font-bold dark:text-slate-100">Age Calculator – Calculate Your Exact Age</h1>
-          <p className="text-sm dark:slate-400 mt-1">
-            Find your exact age in years, months, and days
-          </p>
-        </div>
-
+    <ToolLayout 
+      title="Age Calculator" 
+      description="Find your exact age in years, months, and days" 
+      toolType="Calculator"
+    >
+      <div className="flex flex-col gap-6">
         {/* Inputs */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-          <div className="sm:col-span-2">
-            <label className="block text-sm font-medium dark;text-slate-400">Date of Birth</label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium dark:text-slate-300 mb-1">Date of Birth</label>
             <input
               type="date"
               value={dob}
               onChange={(e) => setDob(e.target.value)}
-              className="mt-1 w-full p-3 rounded-xl border dark:border-slate-800 dark:bg-slate-950 focus:ring-2 focus:ring-indigo-400"
+              className="w-full p-3 rounded-xl border dark:border-slate-800 dark:bg-slate-950 focus:ring-2 focus:ring-indigo-400 outline-none transition"
             />
           </div>
 
-          <div className="sm:col-span-2">
-            <label className="block text-sm font-medium dark:text-slate-100 mt-2 sm:mt-0">To Date (Optional)</label>
+          <div>
+            <label className="block text-sm font-medium dark:text-slate-300 mb-1">To Date (Optional)</label>
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="mt-1 w-full p-3 rounded-xl border dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-indigo-400"
+              className="w-full p-3 rounded-xl border dark:border-slate-800 dark:bg-slate-950 focus:ring-2 focus:ring-indigo-400 outline-none transition"
             />
           </div>
-
-          <div className="flex gap-2">
-            <button
-              onClick={handleCalculate}
-              className="py-3 px-4 rounded-xl bg-indigo-500 text-white font-medium hover:shadow-md"
-            >
-              Calculate
-            </button>
-
-            <button
-              onClick={handleClear}
-              className="py-3 px-4 rounded-xl bg-indigo-500 text-white font-medium hover:shadow-sm"
-            >
-              Clear
-            </button>
-          </div>
+        </div>
+        
+        <div className="flex gap-3">
+          <button
+            onClick={handleCalculate}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-indigo-500 text-white font-medium hover:bg-indigo-600 transition"
+          >
+            <Calculator size={18} />
+            Calculate
+          </button>
+          <button
+            onClick={handleClear}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-medium hover:bg-slate-300 dark:hover:bg-slate-700 transition"
+          >
+            <Trash2 size={18} />
+            Clear
+          </button>
         </div>
 
         {/* Result */}
         {result && (
-          <div className="mt-6 dark:bg-slate-950 p-4 rounded-2xl border dark:border-slate-800 shadow-sm">
+          <div className="mt-4 p-5 rounded-2xl border dark:border-slate-800 shadow-sm bg-slate-50 dark:bg-slate-900/50">
             {result.error ? (
               <div className="text-red-500 font-medium">{result.error}</div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Left */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h2 className="text-lg font-semibold dark:text-slate-100">Exact Age</h2>
-                  <div className="mt-2 text-2xl font-bold dark:text-slate-400">
-                    {result.years} yrs • {result.months} mos • {result.days} days
+                  <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Exact Age</h2>
+                  <div className="mt-2 text-2xl sm:text-3xl font-bold text-indigo-500 dark:text-indigo-400">
+                    {result.years} <span className="text-lg font-medium text-slate-600 dark:text-slate-300">yrs</span> • {result.months} <span className="text-lg font-medium text-slate-600 dark:text-slate-300">mos</span> • {result.days} <span className="text-lg font-medium text-slate-600 dark:text-slate-300">days</span>
                   </div>
-                  <div className="mt-2 text-sm dark:text-slate-400">
+                  <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                     Calculated at: {result.calculatedAt}
                   </div>
                 </div>
-
-                {/* Right */}
-                <div>
-                  <h3 className="text-lg font-semibold dark:text-slate-100">More Details</h3>
-                  <ul className="mt-2 text-sm dark:text-slate-400 list-disc ml-5 space-y-1">
-                    <li>
-                      Total days lived:{" "}
-                      <span className="font-medium dark:text-slate-4000">{result.totalDays}</span>
-                    </li>
-                    <li>
-                      Total months:{" "}
-                      <span className="font-medium dark:text-slate-400">{result.totalMonths}</span>
-                    </li>
-                    <li>
-                      Weeks lived:{" "}
-                      <span className="font-medium dark:text-slate-400">{result.weeks}</span>
-                    </li>
-                    <li>
-                      Next birthday:{" "}
-                      <span className="font-medium dark:text-slate-400">{result.nextBirthday}</span>{" "}
-                      (<span className="font-medium dark:text-slate-400">{result.daysToNext} days</span>)
-                    </li>
+                <div className="bg-white dark:bg-slate-950 p-4 rounded-xl border dark:border-slate-800">
+                  <h3 className="text-sm font-semibold dark:text-slate-300 mb-3">More Details</h3>
+                  <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-2">
+                    <li className="flex justify-between"><span>Total days lived:</span> <span className="font-medium text-slate-900 dark:text-slate-200">{result.totalDays}</span></li>
+                    <li className="flex justify-between"><span>Total months:</span> <span className="font-medium text-slate-900 dark:text-slate-200">{result.totalMonths}</span></li>
+                    <li className="flex justify-between"><span>Weeks lived:</span> <span className="font-medium text-slate-900 dark:text-slate-200">{result.weeks}</span></li>
+                    <li className="flex justify-between"><span>Next birthday:</span> <span className="font-medium text-slate-900 dark:text-slate-200">{result.nextBirthday}</span></li>
+                    <li className="flex justify-between"><span>Days to next:</span> <span className="font-medium text-slate-900 dark:text-slate-200">{result.daysToNext} days</span></li>
                   </ul>
-
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      onClick={copyResult}
-                      className="py-2 px-3 rounded-lg bg-indigo-500 text-white text-sm font-medium"
-                    >
-                      Copy
-                    </button>
-
-                    <button
-                      onClick={() => alert("Share coming soon")}
-                      className="py-2 px-3 rounded-lg bg-indigo-500 text-white text-sm font-medium"
-                    >
-                      Share
-                    </button>
-                  </div>
+                  <button 
+                    onClick={copyResult} 
+                    className="mt-4 w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-sm font-medium transition"
+                  >
+                    <Copy size={16} />
+                    Copy Details
+                  </button>
                 </div>
               </div>
             )}
           </div>
         )}
-
-        <div className="mt-6 text-xs text-gray-500">
-          Tip: Want age including hours/minutes? Ask for advanced version.
-        </div>
-        </div>
-          {/* Here Moblie card */}
-      <div className="order-2  sm:order-1">
-        <RelatedTools currentTool="Calculator" />
       </div>
-      </motion.div>
+    </ToolLayout>
   );
 }
