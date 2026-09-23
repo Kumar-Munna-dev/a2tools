@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import React from 'react';
+import SeoMeta from '@/app/components/SeoMeta';
 import BasicCalculator from './BasicCalculator';
 
 export const metadata: Metadata = {
@@ -40,5 +41,22 @@ export const metadata: Metadata = {
 };
 
 export default function  Page() {
-  return  <BasicCalculator />;
+  return (
+    <>
+
+      <SeoMeta
+        title="Basic Calculator"
+        description="Free Basic Calculator to perform simple arithmetic operations like addition, subtraction, multiplication, and division online."
+        url="https://a2tool.com/tools/calculatorTools/basic-calculator/"
+        toolType="WebApplication"
+        breadcrumbs={[
+          { name: "Home", item: "https://a2tool.com/" },
+          { name: "Calculator Tools", item: "https://a2tool.com/tools/calculatorTools/" },
+          { name: "Basic Calculator", item: "https://a2tool.com/tools/calculatorTools/basic-calculator/" }
+        ]}
+        faqs={[{"question":"Does this support keyboard input?","answer":"Yes, you can use your number pad for rapid calculations."}]}
+      />
+      <BasicCalculator />
+    </>
+  );
 }

@@ -1,4 +1,18 @@
-
+/**
+ * ==========================================
+ * A2TOOLS CENTRAL REGISTRY (INTERN GUIDE)
+ * ==========================================
+ * 
+ * INTERN NOTE: 
+ * This file is the "brain" of the website's navigation. 
+ * Whenever you create a new tool, you MUST add it to the correct array below.
+ * This automatically makes the tool appear on the homepage, in the sidebars, and in the "Related Tools" sections.
+ * 
+ * Instructions for adding a new tool:
+ * 1. Import a relevant icon from 'lucide-react'.
+ * 2. Find the correct category array (e.g., utilityTools, imageTools).
+ * 3. Add an object with title, description, icon, and href.
+ */
 
 import React from "react";
 import {
@@ -21,13 +35,13 @@ import {
   Mic,
   Scissors,
   Image,
+  Circle,
+  Instagram,
+  Square,
   Phone,
   Building,
   Download,
 } from "lucide-react";
-
-
-
 
 export interface ToolItem {
   title: string;
@@ -35,8 +49,6 @@ export interface ToolItem {
   icon: React.ReactNode;
   href: string;
 }
-
-
 
 /* ================================
    🧩 UTILITY TOOLS
@@ -271,6 +283,24 @@ export const imageTools: ToolItem[] = [
     description: "Resize and crop images to any dimension.",
     icon: <Scissors className="w-5 h-5" />,
     href: "/tools/imageTools/resizer-cropper",
+  },
+  {
+    title: "Circular Image Cropper",
+    description: "Crop images into perfect circles.",
+    icon: <Circle className="w-5 h-5" />,
+    href: "/tools/imageTools/circular-cropper",
+  },
+  {
+    title: "Instagram Image Resizer",
+    description: "Perfect sizes for IG Posts & Stories.",
+    icon: <Instagram className="w-5 h-5" />,
+    href: "/tools/imageTools/instagram-resizer",
+  },
+  {
+    title: "Round Corners on Image",
+    description: "Add smooth rounded edges to photos.",
+    icon: <Square className="w-5 h-5" />,
+    href: "/tools/imageTools/round-corners",
   },
   {
     title: "Convert Image Formats",

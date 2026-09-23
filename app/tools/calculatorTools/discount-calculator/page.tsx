@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import React from 'react';
+import SeoMeta from '@/app/components/SeoMeta';
 import DiscountCalculator from './DiscountCalculator';
 
 export const metadata: Metadata = {
@@ -39,5 +40,22 @@ export const metadata: Metadata = {
 };
 
 export default function  Page() {
-  return  <DiscountCalculator />;
+  return (
+    <>
+
+      <SeoMeta
+        title="Discount Calculator"
+        description="Free Discount Calculator to calculate final price after discount, savings amount, and discount percentage instantly online."
+        url="https://a2tool.com/tools/calculatorTools/discount-calculator/"
+        toolType="WebApplication"
+        breadcrumbs={[
+          { name: "Home", item: "https://a2tool.com/" },
+          { name: "Calculator Tools", item: "https://a2tool.com/tools/calculatorTools/" },
+          { name: "Discount Calculator", item: "https://a2tool.com/tools/calculatorTools/discount-calculator/" }
+        ]}
+        faqs={[{"question":"Can I use this for sales tax?","answer":"Yes, by entering a negative discount or using it to find the percentage difference."}]}
+      />
+      <DiscountCalculator />
+    </>
+  );
 }

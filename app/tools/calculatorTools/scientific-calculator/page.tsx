@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import React from 'react';
+import SeoMeta from '@/app/components/SeoMeta';
 import ScientificCalculator from './ScientificCalculator';
 
 export const metadata: Metadata = {
@@ -39,5 +40,22 @@ export const metadata: Metadata = {
 };
 
 export default function  Page() {
-  return  <ScientificCalculator />;
+  return (
+    <>
+
+      <SeoMeta
+        title="Scientific Calculator"
+        description="Free Scientific Calculator to perform advanced math operations including trigonometry, logarithms, powers, roots, and equations online."
+        url="https://a2tool.com/tools/calculatorTools/scientific-calculator/"
+        toolType="WebApplication"
+        breadcrumbs={[
+          { name: "Home", item: "https://a2tool.com/" },
+          { name: "Calculator Tools", item: "https://a2tool.com/tools/calculatorTools/" },
+          { name: "Scientific Calculator", item: "https://a2tool.com/tools/calculatorTools/scientific-calculator/" }
+        ]}
+        faqs={[{"question":"Does this support radians?","answer":"Yes, you can toggle between degree and radian modes for trigonometric calculations."}]}
+      />
+      <ScientificCalculator />
+    </>
+  );
 }

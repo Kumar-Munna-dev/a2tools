@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import React from 'react';
+import SeoMeta from '@/app/components/SeoMeta';
 import PercentageCalculator from './PercentageCalculator';
 
 export const metadata: Metadata = {
@@ -39,5 +40,22 @@ export const metadata: Metadata = {
 };
 
 export default function  Page() {
-  return  <PercentageCalculator />;
+  return (
+    <>
+
+      <SeoMeta
+        title="Percentage Calculator"
+        description="Free Percentage Calculator to calculate percentages, increase or decrease percentage, and percentage difference online."
+        url="https://a2tool.com/tools/calculatorTools/percentage-calculator/"
+        toolType="WebApplication"
+        breadcrumbs={[
+          { name: "Home", item: "https://a2tool.com/" },
+          { name: "Calculator Tools", item: "https://a2tool.com/tools/calculatorTools/" },
+          { name: "Percentage Calculator", item: "https://a2tool.com/tools/calculatorTools/percentage-calculator/" }
+        ]}
+        faqs={[{"question":"How do I calculate a percentage increase?","answer":"Enter the original value and the new value, and the calculator will show the exact percentage difference."}]}
+      />
+      <PercentageCalculator />
+    </>
+  );
 }

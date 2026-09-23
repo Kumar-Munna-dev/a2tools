@@ -1,39 +1,38 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import RelatedTools from "@/app/components/RelatedTools";
+import ToolSEO from "@/app/components/ToolSEO";
+import { calculatePercentage } from "@/app/utils/calculators";
 
 export default function PercentageCalculator() {
-  const [value, setValue] = useState("");
-  const [percent, setPercent] = useState("");
+  const [value1, setValue1] = useState("");
+  const [value2, setValue2] = useState("");
+  const [mode, setMode] = useState("percent_of");
 
-  // FIXED HERE ⬇⬇⬇
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<ReturnType<typeof calculatePercentage> | { error: string } | null>(null);
 
-  const calculate = () => {
-    const v = parseFloat(value);
-    const p = parseFloat(percent);
-    if (isNaN(v) || isNaN(p)) return setResult("Invalid input");
-    setResult(((v * p) / 100).toFixed(2));
-  };
+  const handleCalculate = () => {
+    const v1 = parseFloat(value1);
+    const v2 = parseFloat(value2);
+    
+    if (isNaN(v1) || isNaN(v2)) {
+      return setResult({ error: "Please enter valid numbers in both fields." });
+    }
 
-  const calculateIncrease = () => {
-    const v = parseFloat(value);
-    const p = parseFloat(percent);
-    if (isNaN(v) || isNaN(p)) return setResult("Invalid input");
-    setResult((v + (v * p) / 100).toFixed(2));
-  };
-
-  const calculateDecrease = () => {
-    const v = parseFloat(value);
-    const p = parseFloat(percent);
-    if (isNaN(v) || isNaN(p)) return setResult("Invalid input");
-    setResult((v - (v * p) / 100).toFixed(2));
+    const calc = calculatePercentage(mode, v1, v2);
+    if (!calc) {
+      setResult({ error: "Calculation failed." });
+    } else if (calc.error) {
+      setResult({ error: calc.error });
+    } else {
+      setResult(calc);
+    }
   };
 
   const clearAll = () => {
-    setValue("");
-    setPercent("");
+    setValue1("");
+    setValue2("");
     setResult(null);
   };
 
@@ -41,99 +40,130 @@ export default function PercentageCalculator() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className=" flex flex-col items-center gap-10 sm:p-6 sm:flex-row sm:items-start dark:bg-slate-950 dark:text-slate-100"
+      className="flex flex-col lg:flex-row items-center lg:items-start gap-10 p-4 sm:p-8 dark:bg-slate-950 dark:text-slate-100"
     >
-      <div className="flex flex-col gap-5 p-5 w-screen order-2 sm:order-2">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold dark:text-slate-50 tracking-tight">Percentage Calculator – Calculate Percentage Online</h1>
-          <p className="dark:text-slate-400 mt-2 text-sm">Modern, fast & professional tool to calculate percentages easily</p>
+      <section className="flex flex-col gap-6 w-full max-w-2xl mx-auto order-1 lg:order-2" aria-label="Percentage Calculator">
+        
+        <div className="text-center lg:text-left">
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">Percentage Calculator</h1>
+          <p className="text-slate-600 dark:text-slate-400">Calculate percentage of a number, percentage increase, and more.</p>
         </div>
 
-        {/* Inputs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div>
-            <label className="text-smfont-medium">Value</label>
-            <input
-              type="number"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              className="w-full p-3 mt-1 rounded-xl border border-gray-300 
-                focus:ring-2 focus:ring-indigo-400  transition"
-              placeholder="Enter number"
-            />
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-8 rounded-2xl shadow-sm">
+          
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Calculation Type</label>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <label className={`flex-1 flex items-center justify-center p-3 rounded-xl border cursor-pointer font-medium transition ${mode === "percent_of" ? "bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500 text-indigo-700 dark:text-indigo-300" : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900"}`}>
+                <input type="radio" className="hidden" checked={mode === "percent_of"} onChange={() => setMode("percent_of")} />
+                X% of Y
+              </label>
+              <label className={`flex-1 flex items-center justify-center p-3 rounded-xl border cursor-pointer font-medium transition ${mode === "is_what_percent" ? "bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500 text-indigo-700 dark:text-indigo-300" : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900"}`}>
+                <input type="radio" className="hidden" checked={mode === "is_what_percent"} onChange={() => setMode("is_what_percent")} />
+                X is what % of Y
+              </label>
+              <label className={`flex-1 flex items-center justify-center p-3 rounded-xl border cursor-pointer font-medium transition ${mode === "percent_change" ? "bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500 text-indigo-700 dark:text-indigo-300" : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900"}`}>
+                <input type="radio" className="hidden" checked={mode === "percent_change"} onChange={() => setMode("percent_change")} />
+                % Change
+              </label>
+            </div>
           </div>
 
-          <div>
-            <label className="text-sm text-gray-600 font-medium">Percent (%)</label>
-            <input
-              type="number"
-              value={percent}
-              onChange={(e) => setPercent(e.target.value)}
-              className="w-full p-3 mt-1 rounded-xl border border-gray-300 
-                focus:ring-2 focus:ring-indigo-400  transition"
-              placeholder="Enter percentage"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
+            
+            <div className="relative">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                {mode === "percent_of" ? "Percentage (X%)" : mode === "is_what_percent" ? "Value (X)" : "From Value (X)"}
+              </label>
+              <input
+                type="number"
+                value={value1}
+                onChange={(e) => setValue1(e.target.value)}
+                className="w-full p-4 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-xl font-medium rounded-xl border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                placeholder="e.g. 20"
+              />
+            </div>
+
+            <div className="relative">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                {mode === "percent_of" ? "Value (Y)" : mode === "is_what_percent" ? "Total Value (Y)" : "To Value (Y)"}
+              </label>
+              <input
+                type="number"
+                value={value2}
+                onChange={(e) => setValue2(e.target.value)}
+                className="w-full p-4 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-xl font-medium rounded-xl border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                placeholder="e.g. 150"
+              />
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <button
+              onClick={handleCalculate}
+              className="flex-1 py-3 sm:py-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-lg transition-transform active:scale-95 shadow-sm"
+            >
+              Calculate
+            </button>
+            <button
+              onClick={clearAll}
+              className="w-full sm:w-1/3 py-3 sm:py-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold transition-transform active:scale-95 border border-slate-200 dark:border-slate-700"
+            >
+              Reset
+            </button>
           </div>
         </div>
 
-        {/* Buttons */}
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <button
-            onClick={calculate}
-            className="py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold shadow hover:shadow-md active:scale-95 transition"
-          >
-            % of Value
-          </button>
-
-          <button
-            onClick={calculateIncrease}
-            className="py-3 rounded-xl bg-green-600 text-white text-sm font-semibold shadow hover:shadow-md active:scale-95 transition"
-          >
-            Increase
-          </button>
-
-          <button
-            onClick={calculateDecrease}
-            className="py-3 rounded-xl bg-red-600 text-white text-sm font-semibold shadow hover:shadow-md active:scale-95 transition"
-          >
-            Decrease
-          </button>
-
-          <button
-            onClick={clearAll}
-            className="py-3 rounded-xl bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-100 text-sm font-semibold shadow hover:shadow-md active:scale-95 transition"
-          >
-            Clear
-          </button>
-        </div>
-
-        {/* Result */}
-        {result !== null && (
+        {/* Results */}
+        {result && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-8 p-5 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 rounded-2xl text-center text-xl font-bold shadow-lg"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden"
           >
-            Result: {result}
+            {"error" in result ? (
+              <div className="p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-center font-medium">
+                {result.error}
+              </div>
+            ) : (
+              <div className="p-6 sm:p-8 text-center">
+                <p className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-widest font-semibold mb-2">{result.explanation}</p>
+                <div className="text-5xl font-black text-indigo-600 dark:text-indigo-400 mt-2">
+                  {result.result}
+                  {mode !== "percent_of" && <span className="text-3xl font-bold ml-1">%</span>}
+                </div>
+              </div>
+            )}
           </motion.div>
         )}
 
-        {/* Tips */}
-        <div className="mt-8 text-sm ">
-          <p className="font-semibold ">Examples</p>
-          <ul className="list-disc ml-5 mt-2 space-y-1">
-            <li>20% of 150 → Enter <b>150</b> & <b>20</b></li>
-            <li>Increase ₹500 by 10% → Enter <b>500</b> & <b>10</b></li>
-            <li>Decrease 800 by 25% → Enter <b>800</b> & <b>25</b></li>
-          </ul>
-        </div>
 
-      </div>
-      {/* Here Moblie card */}
-      <div className="order-2  sm:order-1">
+      
+  
+
+        <ToolSEO 
+          title="Percentage Calculator"
+          howToUse={[
+            "Choose the type of percentage calculation you need.",
+            "Enter the known values in the input fields.",
+            "The missing percentage or value is calculated automatically."
+          ]}
+          features={[
+            "Calculate percentage of a number",
+            "Find what percentage one number is of another",
+            "Calculate percentage increase or decrease safely"
+          ]}
+          faqs={[
+            { question: "How do I calculate a percentage increase?", answer: "Select the '% Change' mode. Enter the original value in the first box and the new value in the second box. The calculator will show the exact percentage difference." },
+            { question: "Can I use negative numbers?", answer: "Yes, you can use negative numbers to calculate changes or percentages of negative values." }
+          ]}
+        />
+      </section>
+
+      <aside className="w-full lg:w-80 order-2 lg:order-1 flex-shrink-0 mt-8 lg:mt-0">
         <RelatedTools currentTool="Calculator" />
-      </div>
-    </motion.div>
+      </aside>
 
+    </motion.div>
   );
 }
